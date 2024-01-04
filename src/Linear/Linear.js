@@ -81,7 +81,7 @@ export class Linear extends Evaluator {
 
 	};
 
-	evaluate( 
+	/*evaluate( 
 
 		position, inputOffset = 0, 
 		output, outputOffset = 0 
@@ -106,7 +106,7 @@ export class Linear extends Evaluator {
 
 		return output;
 
-	}
+	}*/
 
 };
 

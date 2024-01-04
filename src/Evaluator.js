@@ -45,15 +45,15 @@ export default class Evaluator {
 
 		for ( let i = 0; i < length; i += variables ) {
 			
-			if ( variables === 1 ) {
+			if ( variables === 1 && typeof scale === 'number' && typeof orgin === 'number' ) {
 
-				positions[ i ] = offset;
+				positions[ i ] += offset;
 
 			} else {				
 
 				for ( let j = 0; j < variables; j ++ ) {
 
-					positions[ i + j ] = offset[ j ];
+					positions[ i + j ] += offset[ j ];
 				
 				}
 
@@ -73,7 +73,7 @@ export default class Evaluator {
 
 		for ( let i = 0; i < length; i += variables ) {
 
-			if ( variables === 1 ) {
+			if ( variables === 1 && typeof scale === 'number' && typeof orgin === 'number' ) {
 
 				const x = positions[ i ];
 				positions[ i ] = (x - orgin)*scale + orgin;
@@ -110,6 +110,8 @@ export default class Evaluator {
 		const variables = this.constructor.variables;
 		const d = degree + 1;
 
+		const outputNotProvided = !output;
+
 		if ( !output ) output = new this.values.constructor( dimension );
 
 		const size = (degree + 1)**variables;
@@ -127,7 +129,15 @@ export default class Evaluator {
 
 					const exponent = Math.floor((j / d**k ) % d);
 
-					v *= position[ inputOffset + k ]**exponent;
+					if ( typeof position === 'number' ) {
+
+						v *= position**exponent;
+
+					} else {
+
+						v *= position[ inputOffset + k ]**exponent;
+
+					}
 
 				}
 				
@@ -137,7 +147,8 @@ export default class Evaluator {
 
 		}
 
-		return output;
+		if ( dimension === 1 && outputNotProvided ) return output[ 0 ];
+		else return output;
 
 
 

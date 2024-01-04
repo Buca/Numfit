@@ -28,29 +28,29 @@
       const positions = this.positions;
       const length2 = positions.length;
       for (let i = 0; i < length2; i += variables) {
-        if (variables === 1) {
-          positions[i] = offset;
+        if (variables === 1 && typeof scale === "number" && typeof orgin === "number") {
+          positions[i] += offset;
         } else {
           for (let j = 0; j < variables; j++) {
-            positions[i + j] = offset[j];
+            positions[i + j] += offset[j];
           }
         }
       }
       return this;
     }
-    scale(scale, orgin) {
+    scale(scale2, orgin2) {
       const variables = this.constructor.variables;
       const positions = this.positions;
       const length2 = positions.length;
       for (let i = 0; i < length2; i += variables) {
-        if (variables === 1) {
+        if (variables === 1 && typeof scale2 === "number" && typeof orgin2 === "number") {
           const x4 = positions[i];
-          positions[i] = (x4 - orgin) * scale + orgin;
+          positions[i] = (x4 - orgin2) * scale2 + orgin2;
         } else {
           for (let j = 0; j < variables; j++) {
             const x4 = positions[i + j];
-            const s = scale[j];
-            const o = orgin[j];
+            const s = scale2[j];
+            const o = orgin2[j];
             positions[i + j] = (x4 - o) * s + o;
           }
         }
@@ -62,6 +62,7 @@
       const degree = this.constructor.degree;
       const variables = this.constructor.variables;
       const d = degree + 1;
+      const outputNotProvided = !output;
       if (!output)
         output = new this.values.constructor(dimension);
       const size = (degree + 1) ** variables;
@@ -72,12 +73,19 @@
           let v = 1;
           for (let k = 0; k < variables; k++) {
             const exponent = Math.floor(j / d ** k % d);
-            v *= position[inputOffset + k] ** exponent;
+            if (typeof position === "number") {
+              v *= position ** exponent;
+            } else {
+              v *= position[inputOffset + k] ** exponent;
+            }
           }
           output[outputOffset + i] += c * v;
         }
       }
-      return output;
+      if (dimension === 1 && outputNotProvided)
+        return output[0];
+      else
+        return output;
     }
     step(start, end, size, handler) {
       const dimension = this.dimension;
@@ -194,19 +202,32 @@
     constructor(positions, values, dimension = 1) {
       super(positions, values, dimension);
     }
-    evaluate(position, inputOffset = 0, output, outputOffset = 0) {
-      const d = this.dimension;
-      const coefficients = this.coefficients;
-      if (!output)
-        output = new this.values.constructor(d);
-      const x4 = position[inputOffset];
-      for (let i = 0, index = 0; i < d; i++) {
-        const c0 = coefficients[index++];
-        const c1 = coefficients[index++];
-        output[outputOffset + i] = c0 + c1 * x4;
-      }
-      return output;
-    }
+    /*evaluate( 
+    
+    		position, inputOffset = 0, 
+    		output, outputOffset = 0 
+    
+    	) {
+    
+    		const d = this.dimension;
+    		const coefficients = this.coefficients;
+    
+    		if ( !output ) output = new this.values.constructor( d );
+    
+    		const x = position[ inputOffset ];
+    
+    		for ( let i = 0, index = 0; i < d; i ++ ) {
+    
+    			const c0 = coefficients[ index ++ ];
+    			const c1 = coefficients[ index ++ ];
+    
+    			output[ outputOffset + i ] = c0 + c1*x;
+    
+    		}
+    
+    		return output;
+    
+    	}*/
   };
   globalThis.Linear = Linear;
 
