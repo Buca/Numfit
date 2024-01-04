@@ -1,0 +1,167 @@
+<html>
+	<head>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/dark.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+		<script>hljs.highlightAll();</script>
+
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		
+		<link rel="stylesheet" href="reset.css">
+		<link rel="stylesheet" href="shared.css">
+		<link rel="stylesheet" href="home.css">
+
+	</head>
+	<body>
+		<header>
+			<h1>Numfit</h1>
+			<nav>
+				<a href="#" class="selected">Home</a>
+				<a href="#">Guide</a>
+				<a href="#">Docs</a>
+				<a href="#">Examples</a>
+				<a href="#">Github</a>
+			</nav>
+		</header>
+		<main class="rows">
+			<div id="description" class="row">
+				<b>Numfit</b> is an incredibly feature-rich numerical data processing library for JavaScript and NodeJS. It boasts a comprehensive collection of functions and classes for numerical interpolation, extrapolations, regression, and smoothing, supporting multiple dimensions and catering to a wide range of applications in graphics, finance, data analysis, machine learning, and many more! <b>Numfit</b> is meticulously tested, ensuring its efficiency and ease of use. So, why not give Numfit a try and experience its remarkable capabilities for yourself?
+			</div>
+			<div id="badges" class="row columns">
+				<div class="column rows">
+					<h3>Interpolation & Extrapolation</h3>
+					<p>Some of the use cases of interpolation and extrapolation algorithms are (insert) used for many. Numbit supports many types of interpolation and extrapolation algortihms - along with their multidimensional counterparts. Some types of algorithms include:</p>
+				</div>
+				<div class="column rows">
+					<h3>Regression Models</h3>
+					<p>Some of the use cases of interpolation and extrapolation algorithms are (insert) used for many. Numbit supports many types of interpolation and extrapolation algortihms - along with their multidimensional counterparts. Some types of algorithms include:</p>
+				</div>
+				<div class="column rows">
+					<h3>Data Smoothing</h3>
+					<p>Some of the use cases of interpolation and extrapolation algorithms are (insert) used for many. Numbit supports many types of interpolation and extrapolation algortihms - along with their multidimensional counterparts. Some types of algorithms include:</p>
+				</div>
+			</div>
+			<div id="examples" class="rows">
+				<div class="example row columns" id="linear-example">
+					<div class="code column">
+						<pre><code class="language-javascript">import { Linear } from 'Numfit';
+
+const linear = new Linear( [ .35, .7 ], [ 2, 4 ] );
+
+const start =  0;
+const end = 1;
+const stepSize = 0.025;
+
+const points = [];
+
+for ( let x = start; x <= end; x += stepSize ) {
+
+	const y = linear.evaluate( x );
+	points.push( [ y, x ] );
+
+}</code></pre>
+					</div>
+					<div class="plot column">
+						<canvas id="linear-plot"></canvas>
+					</div>
+				</div>
+				<div class="example row columns" id="cubic-example">
+					<div class="code column">
+						<pre><code class="language-javascript">import { Cubic } from 'Numfit';
+
+const cubic = new Cubic( [ .35, .7 ], [ 2, 4 ] );
+
+const start =  0;
+const end = 1;
+const stepSize = 0.025;
+
+const points = [];
+
+for ( let x = start; x <= end; x += stepSize ) {
+
+	const y = cubic.evaluate( x );
+	points.push( [ y, x ] );
+
+}</code></pre>
+					</div>
+					<div class="plot column">
+						<canvas id="linear-reg-plot"></canvas>
+					</div>
+				</div>
+				<div class="example row columns" id="linear-reg-example">
+					<div class="code column">
+						<pre><code class="language-javascript">import { LinearReg } from 'Numfit';
+
+const linearReg = new LinearRegression( [ .35, .7 ], [ 2, 4 ] );
+
+const start =  0;
+const end = 1;
+const stepSize = 0.025;
+
+const points = [];
+
+for ( let x = start; x <= end; x += stepSize ) {
+
+	const y = linearReg.evaluate( x );
+	points.push( [ y, x ] );
+
+}
+// Then do something with the points!</code></pre>
+					</div>
+					<div class="plot column">
+						<canvas id="cubic-plot"></canvas>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer class="rows">
+			<div id="links" class="row columns">
+				<div class="column">
+					<h4>Links</h4>
+					<ul>
+						<li><a href="#">Github</a></li>
+						<li><a href="#">NPM</a></li>
+						<li><a href="#">jsDeliver (CDN)</a></li>
+						<li><a href="#">Buca's Github</a></li>
+					</ul>
+				</div>
+				<div class="column">
+					<h4>Links</h4>
+					<ul>
+						<li><a href="#">Github</a></li>
+						<li><a href="#">NPM</a></li>
+						<li><a href="#">jsDeliver (CDN)</a></li>
+						<li><a href="#">Buca's Github</a></li>
+					</ul>
+				</div>
+				<div class="column">
+					<h4>Links</h4>
+					<ul>
+						<li><a href="#">Github</a></li>
+						<li><a href="#">NPM</a></li>
+						<li><a href="#">jsDeliver (CDN)</a></li>
+						<li><a href="#">Buca's Github</a></li>
+					</ul>
+				</div>
+				<div class="column">
+					<h4>Links</h4>
+					<ul>
+						<li><a href="#">Github</a></li>
+						<li><a href="#">NPM</a></li>
+						<li><a href="#">jsDeliver (CDN)</a></li>
+						<li><a href="#">Buca's Github</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="copyright" class="row rows">
+				<p>The <b>Numfit</b> library and this website is created by <a href="#">Buca Hajdini</a>.</p> 
+				<p><b>Numfit</b>  library is licenced under <a href="#">GNU</a> and the Numfit website under <a href="#">Unlicence</a>.</p>
+			</div>
+		</footer>
+	</body>
+	<script src="home.js"></script>
+</html>

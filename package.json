@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "test": "vitest",
+    "build": "esbuild src/index.js --bundle --minify --platform=browser --outfile=build/Numfit.min.js & esbuild src/index.js --bundle --platform=browser --outfile=build/Numfit.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.19.11",
+    "vitest": "^1.1.1"
+  }
+}

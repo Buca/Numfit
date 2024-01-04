@@ -1,0 +1,343 @@
+header, main {
+
+	max-width: 1100px;
+	align-self: center;
+
+}
+
+header {
+
+	width: 100%;
+	flex-direction: row;
+	align-items: center;
+
+}
+
+header h1 {
+
+	font-size: 62px;
+	font-weight: 400;
+    text-shadow: 0 3px #62b99d, 6px 8px #3d4342;
+    padding: 10px 37px;
+    margin-left: 30px;
+
+}
+
+header nav {
+
+	height: 45px;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 10px;
+
+}
+
+main {
+
+	width: 100%;
+	margin-bottom: 32px;
+
+}
+
+#sidebar, #content .code, #content table {
+
+	box-shadow: 8px 6px #3d4342;
+
+}
+
+#sidebar {
+
+	min-width: 260px;
+	margin-left: 30px;
+	display: flex;
+	flex-direction: column;
+	background: #54585c;
+	font-family: 'Roboto Mono';
+	padding: 12px 10px 30px 10px;
+	height: fit-content;
+
+}
+
+#sidebar .entries {
+
+	padding-bottom: 8px;
+
+}
+
+#sidebar nav {
+
+	padding: 4px;
+
+}
+
+#sidebar h4 {
+
+	font-size: 11px;
+	padding: 12px 0 4px 0;
+	color: #edeeef;
+	font-weight: 300;
+
+}
+
+#sidebar ul {
+
+	list-style-type: none;
+	padding: 0 0 0 10px;
+
+}
+
+#sidebar a {
+
+	font-size: 12px;
+	font-weight: 400;
+
+}
+
+#sidebar a.selected {
+
+	color: white;
+	font-weight: 900;
+
+}
+
+#sidebar-search {
+
+	background: #44474c;
+	border: none;
+	padding: 8px 10px;
+    font-size: 13px;
+    color: #fff;
+	box-shadow: inset 3px 3px #384341;
+	transition: box-shadow .35s;
+
+}
+
+#sidebar-search:placeholder-shown {
+	
+	background-image: url(docs/search-icon.svg);
+    background-position-y: center;
+    background-position-x: 6px;
+    background-repeat: no-repeat;
+
+}
+
+#sidebar-search::-webkit-search-cancel-button {
+	-webkit-appearance: none;
+	height: 14px;
+	width: 14px;
+	background: url(docs/times-circle.svg) no-repeat 50% 50%;
+	background-size: contain;
+	pointer-events: all;
+	cursor: pointer;
+	opacity: 0.5;
+}
+
+#sidebar-search::-webkit-search-cancel-button:hover {
+	opacity: 1;
+}
+
+#sidebar-search:focus {
+
+	background-image: none;
+	box-shadow: inset 0px 0px #384341;
+
+}
+
+#content {
+
+	padding: 0 30px 10px 30px;
+	color: #f2f2f2;
+	width: 100%;
+
+}
+
+#content .page-title {
+
+	display: flex;
+	margin: 8px 0 20px 0;
+
+}
+
+
+#content .page-title div {
+
+	align-self: center;
+    margin-left: auto;
+    font-size: 14px;
+
+}
+
+#content section {
+
+	margin-bottom: 22px;
+
+}
+
+#content .part {
+
+	border-bottom: 1px solid #5b5b5b;
+	/*display: flex;*/
+    flex-direction: column;	
+
+}
+
+#content .part:last-child {
+
+	border-bottom: none;
+	margin-bottom: 10px;
+
+}
+
+#content h2, #content h3 {
+
+	padding: 2px 0;
+	font-family: 'Roboto Mono', monospace;
+	font-weight: 400;
+
+}
+
+#content h2 {
+
+	font-size: 24px;
+
+}
+
+#content h3 {
+
+	font-size: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 0px;
+   	border-bottom: 3px solid #5b5b5b;
+
+}
+
+#content p, #content .code {
+
+	font-family: 'Ubuntu Mono', monospace;
+	font-size: 14px;
+	margin-bottom: 22px;
+
+}
+
+#content .code {
+
+	font-size: 16px;
+
+}
+
+#content p {
+
+	color: #c9d0ce;
+
+}
+
+#content table {
+
+	color: #DCDCDC;
+    background: #54585c;
+    padding: 10px;
+    width: 100%;
+    font-size: 14px;
+
+}
+
+#content td {
+
+	padding: 14px 10px;
+
+}
+
+#content tr {
+
+	box-shadow: 0 2px #6f6f6f
+
+}
+
+#content tr:last-child {
+
+	box-shadow: none;
+
+}
+
+#content .code {
+
+	padding: 4px 8px;
+	background: #54585c;
+	color: #91efde;
+	display: inline-block;
+	margin-bottom: 10px;
+
+}
+
+#content .code b {
+
+	color: #ededed;
+
+}
+
+#content p b {
+
+	color: #d7d4d4;
+
+}
+
+#content code {
+
+	padding: 6px 10px;
+	background: #54585c;
+
+}
+#viewport {
+
+	border: 0;
+    flex: 1;
+    width: 100%;
+
+}
+
+#file-name {
+
+	background: #CCC;
+	padding: 4px 8px;
+	color: black;
+
+}
+
+#scroll-to-top-button {
+
+    width: 60px;
+    height: 60px;
+    position: fixed;
+    background-color: #87c9bee0;
+    right: 30px;
+    bottom: 40px;
+    border-radius: 30px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 76px;
+    font-family: cursive;
+    line-height: 98px;
+    color: #f1f1f1;
+    overflow: hidden;
+    text-shadow: 0 0 transparent;
+    transition: transform .2s, color .3s, background-color .3s, line-height .2s, text-shadow .2s;
+
+}
+
+#scroll-to-top-button:hover {
+
+	background-color: #f1f1f1;
+	color: #87c9bee0;
+	line-height: 94px;
+	text-shadow: 0 4px grey;
+	transform: scale( 1.05 );
+
+}
+
+#scroll-to-top-button:active {
+
+	line-height: 98px;
+	text-shadow: 0 2px grey;
+	transform: scale( 0.975 );
+
+}

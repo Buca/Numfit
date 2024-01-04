@@ -1,0 +1,61 @@
+#description {
+
+	background: #c9d0ce;
+    padding: 60px 70px;
+    text-align: justify;
+    margin-top: 60px;
+    text-shadow: 0 1px #f3f3f3;
+
+}
+
+#badges .column {
+
+	padding: 60px;
+    text-align: justify;
+    color: #fff;
+
+}
+
+#badges h3 {
+
+    font-family: 'Ubuntu Mono', monospace;
+    text-align: center;
+    padding-bottom: 35px;
+
+}
+
+.example {
+
+	justify-content: center;
+	align-items: center;
+	transition: all .6s;
+
+}
+
+.example .column {
+
+	flex: 1;
+	padding: 40px 60px;
+	max-width: 690px;
+
+}
+
+.plot {
+
+	min-width: 340px;
+	min-height: 340px;
+	display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    padding: 40px 40px 40px 0px !important;
+    max-height: 600px;
+    max-width: 560px !important;
+
+}
+
+.blur {
+
+	filter: blur( 10px );
+	transform: scale(0.95);
+
+}

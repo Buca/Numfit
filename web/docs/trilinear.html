@@ -1,0 +1,458 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Trilinear</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/trilinear.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Trilinear.js">Source</a></div>
+		</div>
+		<section class="part">
+			<p>
+				The Trilinear class provides tools for performing three dimensional linear interpolation aka trilinear interpolation and extrapolation, which are foundational techniques in data science for estimating values within or beyond a range of known data points. Interpolation employs bilinear polynomials to construct new data points within the range of known values, essentially bridging the gaps between discrete points. In contrast, extrapolation extends the linear relationship beyond the known data, enabling predictions outside the given range. These techniques are widely employed in various applications, including signal processing, image analysis, and scientific simulations.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Constructor</h3>
+
+		<section class="part">
+			<div class="code">new Trilinear( <b>positions, values, ?coefficients</b>: Array ): Trilinear</div>
+
+			<p>The <b><i>Trilinear()</i></b> constructor creates a new instance of the <b>Trilinear</b> class. It takes three parameters:</p>
+
+			<p>
+				<table>
+					<tr>
+						<td><b>positions</b>:</td>
+						<td>
+							A numerical array of length 6 that specifies the positions of the values to be interpolated. The format of the array is [ x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub> ].
+						</td>
+					</tr>
+					<tr>
+						<td><b>values</b>:</td>
+						<td>
+							A numerical array of length 8 that contains the values to be interpolated. The format of the array is [ v<sub>000</sub>, v<sub>100</sub>, v<sub>010</sub>, v<sub>110</sub>, v<sub>001</sub>, v<sub>101</sub>, v<sub>011</sub>, v<sub>111</sub>  ], where the first index correponds to the x-position, the second corresponds to the y-position and lastly the third corresponds to the z-position.
+						</td>
+					</tr>
+					<tr>
+						<td><b>coefficients</b>:</td>
+						<td>
+							(Optional) An optional numerical array of coefficients used internally for evaluating interpolated values. The format of the coeffiecients array is [ c<sub>000</sub>, c<sub>100</sub>, c<sub>010</sub>, c<sub>110</sub>, c<sub>001</sub>, c<sub>101</sub>, c<sub>011</sub>, c<sub>111</sub> ], where the first index corresponds to the exponent of the x-variable, the second index corresponds to the exponent of the y-variable and the third index corresponds to the exponent of the z-variable.
+						</td>
+					</tr>
+				</table>
+			</p>
+
+			<p>
+				The constructor initializes the <b>Trilinear</b> instance with the provided positions and values. If the <b>coefficients</b> parameter is not provided, it will be calculated internally.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Static Properties</h3>
+		
+		<section class="part">       
+			<div class="code">Trilinear.variables: Number</div>
+			<p>The number of free variables. Since <b>Trilinear</b> is a trinomial - it is 3.</p>
+		</section>
+
+		<section class="part">
+			<div class="code">Trilinear.degree: Number</div>
+			<p>The maximum degree of the polynomial. Returns 1.
+		</section>
+	</section>
+
+	<section>
+		<h3>Static Methods</h3>
+		<section class="part">
+			<div class="code">Trilinear.coefficients( <b>x0, y0, z0, x1, y1, z1, v000, v100, v010, v110, v001, v101, v011, v111</b>: Number, <b>output</b>: Array ): Array</div>
+
+			<p>
+				The <i>Bilinear.coefficients()</i> static method determines the coefficients of the bilinear equation that passes through the two points (<b>x0</b>, <b>v0</b>, <b>z0</b>) and (<b>x1</b>, <b>v1</b>, <b>z1</b>). It takes five arguments:
+			</p>
+			<p>
+				<table>
+					<tr>
+						<td><b>x0</b>:</td>
+						<td>The x-coordinate of the points on the left side.</td>
+					</tr>
+					<tr>
+						<td><b>y0</b>:</td>
+						<td>The y-coordinate of the points on the upper side.</td>
+					</tr>
+					<tr>
+						<td><b>z0</b>:</td>
+						<td>The z-coordinate of the points on the front side.</td>
+					</tr>
+					<tr>
+						<td><b>x1</b>:</td>
+						<td>The x-coordinate of the points on the right side.</td>
+					</tr>
+					<tr>
+						<td><b>y1</b>:</td>
+						<td>The y-coordinate of the points on the lower side.</td>
+					</tr>
+					<tr>
+						<td><b>z1</b>:</td>
+						<td>The z-coordinate of the points on the back side.</td>
+					</tr>
+					<tr>
+						<td><b>v000</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v100</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v010</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v110</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v001</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v101</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v011</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v111</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>output</b>:</td>
+						<td>
+							(Optional) An optional array to store the calculated coefficients. If not provided, a new array will be created.
+						</td>
+					</tr>
+				</table>
+			</p>
+			<p>
+				The method returns an array containing the two coefficients of the trilinear equation: [c<sub>000</sub>, c<sub>100</sub>, c<sub>010</sub>, c<sub>110</sub>, c<sub>001</sub>, c<sub>101</sub>, c<sub>011</sub>, c<sub>111</sub>], where the polynomial is expressed as v = c<sub>000</sub> + c<sub>100</sub>x + c<sub>010</sub>y + c<sub>110</sub>xy + c<sub>001</sub>z + c<sub>101</sub>xz + c<sub>011</sub>yz + c<sub>111</sub>xyz.
+			</p>
+		</section>
+		
+		<section class="part">
+			<div class="code">Trilinear.evaluate( <b>x0, y0, z0, x1, y1, z1, v000, v100, v010, v110, v001, v101, v011, v111</b>: Number ): Number</div>
+
+			<p>
+				The <b><i>Trilinear.evaluate()</i></b> static method evaluates the trilinear equation that passes through the two points (<b>x0</b>, <b>v0</b>) and (<b>x1</b>, <b>v1</b>) for a given input value <b>x</b>. It takes four arguments:
+			</p>
+			<p>
+				<table>
+					<tr>
+						<td><b>x0</b>:</td>
+						<td>The x-coordinate of the points on the left side.</td>
+					</tr>
+					<tr>
+						<td><b>y0</b>:</td>
+						<td>The y-coordinate of the points on the upper side.</td>
+					</tr>
+					<tr>
+						<td><b>z0</b>:</td>
+						<td>The z-coordinate of the points on the front side.</td>
+					</tr>
+					<tr>
+						<td><b>x1</b>:</td>
+						<td>The x-coordinate of the points on the right side.</td>
+					</tr>
+					<tr>
+						<td><b>y1</b>:</td>
+						<td>The y-coordinate of the points on the lower side.</td>
+					</tr>
+					<tr>
+						<td><b>z1</b>:</td>
+						<td>The z-coordinate of the points on the back side.</td>
+					</tr>
+					<tr>
+						<td><b>v000</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v100</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v010</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v110</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v001</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v101</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v011</b>:</td>
+						<td>The value of point (x<sub>0</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
+					</tr>
+					<tr>
+						<td><b>v111</b>:</td>
+						<td>The value of point (x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
+					</tr>
+				</table>
+			</p>
+			<p>
+				The method returns the calculated y-value corresponding to the input value <b>x</b> based on the trilinear equation defined by the provided positions and corresponding values.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Instance Properties</h3>
+			
+		<section class="part">
+			<div class="code">.positions: Array</div>
+
+			<p>
+				The <i>positions</i> property of the <i>Trilinear</i> instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length 4 containing the numerical positions. The structure of the <i>positions</i> array is [x0, y0, z0, x1, y1, z1].
+			</p>
+
+			<p>
+				The <i>positions</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal positions of the <i>Bilinear</i> instance. This allows for dynamic modification of the interpolation range.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.values: Array</div>
+
+			<p>
+				The <i>values</i> property of the <i>Trilinear</i> instance represents the array of values corresponding to the known data points. It is accessible using dot notation and returns an array of length 8 containing the numerical values. The structure of the <i>values</i> array is [v000, v100, v010, v110, v001, v101, v011, v111].
+			</p>
+
+			<p>
+				The <i>values</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal values of the <i>Trilinear</i> instance. This allows for dynamic modification of the interpolation range.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.coefficients: Array</div>
+
+			<p>
+				The <i>coefficients</i> property of the <i>Trilinear</i> instance represents the array of coefficients used internally for evaluating interpolated values. It is accessible using dot notation and returns an array of length 8 containing the numerical coefficients. The structure of the <i>coefficients</i> array is [c000, c100, c010, c110, c001, c101, c011, c111], where the first index corresponds to the exponent of the x-variable, the second index corresponds to the exponent of the y-variable and the third index corresponds to the exponent of the z-variable
+			</p>
+
+			<p>
+				The <i>coefficients</i> property is mutable. To recompute the internal coefficients, you need to call the <i>update()</i> method on the <i>Trilinear</i> instance.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Instance Methods</h3>
+		
+		<section class="part">
+			<div class="code">.update(): Trilinear</div>
+			<p>The <i>update()</i> method recalculates the coefficients. This should be used after performing a translation, scaling or when adjusting either the positions or values of the instance.</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.translate( <b>tX, tY, tZ</b>: Number ): Trilinear</div>
+
+			<p>
+				The <i>translate()</i> method translates the positions of the <i>Trilinear</i> instance by <b>tX</b>, <b>tY</b> and <b>tZ</b>. It returns the instance itself.
+			</p>
+			<p>
+			<table>
+				<tr>
+					<td><b>tX</b>:</td>
+					<td>The value by which to translate the X-coordinates.</td>
+				</tr>
+				<tr>
+					<td><b>tY</b>:</td>
+					<td>The value by which to translate the y-coordinates.</td>
+				</tr>
+				<tr>
+					<td><b>tZ</b>:</td>
+					<td>The value by which to translate the z-coordinates.</td>
+				</tr>
+			</table>
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.scale( <b>sX, sY, sZ, ?aX, ?aY, ?aZ</b>: Number ): Bilinear</div>
+
+			<p>
+				The <i>scale()</i> method scales the positions of the <i>Trilinear</i> instance around an optional anchor point (<b>aX</b>, <b>aY</b>, <b>aZ</b>) by a scaling vector (<b>sX</b>, <b>sY</b>, <b>sZ</b>). If no anchor point is provided, the scaling is done with respect to the origin (0, 0, 0). It returns the instance itself, allowing for chaining operations.
+			</p>
+			<p>
+			<table>
+				<tr>
+					<td><b>sX</b>:</td>
+					<td>The scaling factor to apply to the x-coordinates.</td>
+				</tr>
+				<tr>
+					<td><b>sY</b>:</td>
+					<td>The scaling factor to apply to the y-coordinates.</td>
+				</tr>
+				<tr>
+					<td><b>sZ</b>:</td>
+					<td>The scaling factor to apply to the y-coordinates.</td>
+				</tr>
+				<tr>
+					<td><b>aX</b>:</td>
+					<td>An (optional) value around which to scale the x-coordinates. If omitted, the origin 0 is used.</td>
+				</tr>
+				<tr>
+					<td><b>aY</b>:</td>
+					<td>An (optional) value around which to scale the y-coordinates. If omitted, the origin 0 is used.</td>
+				</tr>
+				<tr>
+					<td><b>aZ</b>:</td>
+					<td>An (optional) value around which to scale the z-coordinates. If omitted, the origin 0 is used.</td>
+				</tr>
+			</table>
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.evaluate( <b>x, y, z</b>: Number ): Number</div>
+			<p>
+		    	The <i>evaluate()</i> method evaluates the trilinear equation for a given input values <b>x</b>, <b>y</b> and <b>z</b>. It returns the corresponding evaluated value based on the trilinear relationship defined by the instance's positions and values.
+			</p>
+			<p>
+				<table>
+					<tr>
+						<td><b>x</b>:</td>
+						<td>The x-coordinate for which to evaluate the trilinear equation.</td>
+					</tr>
+					<tr>
+						<td><b>y</b>:</td>
+						<td>The y-coordinate for which to evaluate the trilinear equation.</td>
+					</tr>
+					<tr>
+						<td><b>z</b>:</td>
+						<td>The z-coordinate for which to evaluate the trilinear equation.</td>
+					</tr>
+				</table>
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.step( <b>startX, startY, startZ, endX, endY, endZ, sizeX, sizeY, sizeZ</b>: Number ) : Array</div>
+			<p>
+				The <i>step()</i> method evaluates the linear polynomial at a specified number of equally spaced intervals between a given the starting values <b>startX</b>, <b>startY</b> and <b>startZ</b> and the ending values <b>endX</b>, <b>endY</b> and <b>endZ</b>. The number of intervals is determined by the step-sizes <b>sizeX</b>, <b>sizeY</b> and <b>sizeZ</b>, which specifies the distance between each evaluation point. It returns an array of interpolated values corresponding to the evaluation points.
+			</p>
+			<p>
+				<table>
+					<tr>
+						<td><b>startX</b>:</td>
+						<td>The starting x-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>startY</b>:</td>
+						<td>The starting y-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>startZ</b>:</td>
+						<td>The starting z-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>endY</b>:</td>
+						<td>The ending x-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>endY</b>:</td>
+						<td>The ending y-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>endZ</b>:</td>
+						<td>The ending z-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>sizeX</b>:</td>
+						<td>The step-size in the x direction.</td>
+					</tr>
+					<tr>
+						<td><b>sizeY</b>:</td>
+						<td>The step-size in the y direction.</td>
+					</tr>
+					<tr>
+						<td><b>sizeZ</b>:</td>
+						<td>The step-size in the z direction.</td>
+					</tr>
+				</table>
+			</p>
+		</section>
+		
+		<section class="part">   
+			<div class="code">.segment( <b>startX, startY, startZ, endX, endY, endZ, segmentsX, segmentsY, segmentsZ</b>: Number ): Array</div>
+			<p>
+				This method calculates interpolated values between specified start and end points, dividing the interval into a given number of segments. It takes six parameters:
+			</p>
+			<p>
+				<table>
+					<tr>
+						<td><b>startX</b>:</td>
+						<td>The starting x-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>startY</b>:</td>
+						<td>The starting y-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>startZ</b>:</td>
+						<td>The starting z-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>endY</b>:</td>
+						<td>The ending x-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>endY</b>:</td>
+						<td>The ending y-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>endZ</b>:</td>
+						<td>The ending z-coordinate of the interpolation range.</td>
+					</tr>
+					<tr>
+						<td><b>segmentsX</b>:</td>
+						<td>The number of segments into which the range should be divided along the x direction.</td>
+					</tr>
+					<tr>
+						<td><b>segmentsY</b>:</td>
+						<td>The number of segments into which the range should be divided along the y direction.</td>
+					</tr>
+					<tr>
+						<td><b>segmentsZ</b>:</td>
+						<td>The number of segments into which the range should be divided along the z direction.</td>
+					</tr>
+				</table>
+			</p>
+			<p>
+				The method returns an array of interpolated values, with each element corresponding to the value at a specific segment point. It utilizes trilinear interpolation to estimate the values within each segment.
+			</p>
+		</section>
+		<section class="part">
+			<div class="code">.apply( <b>positions</b>: Array ): Array</div>
+			<p>
+				The <i>apply()</i> method evaluates the bilinear polynomial for each value in a provided array of positions <b>positions</b>. It returns an array of corresponding values for each position. The array of positions should be formatted as [x0, y0, z0, x1, y1, z1, x2, y2, z2, ...], where (x0, y0, z0), (x1, y1, z1), (x2, y2, z2), etc. are the points at which to evaluate the bilinear polynomial.
+			</p>
+			<p>
+			<table>
+				<tr>
+					<td><b>positions</b>:</td>
+					<td>An array of positions at which to evaluate the linear polynomial. The array of positions should be formatted as [x0, y0, z0, x1, y1, z1, x2, y2, z2, ...], where (x0, y0, z0), (x1, y1, z1), (x2, y2, z2), etc. are the points.</td>
+				</tr>
+			</table>
+			</p>
+		</section>
+	</section>
+</div>
