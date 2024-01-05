@@ -346,6 +346,8 @@ export class Tricubic extends Evaluator {
 
 	) {
 
+		output = !output ? new values.constructor( dimension ) : output;
+
 		const x = position[ 0 ];
 		const y = position[ 1 ];
 		const z = position[ 2 ];
@@ -378,72 +380,76 @@ export class Tricubic extends Evaluator {
 		const rZ2 = (z-z0)*(z-z1)*(z-z3)/((z2-z0)*(z2-z1)*(z2-z3));
 		const rZ3 = (z-z0)*(z-z1)*(z-z2)/((z3-z0)*(z3-z1)*(z3-z2));
 
-		for ( let i = 0, index = 0; i < dimension; i ++ ) {
+		const d = dimension;
 
-			const v000 = values[ index ++ ];
-			const v100 = values[ index ++ ];
-			const v200 = values[ index ++ ];
-			const v300 = values[ index ++ ];
-			const v010 = values[ index ++ ];
-			const v110 = values[ index ++ ];
-			const v210 = values[ index ++ ];
-			const v310 = values[ index ++ ];
-			const v020 = values[ index ++ ];
-			const v120 = values[ index ++ ];
-			const v220 = values[ index ++ ];
-			const v320 = values[ index ++ ];
-			const v030 = values[ index ++ ];
-			const v130 = values[ index ++ ];
-			const v230 = values[ index ++ ];
-			const v330 = values[ index ++ ];
-			const v001 = values[ index ++ ];
-			const v101 = values[ index ++ ];
-			const v201 = values[ index ++ ];
-			const v301 = values[ index ++ ];
-			const v011 = values[ index ++ ];
-			const v111 = values[ index ++ ];
-			const v211 = values[ index ++ ];
-			const v311 = values[ index ++ ];
-			const v021 = values[ index ++ ];
-			const v121 = values[ index ++ ];
-			const v221 = values[ index ++ ];
-			const v321 = values[ index ++ ];
-			const v031 = values[ index ++ ];
-			const v131 = values[ index ++ ];
-			const v231 = values[ index ++ ];
-			const v331 = values[ index ++ ];
-			const v002 = values[ index ++ ];
-			const v102 = values[ index ++ ];
-			const v202 = values[ index ++ ];
-			const v302 = values[ index ++ ];
-			const v012 = values[ index ++ ];
-			const v112 = values[ index ++ ];
-			const v212 = values[ index ++ ];
-			const v312 = values[ index ++ ];
-			const v022 = values[ index ++ ];
-			const v122 = values[ index ++ ];
-			const v222 = values[ index ++ ];
-			const v322 = values[ index ++ ];
-			const v032 = values[ index ++ ];
-			const v132 = values[ index ++ ];
-			const v232 = values[ index ++ ];
-			const v332 = values[ index ++ ];
-			const v003 = values[ index ++ ];
-			const v103 = values[ index ++ ];
-			const v203 = values[ index ++ ];
-			const v303 = values[ index ++ ];
-			const v013 = values[ index ++ ];
-			const v113 = values[ index ++ ];
-			const v213 = values[ index ++ ];
-			const v313 = values[ index ++ ];
-			const v023 = values[ index ++ ];
-			const v123 = values[ index ++ ];
-			const v223 = values[ index ++ ];
-			const v323 = values[ index ++ ];
-			const v033 = values[ index ++ ];
-			const v133 = values[ index ++ ];
-			const v233 = values[ index ++ ];
-			const v333 = values[ index ++ ];
+		for ( let i = 0; i < d; i ++ ) {
+
+			let k = i;
+
+			const v000 = values[ k ];
+			const v100 = values[ k += d ];
+			const v200 = values[ k += d ];
+			const v300 = values[ k += d ];
+			const v010 = values[ k += d ];
+			const v110 = values[ k += d ];
+			const v210 = values[ k += d ];
+			const v310 = values[ k += d ];
+			const v020 = values[ k += d ];
+			const v120 = values[ k += d ];
+			const v220 = values[ k += d ];
+			const v320 = values[ k += d ];
+			const v030 = values[ k += d ];
+			const v130 = values[ k += d ];
+			const v230 = values[ k += d ];
+			const v330 = values[ k += d ];
+			const v001 = values[ k += d ];
+			const v101 = values[ k += d ];
+			const v201 = values[ k += d ];
+			const v301 = values[ k += d ];
+			const v011 = values[ k += d ];
+			const v111 = values[ k += d ];
+			const v211 = values[ k += d ];
+			const v311 = values[ k += d ];
+			const v021 = values[ k += d ];
+			const v121 = values[ k += d ];
+			const v221 = values[ k += d ];
+			const v321 = values[ k += d ];
+			const v031 = values[ k += d ];
+			const v131 = values[ k += d ];
+			const v231 = values[ k += d ];
+			const v331 = values[ k += d ];
+			const v002 = values[ k += d ];
+			const v102 = values[ k += d ];
+			const v202 = values[ k += d ];
+			const v302 = values[ k += d ];
+			const v012 = values[ k += d ];
+			const v112 = values[ k += d ];
+			const v212 = values[ k += d ];
+			const v312 = values[ k += d ];
+			const v022 = values[ k += d ];
+			const v122 = values[ k += d ];
+			const v222 = values[ k += d ];
+			const v322 = values[ k += d ];
+			const v032 = values[ k += d ];
+			const v132 = values[ k += d ];
+			const v232 = values[ k += d ];
+			const v332 = values[ k += d ];
+			const v003 = values[ k += d ];
+			const v103 = values[ k += d ];
+			const v203 = values[ k += d ];
+			const v303 = values[ k += d ];
+			const v013 = values[ k += d ];
+			const v113 = values[ k += d ];
+			const v213 = values[ k += d ];
+			const v313 = values[ k += d ];
+			const v023 = values[ k += d ];
+			const v123 = values[ k += d ];
+			const v223 = values[ k += d ];
+			const v323 = values[ k += d ];
+			const v033 = values[ k += d ];
+			const v133 = values[ k += d ];
+			const v233 = values[ k += d ];
+			const v333 = values[ k += d ];
 
 			const v00 = v000*rX0 + v100*rX1 + v200*rX2 + v300*rX3;
 			const v10 = v010*rX0 + v110*rX1 + v210*rX2 + v310*rX3;
@@ -474,7 +480,8 @@ export class Tricubic extends Evaluator {
 
 		}
 
-		return output;
+		if ( dimension === 1 ) return output[ outputOffset ];
+		else return output;
 
 	};
 

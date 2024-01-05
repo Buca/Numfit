@@ -147,7 +147,7 @@ export default class Evaluator {
 
 		}
 
-		if ( dimension === 1 && outputNotProvided ) return output[ 0 ];
+		if ( dimension === 1 && outputNotProvided ) return output[ outputOffset ];
 		else return output;
 
 
@@ -192,7 +192,7 @@ export default class Evaluator {
 			}
 
 			if ( handler ) handler( input, this.evaluate( input, 0, output, 0 ) );
-			else this.evaluate( input, 0, output, i )
+			else this.evaluate( input, 0, output, i );
 
 		}
 

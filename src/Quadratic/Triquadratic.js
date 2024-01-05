@@ -196,58 +196,69 @@ export class Triquadratic extends Evaluator {
 
 	static evaluate(
 
-		// Positions of the values:
-		x0, y0, z0,
-		x1, y1, z1,
-		x2, y2, z2,
-
-		// Values at the positions:
-		v000, v100, v200,
-		v010, v110, v210,
-		v020, v120, v220,
-
-		v001, v101, v201,
-		v011, v111, v211,
-		v021, v121, v221,
-
-		v002, v102, v202,
-		v012, v112, v212,
-		v022, v122, v222,
-
-		// Position to be evaluated:
-		x, y, z
+		positions, values, dimension = 1,
+		position,
+		output, outputOffset = 0
 
 	) {
+
+		output = !output ? new values.constructor( dimension ) : output; 
+
+		const x = position[ 0 ];
+		const y = position[ 1 ];
+		const z = position[ 2 ];
+
+		const x0 = positions[ 0 ];
+		const y0 = positions[ 1 ];
+		const z0 = positions[ 2 ];
+		const x1 = positions[ 3 ];
+		const y1 = positions[ 4 ];
+		const z1 = positions[ 5 ];
+		const x2 = positions[ 6 ];
+		const y2 = positions[ 7 ];
+		const z2 = positions[ 8 ];
 
 		const rX0 = (x-x1)*(x-x2)/((x0-x1)*(x0-x2));
 		const rX1 = (x-x0)*(x-x2)/((x1-x0)*(x1-x2));
 		const rX2 = (x-x0)*(x-x1)/((x2-x0)*(x2-x1));
 
-		const v00 = v000*rX0 + v100*rX1 + v200*rX2;
-		const v10 = v010*rX0 + v110*rX1 + v210*rX2;
-		const v20 = v020*rX0 + v120*rX1 + v220*rX2;
-
-		const v01 = v001*rX0 + v101*rX1 + v201*rX2;
-		const v11 = v011*rX0 + v111*rX1 + v211*rX2;
-		const v21 = v021*rX0 + v121*rX1 + v221*rX2;
-		
-		const v02 = v002*rX0 + v102*rX1 + v202*rX2;
-		const v12 = v012*rX0 + v112*rX1 + v212*rX2;
-		const v22 = v022*rX0 + v122*rX1 + v222*rX2;
-
 		const rY0 = (y-y1)*(y-y2)/((y0-y1)*(y0-y2));
 		const rY1 = (y-y0)*(y-y2)/((y1-y0)*(y1-y2));
 		const rY2 = (y-y0)*(y-y1)/((y2-y0)*(y2-y1));
-
-		const v0 = v00*rY0 + v10*rY1 + v20*rY2;
-		const v1 = v01*rY0 + v11*rY1 + v21*rY2;
-		const v2 = v02*rY0 + v12*rY1 + v22*rY2;
 
 		const rZ0 = (z-z1)*(z-z2)/((z0-z1)*(z0-z2));
 		const rZ1 = (z-z0)*(z-z2)/((z1-z0)*(z1-z2));
 		const rZ2 = (z-z0)*(z-z1)/((z2-z0)*(z2-z1));
 
-		return v0*rZ0 + v1*rZ1 + v2*rZ2;
+		const v = values;
+		const d = dimension;
+
+		for ( let i = 0; i < d; i ++ ) {
+
+			let k = i;
+
+			const v00 = 	 v[ k ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+			const v10 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+			const v20 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+
+			const v01 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+			const v11 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+			const v21 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+			
+			const v02 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+			const v12 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+			const v22 = v[ k += d ]*rX0 + v[ k += d ]*rX1 + v[ k += d ]*rX2;
+
+			const v0 = v00*rY0 + v10*rY1 + v20*rY2;
+			const v1 = v01*rY0 + v11*rY1 + v21*rY2;
+			const v2 = v02*rY0 + v12*rY1 + v22*rY2;
+
+			output[ outputOffset + i ] = v0*rZ0 + v1*rZ1 + v2*rZ2;
+
+		}
+
+		if ( dimension === 1 ) return output[ outputOffset ];
+		else return output;
 
 	};
 

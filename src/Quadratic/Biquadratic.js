@@ -7,25 +7,19 @@ export class Biquadratic extends Evaluator {
 
 	static evaluate(
 
-		x0, y0, 
-		x1, y1, 
-		x2, y2, 
-		
-		w00, w10, w20, 
-		w01, w11, w21, 
-		w02, w12, w22, 
-		
-		x, y 
+		positions, values, dimension = 1,
+		position,
+		output, outputOffset = 0
 	
 	) {
-
-		const dX0 = x - x0;
-		const dX1 = x - x1;
-		const dX2 = x - x2;
 
 		const dX01 = x0 - x1;
 		const dX02 = x0 - x2;
 		const dX12 = x1 - x2;
+
+		const dX0 = x - x0;
+		const dX1 = x - x1;
+		const dX2 = x - x2;
 
 		const k0 = (dX1*dX2)/(d01*d02);
 		const k1 = -(dX1*dX2)/(d01*d02);

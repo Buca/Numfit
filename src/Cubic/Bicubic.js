@@ -112,54 +112,56 @@ export class Bicubic extends Evaluator {
 
 		const r = new Float32Array( 16 );
 
-		for ( let i = 0, index = 0; i < dimension; i ++ ) {
+		const d = dimension;
+
+		for ( let i = 0, j = 0; i < d; i ++ ) {
 
 			let k = i;
 
 			const v00 = values[ k ];
-			const v10 = values[ k += dimension ];
-			const v20 = values[ k += dimension ];
-			const v30 = values[ k += dimension ];
+			const v10 = values[ k += d ];
+			const v20 = values[ k += d ];
+			const v30 = values[ k += d ];
 
-			const v01 = values[ k += dimension ];
-			const v11 = values[ k += dimension ];
-			const v21 = values[ k += dimension ];
-			const v31 = values[ k += dimension ];
+			const v01 = values[ k += d ];
+			const v11 = values[ k += d ];
+			const v21 = values[ k += d ];
+			const v31 = values[ k += d ];
 
-			const v02 = values[ k += dimension ];
-			const v12 = values[ k += dimension ];
-			const v22 = values[ k += dimension ];
-			const v32 = values[ k += dimension ];
+			const v02 = values[ k += d ];
+			const v12 = values[ k += d ];
+			const v22 = values[ k += d ];
+			const v32 = values[ k += d ];
 
-			const v03 = values[ k += dimension ];
-			const v13 = values[ k += dimension ];
-			const v23 = values[ k += dimension ];
-			const v33 = values[ k += dimension ];
+			const v03 = values[ k += d ];
+			const v13 = values[ k += d ];
+			const v23 = values[ k += d ];
+			const v33 = values[ k += d ];
 
 			r[  0 ] = v00*q0*p0; r[  1 ] = v10*q1*p0; r[  2 ] = v20*q2*p0; r[  3 ] = v30*q3*p0;
 			r[  4 ] = v01*q0*p1; r[  5 ] = v11*q1*p1; r[  6 ] = v21*q2*p1; r[  7 ] = v31*q3*p1;
 			r[  8 ] = v02*q0*p2; r[  9 ] = v12*q1*p2; r[ 10 ] = v22*q2*p2; r[ 11 ] = v32*q3*p2;
 			r[ 12 ] = v03*q0*p3; r[ 13 ] = v13*q1*p3; r[ 14 ] = v23*q2*p3; r[ 15 ] = v33*q3*p3;
 
-			output[ outputOffset + (index ++) ] = g( hX0, r, hY0 ); 
-			output[ outputOffset + (index ++) ] = g( hX1, r, hY0 );
-			output[ outputOffset + (index ++) ] = g( hX2, r, hY0 );
-			output[ outputOffset + (index ++) ] = g( hX3, r, hY0 );
+			output[ outputOffset + j ++ ] = g( hX0, r, hY0 ); 
+			output[ outputOffset + j ++ ] = g( hX1, r, hY0 );
+			output[ outputOffset + j ++ ] = g( hX2, r, hY0 );
+			output[ outputOffset + j ++ ] = g( hX3, r, hY0 );
 
-			output[ outputOffset + (index ++) ] = g( hX0, r, hY1 );
-			output[ outputOffset + (index ++) ] = g( hX1, r, hY1 );
-			output[ outputOffset + (index ++) ] = g( hX2, r, hY1 );
-			output[ outputOffset + (index ++) ] = g( hX3, r, hY1 );
+			output[ outputOffset + j ++ ] = g( hX0, r, hY1 );
+			output[ outputOffset + j ++ ] = g( hX1, r, hY1 );
+			output[ outputOffset + j ++ ] = g( hX2, r, hY1 );
+			output[ outputOffset + j ++ ] = g( hX3, r, hY1 );
 			
-			output[ outputOffset + (index ++) ] = g( hX0, r, hY2 );
-			output[ outputOffset + (index ++) ] = g( hX1, r, hY2 );
-			output[ outputOffset + (index ++) ] = g( hX2, r, hY2 );
-			output[ outputOffset + (index ++) ] = g( hX3, r, hY2 );
+			output[ outputOffset + j ++ ] = g( hX0, r, hY2 );
+			output[ outputOffset + j ++ ] = g( hX1, r, hY2 );
+			output[ outputOffset + j ++ ] = g( hX2, r, hY2 );
+			output[ outputOffset + j ++ ] = g( hX3, r, hY2 );
 			
-			output[ outputOffset + (index ++) ] = g( hX0, r, hY3 );
-			output[ outputOffset + (index ++) ] = g( hX1, r, hY3 );
-			output[ outputOffset + (index ++) ] = g( hX2, r, hY3 );
-			output[ outputOffset + (index ++) ] = g( hX3, r, hY3 );
+			output[ outputOffset + j ++ ] = g( hX0, r, hY3 );
+			output[ outputOffset + j ++ ] = g( hX1, r, hY3 );
+			output[ outputOffset + j ++ ] = g( hX2, r, hY3 );
+			output[ outputOffset + j ++ ] = g( hX3, r, hY3 );
 
 		}
 

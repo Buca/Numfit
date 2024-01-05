@@ -43,6 +43,8 @@ export class Linear extends Evaluator {
 
 	) {
 
+		const outputNotDefined = !output;
+
 		if ( !output ) output = new values.constructor( dimension );
 
 		const p0 = positions[ 0 ];
@@ -65,7 +67,8 @@ export class Linear extends Evaluator {
 
 		}
 
-		return output;
+		if ( dimension === 1 ) output[ outputOffset ];
+		else return output;
 
 	};
 

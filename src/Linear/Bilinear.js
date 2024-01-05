@@ -18,11 +18,12 @@ export class Bilinear extends Evaluator {
 		const y0 = positions[ 1 ];
 		const x1 = positions[ 2 ];
 		const y1 = positions[ 3 ];
+
 		const inv = 1 / ((x1 - x0)*(y1 - y0));
 
-		let index = 0;
+		const d = dimension;
 
-		for ( let i = 0; i < dimension; i ++ ) {
+		for ( let i = 0, index = 0; i < dimension; i ++ ) {
 
 			let k = i;
 
@@ -31,10 +32,10 @@ export class Bilinear extends Evaluator {
 			const v10 = values[ k += dimension ];
 			const v11 = values[ k += dimension ];
 
-			output[ index ++ ] = (x1*y1*v00 - x1*y0*v10 - x0*y1*v01 + x0*y0*v11)*inv;
-			output[ index ++ ] = (-y1*v00 + y0*v10 + y1*v01 - y0*v11)*inv;
-			output[ index ++ ] = (-x1*v00 + x1*v10 + x0*v01 - x0*v11)*inv;
-			output[ index ++ ] = (v00 - v10 - v01 + v11)*inv;
+			output[ outputOffset + index ++ ] = (x1*y1*v00 - x1*y0*v10 - x0*y1*v01 + x0*y0*v11)*inv;
+			output[ outputOffset + index ++ ] = (-y1*v00 + y0*v10 + y1*v01 - y0*v11)*inv;
+			output[ outputOffset + index ++ ] = (-x1*v00 + x1*v10 + x0*v01 - x0*v11)*inv;
+			output[ outputOffset + index ++ ] = (v00 - v10 - v01 + v11)*inv;
 
 		}
 
@@ -65,14 +66,16 @@ export class Bilinear extends Evaluator {
 		const q0 = (y - y1)/(y0-y1);
 		const q1 = (y - y0)/(y1-y0);
 
-		let index = 0;
+		const d = dimension;
 
-		for ( let i = 0; i < dimension; i ++ ) {
+		for ( let i = 0, index = 0; i < dimension; i ++ ) {
 
-			const v00 = values[ index ++ ];
-			const v10 = values[ index ++ ];
-			const v01 = values[ index ++ ];
-			const v11 = values[ index ++ ];
+			let k = i;
+
+			const v00 = values[ k ];
+			const v10 = values[ k += d ];
+			const v01 = values[ k += d ];
+			const v11 = values[ k += d ];
 
 			const v0 = v00*k0 + v10*k1;
 			const v1 = v01*k0 + v11*k1; 	
@@ -81,17 +84,12 @@ export class Bilinear extends Evaluator {
 
 		}
 
-		return output;
+		if ( dimension === 1 ) output[ outputOffset ];
+		else return output;
  
 	};
 
-	constructor( 
-
-		positions = new Float32Array( 4 ), 
-		values = new Float32Array( 4 ),
-		dimension = 1
-
-	) {
+	constructor( positions, values, dimension = 1 ) {
 
 		super( positions, values, dimension );
 

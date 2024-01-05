@@ -61,6 +61,7 @@ export class Trilinear extends Evaluator {
 			
 		}
 
+		if ( dimension === 1 ) return output[ 0 ];
 		return output;
 
 	};

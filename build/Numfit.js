@@ -83,7 +83,7 @@
         }
       }
       if (dimension === 1 && outputNotProvided)
-        return output[0];
+        return output[outputOffset];
       else
         return output;
     }
@@ -183,6 +183,7 @@
       return output;
     }
     static evaluate(positions, values, dimension = 1, position, output, outputOffset = 0) {
+      const outputNotDefined = !output;
       if (!output)
         output = new values.constructor(dimension);
       const p0 = positions[0];
@@ -197,7 +198,10 @@
         const x4 = position[i];
         output[i + outputOffset] = c1 * x4 + c0;
       }
-      return output;
+      if (dimension === 1)
+        output[outputOffset];
+      else
+        return output;
     }
     constructor(positions, values, dimension = 1) {
       super(positions, values, dimension);
@@ -243,17 +247,17 @@
       const x12 = positions[2];
       const y12 = positions[3];
       const inv = 1 / ((x12 - x02) * (y12 - y02));
-      let index = 0;
-      for (let i = 0; i < dimension; i++) {
+      const d = dimension;
+      for (let i = 0, index = 0; i < dimension; i++) {
         let k = i;
         const v002 = values[k];
         const v012 = values[k += dimension];
         const v102 = values[k += dimension];
         const v112 = values[k += dimension];
-        output[index++] = (x12 * y12 * v002 - x12 * y02 * v102 - x02 * y12 * v012 + x02 * y02 * v112) * inv;
-        output[index++] = (-y12 * v002 + y02 * v102 + y12 * v012 - y02 * v112) * inv;
-        output[index++] = (-x12 * v002 + x12 * v102 + x02 * v012 - x02 * v112) * inv;
-        output[index++] = (v002 - v102 - v012 + v112) * inv;
+        output[outputOffset + index++] = (x12 * y12 * v002 - x12 * y02 * v102 - x02 * y12 * v012 + x02 * y02 * v112) * inv;
+        output[outputOffset + index++] = (-y12 * v002 + y02 * v102 + y12 * v012 - y02 * v112) * inv;
+        output[outputOffset + index++] = (-x12 * v002 + x12 * v102 + x02 * v012 - x02 * v112) * inv;
+        output[outputOffset + index++] = (v002 - v102 - v012 + v112) * inv;
       }
       return output;
     }
@@ -270,19 +274,23 @@
       const k1 = (x4 - x02) / (x12 - x02);
       const q0 = (y4 - y12) / (y02 - y12);
       const q1 = (y4 - y02) / (y12 - y02);
-      let index = 0;
-      for (let i = 0; i < dimension; i++) {
-        const v002 = values[index++];
-        const v102 = values[index++];
-        const v012 = values[index++];
-        const v112 = values[index++];
+      const d = dimension;
+      for (let i = 0, index = 0; i < dimension; i++) {
+        let k = i;
+        const v002 = values[k];
+        const v102 = values[k += d];
+        const v012 = values[k += d];
+        const v112 = values[k += d];
         const v0 = v002 * k0 + v102 * k1;
         const v1 = v012 * k0 + v112 * k1;
         output[outputOffset + i] = v0 * q0 + v1 * q1;
       }
-      return output;
+      if (dimension === 1)
+        output[outputOffset];
+      else
+        return output;
     }
-    constructor(positions = new Float32Array(4), values = new Float32Array(4), dimension = 1) {
+    constructor(positions, values, dimension = 1) {
       super(positions, values, dimension);
     }
     /*
@@ -357,6 +365,8 @@
         const v1 = v012 * dY0 + v112 * dY1;
         output[outputOffset + index2++] = v0 * dZ0 + v1 * dZ1;
       }
+      if (dimension === 1)
+        return output[0];
       return output;
     }
     static coefficients(positions, values, dimension = 1, position, output, outputOffset = 0) {
@@ -436,7 +446,8 @@
       const r0 = 1 / ((x02 - x12) * (x02 - x22));
       const r1 = 1 / ((x12 - x02) * (x12 - x22));
       const r2 = 1 / ((x22 - x02) * (x22 - x12));
-      for (let i = 0, j = 0, d = dimension; i < d; i++) {
+      const d = dimension;
+      for (let i = 0, j = 0; i < d; i++) {
         let k = i;
         const v0 = values[k] * r0;
         const v1 = values[k += d] * r1;
@@ -450,14 +461,32 @@
       }
       return output;
     }
-    static evaluate(x02, x12, x22, v0, v1, v2, x4) {
+    static evaluate(positions, values, dimension = 1, position, output, outputOffset = 0) {
+      output = !output ? new values.constructor(dimension) : output;
+      const x4 = typeof position === "number" ? position : position[0];
+      const x02 = positions[0];
+      const x12 = positions[1];
+      const x22 = positions[2];
       const dX0 = x4 - x02;
       const dX1 = x4 - x12;
       const dX2 = x4 - x22;
-      const dX01 = x02 - x12;
-      const dX02 = x02 - x22;
-      const dX12 = x12 - x22;
-      return dX1 * dX2 / (dX01 * dX02) * v0 - dX0 * dX2 / (dX01 * dX12) * v1 + dX0 * dX1 / (dX01 * dX02) * v2;
+      const dX01 = 1 / (x02 - x12);
+      const dX02 = 1 / (x02 - x22);
+      const dX12 = 1 / (x12 - x22);
+      const r0 = dX1 * dX2 * dX01 * dX02;
+      const r1 = -dX0 * dX2 * dX01 * dX12;
+      const r2 = dX0 * dX1 * dX01 * dX02;
+      for (let i = 0; i < dimension; i++) {
+        let k = i;
+        const v0 = values[k];
+        const v1 = values[k += dimension];
+        const v2 = values[k += dimension];
+        output[outputOffset + i] = r0 * v0 - r1 * v1 + r2 * v2;
+      }
+      if (dimension === 1)
+        return output[outputOffset];
+      else
+        return output;
     }
     constructor(positions, values, dimension = 1) {
       super(positions, values, dimension);
@@ -469,25 +498,25 @@
   var Biquadratic = class extends Evaluator {
     static degree = 2;
     static variables = 2;
-    static evaluate(x02, y02, x12, y12, x22, y22, w00, w10, w20, w01, w11, w21, w02, w12, w22, x4, y4) {
-      const dX0 = x4 - x02;
-      const dX1 = x4 - x12;
-      const dX2 = x4 - x22;
-      const dX01 = x02 - x12;
-      const dX02 = x02 - x22;
-      const dX12 = x12 - x22;
+    static evaluate(positions, values, dimension = 1, position, output, outputOffset = 0) {
+      const dX01 = x0 - x1;
+      const dX02 = x0 - x2;
+      const dX12 = x1 - x2;
+      const dX0 = x - x0;
+      const dX1 = x - x1;
+      const dX2 = x - x2;
       const k0 = dX1 * dX2 / (d01 * d02);
       const k1 = -(dX1 * dX2) / (d01 * d02);
       const k2 = dX1 * dX2 / (d01 * d02);
       const w0 = k0 * w00 - k1 * w10 + k2 * w20;
       const w1 = k0 * w01 - k1 * w11 + k2 * w21;
       const w2 = k0 * w02 - k1 * w12 + k2 * w22;
-      const dY0 = y4 - y02;
-      const dY1 = y4 - y12;
-      const dY2 = y4 - y22;
-      const dY01 = y02 - y12;
-      const dY02 = y02 - y22;
-      const dY12 = y12 - y22;
+      const dY0 = y - y0;
+      const dY1 = y - y1;
+      const dY2 = y - y2;
+      const dY01 = y0 - y1;
+      const dY02 = y0 - y2;
+      const dY12 = y1 - y2;
       return dY1 * dY2 / (dY01 * dY02) * w0 - dY0 * dY2 / (dY01 * dY12) * w1 + dY0 * dY1 / (dY01 * dY02) * w2;
     }
     static coefficients(positions, values, dimension = 1, output, outputOffset = 0) {
@@ -689,29 +718,51 @@
       }
       return output;
     }
-    static evaluate(x02, y02, z0, x12, y12, z1, x22, y22, z2, v000, v100, v200, v010, v110, v210, v020, v120, v220, v001, v101, v201, v011, v111, v211, v021, v121, v221, v002, v102, v202, v012, v112, v212, v022, v122, v222, x4, y4, z) {
+    static evaluate(positions, values, dimension = 1, position, output, outputOffset = 0) {
+      output = !output ? new values.constructor(dimension) : output;
+      const x4 = position[0];
+      const y4 = position[1];
+      const z = position[2];
+      const x02 = positions[0];
+      const y02 = positions[1];
+      const z0 = positions[2];
+      const x12 = positions[3];
+      const y12 = positions[4];
+      const z1 = positions[5];
+      const x22 = positions[6];
+      const y22 = positions[7];
+      const z2 = positions[8];
       const rX0 = (x4 - x12) * (x4 - x22) / ((x02 - x12) * (x02 - x22));
       const rX1 = (x4 - x02) * (x4 - x22) / ((x12 - x02) * (x12 - x22));
       const rX2 = (x4 - x02) * (x4 - x12) / ((x22 - x02) * (x22 - x12));
-      const v003 = v000 * rX0 + v100 * rX1 + v200 * rX2;
-      const v103 = v010 * rX0 + v110 * rX1 + v210 * rX2;
-      const v203 = v020 * rX0 + v120 * rX1 + v220 * rX2;
-      const v013 = v001 * rX0 + v101 * rX1 + v201 * rX2;
-      const v113 = v011 * rX0 + v111 * rX1 + v211 * rX2;
-      const v213 = v021 * rX0 + v121 * rX1 + v221 * rX2;
-      const v023 = v002 * rX0 + v102 * rX1 + v202 * rX2;
-      const v123 = v012 * rX0 + v112 * rX1 + v212 * rX2;
-      const v223 = v022 * rX0 + v122 * rX1 + v222 * rX2;
       const rY0 = (y4 - y12) * (y4 - y22) / ((y02 - y12) * (y02 - y22));
       const rY1 = (y4 - y02) * (y4 - y22) / ((y12 - y02) * (y12 - y22));
       const rY2 = (y4 - y02) * (y4 - y12) / ((y22 - y02) * (y22 - y12));
-      const v0 = v003 * rY0 + v103 * rY1 + v203 * rY2;
-      const v1 = v013 * rY0 + v113 * rY1 + v213 * rY2;
-      const v2 = v023 * rY0 + v123 * rY1 + v223 * rY2;
       const rZ0 = (z - z1) * (z - z2) / ((z0 - z1) * (z0 - z2));
       const rZ1 = (z - z0) * (z - z2) / ((z1 - z0) * (z1 - z2));
       const rZ2 = (z - z0) * (z - z1) / ((z2 - z0) * (z2 - z1));
-      return v0 * rZ0 + v1 * rZ1 + v2 * rZ2;
+      const v = values;
+      const d = dimension;
+      for (let i = 0; i < d; i++) {
+        let k = i;
+        const v002 = v[k] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v102 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v202 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v012 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v112 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v212 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v022 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v122 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v222 = v[k += d] * rX0 + v[k += d] * rX1 + v[k += d] * rX2;
+        const v0 = v002 * rY0 + v102 * rY1 + v202 * rY2;
+        const v1 = v012 * rY0 + v112 * rY1 + v212 * rY2;
+        const v2 = v022 * rY0 + v122 * rY1 + v222 * rY2;
+        output[outputOffset + i] = v0 * rZ0 + v1 * rZ1 + v2 * rZ2;
+      }
+      if (dimension === 1)
+        return output[outputOffset];
+      else
+        return output;
     }
     constructor(positions, values, dimension = 1) {
       super(positions, values, dimension);
@@ -726,6 +777,7 @@
     static evaluate(positions, values, dimension = 1, position, output, outputOffset = 0) {
       if (!output)
         output = new values.constructor(dimension);
+      const x4 = position[0];
       const x02 = positions[0];
       const x12 = positions[1];
       const x22 = positions[2];
@@ -736,24 +788,27 @@
       const d12 = x12 - x22;
       const d13 = x12 - x32;
       const d23 = x22 - x32;
-      let index = 0;
-      for (let i = 0; i < dimension; i++) {
-        const x4 = position[i];
-        const v0 = values[i];
-        const v1 = values[i + dimension];
-        const v2 = values[i + 2 * dimension];
-        const v3 = values[i + 3 * dimension];
-        const d0 = x4 - x02;
-        const d1 = x4 - x12;
-        const d2 = x4 - x22;
-        const d3 = x4 - x32;
-        const h0 = d012 * d022 * d03;
-        const h1 = d012 * d12 * d13;
-        const h2 = d022 * d12 * d23;
-        const h3 = d03 * d13 * d23;
-        output[outputOffset + i] = v0 * (d1 * d2 * d3) / h0 - v1 * (d0 * d2 * d3) / h1 + v2 * (d0 * d1 * d3) / h2 - v3 * (d0 * d1 * d2) / h3;
+      const d0 = x4 - x02;
+      const d1 = x4 - x12;
+      const d2 = x4 - x22;
+      const d3 = x4 - x32;
+      const r0 = d1 * d2 * d3 / (d012 * d022 * d03);
+      const r1 = d0 * d2 * d3 / (d012 * d12 * d13);
+      const r2 = d0 * d1 * d3 / (d022 * d12 * d23);
+      const r3 = d0 * d1 * d2 / (d03 * d13 * d23);
+      const d = dimension;
+      for (let i = 0; i < d; i++) {
+        let k = i;
+        const v0 = values[k];
+        const v1 = values[k += d];
+        const v2 = values[k += d];
+        const v3 = values[k += d];
+        output[outputOffset + i] = v0 * r0 - v1 * r1 + v2 * r2 - v3 * r3;
       }
-      return output;
+      if (d === 1)
+        return output[outputOffset];
+      else
+        return output;
     }
     static coefficients(positions, values, dimension = 1, output, outputOffset = 0) {
       if (!output)
@@ -776,19 +831,21 @@
       const k1 = 1 / (x12 ** 3 - (x01 + x122 + x13) * x12 + (x012 + x013 + x123) - x023);
       const k2 = 1 / (x22 ** 3 - (x022 + x122 + x23) * x22 + (x012 + x023 + x123) - x013);
       const k3 = 1 / (x32 ** 3 - (x03 + x13 + x23) * x32 + (x013 + x023 + x123) - x012);
-      for (let i = 0, index = 0; i < dimension; i++) {
-        const r0 = values[i] * k0;
-        const r1 = values[i + dimension] * k1;
-        const r2 = values[i + 2 * dimension] * k2;
-        const r3 = values[i + 3 * dimension] * k3;
+      const d = dimension;
+      for (let i = 0, j = 0; i < dimension; i++) {
+        let k = i;
+        const r0 = values[k] * k0;
+        const r1 = values[k += d] * k1;
+        const r2 = values[k += d] * k2;
+        const r3 = values[k += d] * k3;
         const c0 = -(r0 * x123 + r1 * x023 + r2 * x013 + r3 * x012);
         const c1 = r0 * (x122 + x13 + x23) + r1 * (x022 + x03 + x23) + r2 * (x01 + x03 + x13) + r3 * (x01 + x022 + x122);
         const c2 = -(r0 * (x12 + x22 + x32) + r1 * (x02 + x22 + x32) + r2 * (x02 + x12 + x32) + r3 * (x02 + x12 + x22));
         const c3 = r0 + r1 + r2 + r3;
-        output[outputOffset + index++] = c0;
-        output[outputOffset + index++] = c1;
-        output[outputOffset + index++] = c2;
-        output[outputOffset + index++] = c3;
+        output[outputOffset + j++] = c0;
+        output[outputOffset + j++] = c1;
+        output[outputOffset + j++] = c2;
+        output[outputOffset + j++] = c3;
       }
       return output;
     }
@@ -881,24 +938,25 @@
       const hY2 = [-hY02, -hY12, -hY22, -hY32];
       const hY3 = hX3;
       const r = new Float32Array(16);
-      for (let i = 0, index = 0; i < dimension; i++) {
+      const d = dimension;
+      for (let i = 0, j = 0; i < d; i++) {
         let k = i;
         const v002 = values[k];
-        const v102 = values[k += dimension];
-        const v202 = values[k += dimension];
-        const v302 = values[k += dimension];
-        const v012 = values[k += dimension];
-        const v112 = values[k += dimension];
-        const v212 = values[k += dimension];
-        const v312 = values[k += dimension];
-        const v022 = values[k += dimension];
-        const v122 = values[k += dimension];
-        const v222 = values[k += dimension];
-        const v322 = values[k += dimension];
-        const v032 = values[k += dimension];
-        const v132 = values[k += dimension];
-        const v232 = values[k += dimension];
-        const v332 = values[k += dimension];
+        const v102 = values[k += d];
+        const v202 = values[k += d];
+        const v302 = values[k += d];
+        const v012 = values[k += d];
+        const v112 = values[k += d];
+        const v212 = values[k += d];
+        const v312 = values[k += d];
+        const v022 = values[k += d];
+        const v122 = values[k += d];
+        const v222 = values[k += d];
+        const v322 = values[k += d];
+        const v032 = values[k += d];
+        const v132 = values[k += d];
+        const v232 = values[k += d];
+        const v332 = values[k += d];
         r[0] = v002 * q0 * p0;
         r[1] = v102 * q1 * p0;
         r[2] = v202 * q2 * p0;
@@ -915,22 +973,22 @@
         r[13] = v132 * q1 * p3;
         r[14] = v232 * q2 * p3;
         r[15] = v332 * q3 * p3;
-        output[outputOffset + index++] = g(hX0, r, hY0);
-        output[outputOffset + index++] = g(hX1, r, hY0);
-        output[outputOffset + index++] = g(hX2, r, hY0);
-        output[outputOffset + index++] = g(hX3, r, hY0);
-        output[outputOffset + index++] = g(hX0, r, hY1);
-        output[outputOffset + index++] = g(hX1, r, hY1);
-        output[outputOffset + index++] = g(hX2, r, hY1);
-        output[outputOffset + index++] = g(hX3, r, hY1);
-        output[outputOffset + index++] = g(hX0, r, hY2);
-        output[outputOffset + index++] = g(hX1, r, hY2);
-        output[outputOffset + index++] = g(hX2, r, hY2);
-        output[outputOffset + index++] = g(hX3, r, hY2);
-        output[outputOffset + index++] = g(hX0, r, hY3);
-        output[outputOffset + index++] = g(hX1, r, hY3);
-        output[outputOffset + index++] = g(hX2, r, hY3);
-        output[outputOffset + index++] = g(hX3, r, hY3);
+        output[outputOffset + j++] = g(hX0, r, hY0);
+        output[outputOffset + j++] = g(hX1, r, hY0);
+        output[outputOffset + j++] = g(hX2, r, hY0);
+        output[outputOffset + j++] = g(hX3, r, hY0);
+        output[outputOffset + j++] = g(hX0, r, hY1);
+        output[outputOffset + j++] = g(hX1, r, hY1);
+        output[outputOffset + j++] = g(hX2, r, hY1);
+        output[outputOffset + j++] = g(hX3, r, hY1);
+        output[outputOffset + j++] = g(hX0, r, hY2);
+        output[outputOffset + j++] = g(hX1, r, hY2);
+        output[outputOffset + j++] = g(hX2, r, hY2);
+        output[outputOffset + j++] = g(hX3, r, hY2);
+        output[outputOffset + j++] = g(hX0, r, hY3);
+        output[outputOffset + j++] = g(hX1, r, hY3);
+        output[outputOffset + j++] = g(hX2, r, hY3);
+        output[outputOffset + j++] = g(hX3, r, hY3);
       }
       return output;
     }
@@ -1260,6 +1318,7 @@
       return output;
     }
     static evaluate(positions, values, dimension = 1, position, output, outputOffset = 0) {
+      output = !output ? new values.constructor(dimension) : output;
       const x4 = position[0];
       const y4 = position[1];
       const z = position[2];
@@ -1287,71 +1346,73 @@
       const rZ1 = (z - z0) * (z - z2) * (z - z3) / ((z1 - z0) * (z1 - z2) * (z1 - z3));
       const rZ2 = (z - z0) * (z - z1) * (z - z3) / ((z2 - z0) * (z2 - z1) * (z2 - z3));
       const rZ3 = (z - z0) * (z - z1) * (z - z2) / ((z3 - z0) * (z3 - z1) * (z3 - z2));
-      for (let i = 0, index = 0; i < dimension; i++) {
-        const v000 = values[index++];
-        const v100 = values[index++];
-        const v200 = values[index++];
-        const v300 = values[index++];
-        const v010 = values[index++];
-        const v110 = values[index++];
-        const v210 = values[index++];
-        const v310 = values[index++];
-        const v020 = values[index++];
-        const v120 = values[index++];
-        const v220 = values[index++];
-        const v320 = values[index++];
-        const v030 = values[index++];
-        const v130 = values[index++];
-        const v230 = values[index++];
-        const v330 = values[index++];
-        const v001 = values[index++];
-        const v101 = values[index++];
-        const v201 = values[index++];
-        const v301 = values[index++];
-        const v011 = values[index++];
-        const v111 = values[index++];
-        const v211 = values[index++];
-        const v311 = values[index++];
-        const v021 = values[index++];
-        const v121 = values[index++];
-        const v221 = values[index++];
-        const v321 = values[index++];
-        const v031 = values[index++];
-        const v131 = values[index++];
-        const v231 = values[index++];
-        const v331 = values[index++];
-        const v002 = values[index++];
-        const v102 = values[index++];
-        const v202 = values[index++];
-        const v302 = values[index++];
-        const v012 = values[index++];
-        const v112 = values[index++];
-        const v212 = values[index++];
-        const v312 = values[index++];
-        const v022 = values[index++];
-        const v122 = values[index++];
-        const v222 = values[index++];
-        const v322 = values[index++];
-        const v032 = values[index++];
-        const v132 = values[index++];
-        const v232 = values[index++];
-        const v332 = values[index++];
-        const v003 = values[index++];
-        const v103 = values[index++];
-        const v203 = values[index++];
-        const v303 = values[index++];
-        const v013 = values[index++];
-        const v113 = values[index++];
-        const v213 = values[index++];
-        const v313 = values[index++];
-        const v023 = values[index++];
-        const v123 = values[index++];
-        const v223 = values[index++];
-        const v323 = values[index++];
-        const v033 = values[index++];
-        const v133 = values[index++];
-        const v233 = values[index++];
-        const v333 = values[index++];
+      const d = dimension;
+      for (let i = 0; i < d; i++) {
+        let k = i;
+        const v000 = values[k];
+        const v100 = values[k += d];
+        const v200 = values[k += d];
+        const v300 = values[k += d];
+        const v010 = values[k += d];
+        const v110 = values[k += d];
+        const v210 = values[k += d];
+        const v310 = values[k += d];
+        const v020 = values[k += d];
+        const v120 = values[k += d];
+        const v220 = values[k += d];
+        const v320 = values[k += d];
+        const v030 = values[k += d];
+        const v130 = values[k += d];
+        const v230 = values[k += d];
+        const v330 = values[k += d];
+        const v001 = values[k += d];
+        const v101 = values[k += d];
+        const v201 = values[k += d];
+        const v301 = values[k += d];
+        const v011 = values[k += d];
+        const v111 = values[k += d];
+        const v211 = values[k += d];
+        const v311 = values[k += d];
+        const v021 = values[k += d];
+        const v121 = values[k += d];
+        const v221 = values[k += d];
+        const v321 = values[k += d];
+        const v031 = values[k += d];
+        const v131 = values[k += d];
+        const v231 = values[k += d];
+        const v331 = values[k += d];
+        const v002 = values[k += d];
+        const v102 = values[k += d];
+        const v202 = values[k += d];
+        const v302 = values[k += d];
+        const v012 = values[k += d];
+        const v112 = values[k += d];
+        const v212 = values[k += d];
+        const v312 = values[k += d];
+        const v022 = values[k += d];
+        const v122 = values[k += d];
+        const v222 = values[k += d];
+        const v322 = values[k += d];
+        const v032 = values[k += d];
+        const v132 = values[k += d];
+        const v232 = values[k += d];
+        const v332 = values[k += d];
+        const v003 = values[k += d];
+        const v103 = values[k += d];
+        const v203 = values[k += d];
+        const v303 = values[k += d];
+        const v013 = values[k += d];
+        const v113 = values[k += d];
+        const v213 = values[k += d];
+        const v313 = values[k += d];
+        const v023 = values[k += d];
+        const v123 = values[k += d];
+        const v223 = values[k += d];
+        const v323 = values[k += d];
+        const v033 = values[k += d];
+        const v133 = values[k += d];
+        const v233 = values[k += d];
+        const v333 = values[k += d];
         const v004 = v000 * rX0 + v100 * rX1 + v200 * rX2 + v300 * rX3;
         const v104 = v010 * rX0 + v110 * rX1 + v210 * rX2 + v310 * rX3;
         const v204 = v020 * rX0 + v120 * rX1 + v220 * rX2 + v320 * rX3;
@@ -1374,7 +1435,10 @@
         const v3 = v024 * rY0 + v124 * rY1 + v224 * rY2 + v334 * rY3;
         output[outputOffset + i] = v0 * rZ0 + v1 * rZ1 + v2 * rZ2 + v3 * rZ3;
       }
-      return output;
+      if (dimension === 1)
+        return output[outputOffset];
+      else
+        return output;
     }
     constructor(positions, values, dimension) {
       super(positions, values, dimension);
