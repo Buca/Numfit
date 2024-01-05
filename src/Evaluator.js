@@ -285,8 +285,6 @@ export default class Evaluator {
 
 		}
 
-		console.log( output );
-
 		return handler ? this : output;
 
 	};
