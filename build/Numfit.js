@@ -9,9 +9,9 @@
       this.dimension = dimension;
       const degree = this.constructor.degree;
       const variables = this.constructor.variables;
-      const length2 = (degree + 1) ** variables;
+      const length = (degree + 1) ** variables;
       const type = this.values.constructor;
-      this.coefficients = new type(dimension * length2).fill(0);
+      this.coefficients = new type(dimension * length).fill(0);
       this.update();
     }
     update() {
@@ -26,9 +26,9 @@
     translate(offset) {
       const variables = this.constructor.variables;
       const positions = this.positions;
-      const length2 = positions.length;
-      for (let i = 0; i < length2; i += variables) {
-        if (variables === 1 && typeof scale === "number" && typeof orgin === "number") {
+      const length = positions.length;
+      for (let i = 0; i < length; i += variables) {
+        if (variables === 1 && typeof offset === "number") {
           positions[i] += offset;
         } else {
           for (let j = 0; j < variables; j++) {
@@ -38,19 +38,19 @@
       }
       return this;
     }
-    scale(scale2, orgin2) {
+    scale(scale, orgin) {
       const variables = this.constructor.variables;
       const positions = this.positions;
-      const length2 = positions.length;
-      for (let i = 0; i < length2; i += variables) {
-        if (variables === 1 && typeof scale2 === "number" && typeof orgin2 === "number") {
+      const length = positions.length;
+      for (let i = 0; i < length; i += variables) {
+        if (variables === 1 && typeof scale === "number" && typeof orgin === "number") {
           const x4 = positions[i];
-          positions[i] = (x4 - orgin2) * scale2 + orgin2;
+          positions[i] = (x4 - orgin) * scale + orgin;
         } else {
           for (let j = 0; j < variables; j++) {
             const x4 = positions[i + j];
-            const s = scale2[j];
-            const o = orgin2[j];
+            const s = scale[j];
+            const o = orgin[j];
             positions[i + j] = (x4 - o) * s + o;
           }
         }
@@ -90,21 +90,26 @@
     step(start, end, size, handler) {
       const dimension = this.dimension;
       const variables = this.constructor.variables;
-      let length2 = 0;
+      let length = 0;
       for (let i = 0; i < variables; i++) {
-        length2 += Math.floor(Math.abs(end[i] - start[i]) / size[i]);
+        const _start = typeof start === "number" ? start : start[i];
+        const _end = typeof end === "number" ? end : end[i];
+        const _size = typeof size === "number" ? size : size[i];
+        length += Math.floor(Math.abs(_end - _start) / _size);
       }
-      length2 *= dimension;
+      length *= dimension;
       const input = new this.positions.constructor(variables);
       let output;
       if (handler)
         output = new this.values.constructor(dimension).fill(0);
       else
-        output = new this.values.constructor(length2).fill(0);
-      for (let i = 0; i < length2; i += dimension) {
+        output = new this.values.constructor(length).fill(0);
+      for (let i = 0; i <= length; i += dimension) {
         for (let j = 0; j < variables; j++) {
           const multiplier = Math.floor(i / variables);
-          input[j] = start[j] + multiplier * size[j];
+          const _start = typeof start === "number" ? start : start[j];
+          const _size = typeof start === "number" ? size : size[j];
+          input[j] = _start + multiplier * _size;
         }
         if (handler)
           handler(input, this.evaluate(input, 0, output, 0));
@@ -116,21 +121,27 @@
     segment(start, end, amount, handler) {
       const dimension = this.dimension;
       const variables = this.constructor.variables;
-      let length2 = 0;
-      for (let i = 0; i < variables; i++)
-        length2 += amount[i];
-      length2 *= dimension;
+      let length = 0;
+      if (typeof amount === "number")
+        length += amount;
+      else
+        for (let i = 0; i < variables; i++)
+          length += amount[i];
+      length *= dimension;
       const input = new this.positions.constructor(dimension);
       let output;
       if (handler)
         output = this.values.constructor(dimension).fill(0);
       else
-        output = this.values.constructor(length2).fill(0);
-      for (let i = 0; i < length2; i += dimension) {
+        output = this.values.constructor(length).fill(0);
+      for (let i = 0; i < length; i += dimension) {
         for (let d = 0; d < dimension; d++) {
-          const size = (end[d] - start[d]) / amount[d];
           const multiplier = Math.floor(i / dimension);
-          input[d] = start[d] + multiplier * size;
+          const _start = typeof start === "number" ? start : start[d];
+          const _end = typeof end === "number" ? end : end[d];
+          const _amount = typeof amount === "number" ? amount : amount[d];
+          const size = (_end - _start) / _amount;
+          input[d] = _start + multiplier * size;
         }
         if (handler)
           handler(input, this.evaluate(input, 0, output, 0));
@@ -142,22 +153,23 @@
     map(positions, handler) {
       const variables = this.constructor.variables;
       const dimension = this.dimension;
-      let input;
+      const length = dimension * positions.length;
+      const input = new this.positions.constructor(variables);
       let output;
       if (handler) {
-        input = this.positions.constructor(variables);
-        output = this.values.constructor(dimension);
+        output = new this.values.constructor(dimension);
       } else
-        output = this.values.constructor(length).fill(0);
-      for (let i = 0; i < positions.length; i += variables) {
+        output = new this.values.constructor(length).fill(0);
+      for (let i = 0, index = 0; i < positions.length; i += variables) {
         for (let j = 0; j < variables; j++) {
           input[j] = positions[i + j];
         }
         if (handler)
           handler(input, this.evaluate(input, 0, output, 0));
         else
-          this.evaluate(input, i, output, i * dimension);
+          this.evaluate(input, 0, output, i);
       }
+      console.log(output);
       return handler ? this : output;
     }
   };

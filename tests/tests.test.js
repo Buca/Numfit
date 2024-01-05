@@ -5,45 +5,92 @@ import {
 	Cubic, Bicubic, Tricubic
 } from '../src';
 
-/*test('Testing the scaling and translation transformations.', () => {
-	expect( Linear.evaluate( 
-		...positions, 
-		...values, 
-		0 
-	) ).toBeCloseTo( 6.5 );
+test('Translating positions and updating instance.', () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ 10, 3 ];
+	const linear = new Linear( positions, values );
+
+	linear.translate( 2 );
+	linear.update();
+
+	expect( linear.positions[ 0 ] ).toBeCloseTo( 0 );
+	expect( linear.positions[ 1 ] ).toBeCloseTo( 4 );
+
 });
 
-test("Evaluators translate, scale and update functions.", () => {
-	expect( Linear.evaluate( 
-		...positions, 
-		...values, 
-		0 
-	) ).toBeCloseTo( 6.5 );
+test('Scaling positions around a point and updating the instance.', () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ 10, 3 ];
+	const linear = new Linear( positions, values );
+
+	linear.scale( 2, 0 );
+	linear.update();
+
+	expect( linear.positions[ 0 ] ).toBeCloseTo( -4 );
+	expect( linear.positions[ 1 ] ).toBeCloseTo(  4 );
+
 });
 
-test("Evaluators step function.", () => {
-	expect( Linear.evaluate( 
-		...positions, 
-		...values, 
-		0 
-	) ).toBeCloseTo( 6.5 );
+test("Evaluator's step function.", () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ -4, 4 ];
+	const linear = new Linear( positions, values );
+
+	const v = linear.step( -2, 2, .5 );
+
+	expect( v[ 0 ] ).toBeCloseTo( -4 );
+	expect( v[ 1 ] ).toBeCloseTo( -3 );
+	expect( v[ 2 ] ).toBeCloseTo( -2 );
+	expect( v[ 3 ] ).toBeCloseTo( -1 );
+	expect( v[ 4 ] ).toBeCloseTo( 0 );
+	expect( v[ 5 ] ).toBeCloseTo( 1 );
+	expect( v[ 6 ] ).toBeCloseTo( 2 );
+	expect( v[ 7 ] ).toBeCloseTo( 3 );
+	expect( v[ 8 ] ).toBeCloseTo( 4 );
+
 });
 
-test("Evaluators segment function.", () => {
-	expect( Linear.evaluate( 
-		...positions, 
-		...values, 
-		0 
-	) ).toBeCloseTo( 6.5 );
+
+test("Evaluator's segment function.", () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ -4, 4 ];
+	const linear = new Linear( positions, values );
+
+	const v = linear.segment( -2, 2, 8 );
+
+	expect( v[ 0 ] ).toBeCloseTo( -4 );
+	expect( v[ 1 ] ).toBeCloseTo( -3 );
+	expect( v[ 2 ] ).toBeCloseTo( -2 );
+	expect( v[ 3 ] ).toBeCloseTo( -1 );
+	expect( v[ 4 ] ).toBeCloseTo( 0 );
+	expect( v[ 5 ] ).toBeCloseTo( 1 );
+	expect( v[ 6 ] ).toBeCloseTo( 2 );
+	expect( v[ 7 ] ).toBeCloseTo( 3 );
+
 });
 
-test("Evaluators map function.", () => {
-	expect( Linear.evaluate( 
-		...positions, 
-		...values, 
-		0 
-	) ).toBeCloseTo( 6.5 );
-});*/
+test("Evaluator's map function.", () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ -4, 4 ];
+	const linear = new Linear( positions, values );
+
+	const v = linear.map([ -2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2 ]);
+
+	expect( v[ 0 ] ).toBeCloseTo( -4 );
+	expect( v[ 1 ] ).toBeCloseTo( -3 );
+	expect( v[ 2 ] ).toBeCloseTo( -2 );
+	expect( v[ 3 ] ).toBeCloseTo( -1 );
+	expect( v[ 4 ] ).toBeCloseTo( 0 );
+	expect( v[ 5 ] ).toBeCloseTo( 1 );
+	expect( v[ 6 ] ).toBeCloseTo( 2 );
+	expect( v[ 7 ] ).toBeCloseTo( 3 );
+
+});
 
 test('The Linear class.', () => {
 

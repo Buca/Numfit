@@ -45,7 +45,7 @@ export default class Evaluator {
 
 		for ( let i = 0; i < length; i += variables ) {
 			
-			if ( variables === 1 && typeof scale === 'number' && typeof orgin === 'number' ) {
+			if ( variables === 1 && typeof offset === 'number' ) {
 
 				positions[ i ] += offset;
 
@@ -168,7 +168,11 @@ export default class Evaluator {
 
 		for ( let i = 0; i < variables; i ++ ) {
 
-			length += Math.floor( Math.abs( end[ i ] - start[ i ] )/size[ i ] );
+			const _start = typeof start === 'number' ? start : start[ i ];
+			const _end = typeof end === 'number' ? end : end[ i ];
+			const _size = typeof size === 'number' ? size : size[ i ];
+
+			length += Math.floor( Math.abs( _end - _start )/_size );
 
 		}
 
@@ -180,14 +184,15 @@ export default class Evaluator {
 		if ( handler ) output = new this.values.constructor( dimension ).fill( 0 );
 		else output = new this.values.constructor( length ).fill( 0 );
 
-		for ( let i = 0; i < length; i += dimension ) {
+		for ( let i = 0; i <= length; i += dimension ) {
 
 			for ( let j = 0; j < variables; j ++ ) {
 
 				const multiplier = Math.floor( i/variables );
-				
-				input[ j ] = start[ j ] + multiplier*size[ j ];
+				const _start = typeof start === 'number' ? start : start[ j ];
+				const _size = typeof start === 'number' ? size : size[ j ];
 
+				input[ j ] = _start + multiplier*_size;
 
 			}
 
@@ -212,7 +217,9 @@ export default class Evaluator {
 
 		let length = 0;
 
-		for ( let i = 0; i < variables; i ++ ) length += amount[ i ];
+		if ( typeof amount === 'number' ) length += amount;
+
+		else for ( let i = 0; i < variables; i ++ ) length += amount[ i ];
 
 		length *= dimension;
 
@@ -226,10 +233,14 @@ export default class Evaluator {
 
 			for ( let d = 0; d < dimension; d ++ ) {
 
-				const size = ( end[ d ] - start[ d ] ) / amount[ d ];
-				const multiplier = Math.floor( i/dimension )
+				const multiplier = Math.floor( i/dimension );
+				const _start = typeof start === 'number' ? start : start[ d ];
+				const _end = typeof end === 'number' ? end : end[ d ];
+				const _amount = typeof amount === 'number' ? amount : amount[ d ];
 
-				input[ d ] = start[ d ] + multiplier*size;
+				const size = ( _end - _start ) / _amount;
+
+				input[ d ] = _start + multiplier*size;
 
 			}
 
@@ -251,29 +262,30 @@ export default class Evaluator {
 
 		const variables = this.constructor.variables;
 		const dimension = this.dimension;
+		const length = dimension * positions.length;
 
-		let input;
+		const input = new this.positions.constructor( variables );
 		let output;
 
 		if ( handler ) {
 
-			input = this.positions.constructor( variables );
-			output = this.values.constructor( dimension );
+			output = new this.values.constructor( dimension );
 
-		}
+		} else output = new this.values.constructor( length ).fill( 0 );
 
-		else output = this.values.constructor( length ).fill( 0 );
-
-		for ( let i = 0; i < positions.length; i += variables ) {
+		for ( let i = 0, index = 0; i < positions.length; i += variables ) {
 
 			for ( let j = 0; j < variables; j ++ ) {
+
 				input[ j ] = positions[ i + j ];
 			}
 
 			if ( handler ) handler( input, this.evaluate( input, 0, output, 0 ) );
-			else this.evaluate( input, i, output, i*dimension );
+			else this.evaluate( input, 0, output, i );
 
 		}
+
+		console.log( output );
 
 		return handler ? this : output;
 
