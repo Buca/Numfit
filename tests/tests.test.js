@@ -53,6 +53,21 @@ test("Evaluator's step function.", () => {
 
 });
 
+test("Evaluator's step function with the handler defined.", () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ -4, 4 ];
+	const linear = new Linear( positions, values );
+	const v = [ -4, -3, -2, -1, 0, 1, 2, 3, 4 ];
+	let i = 0;
+
+	linear.step( -2, 2, .5, ( position, value ) => {
+
+		expect( value ).toBeCloseTo( v[ i ++ ] );
+
+	} );
+
+});
 
 test("Evaluator's segment function.", () => {
 	
@@ -73,26 +88,62 @@ test("Evaluator's segment function.", () => {
 
 });
 
+test("Evaluator's segment function with the handler defined.", () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ -4, 4 ];
+	const linear = new Linear( positions, values );
+	const vs = [ -4, -3, -2, -1, 0, 1, 2, 3, 4 ];
+	let i = 0;
+
+	linear.segment( -2, 2, 8, ( position, value ) => {
+
+		expect( value ).toBeCloseTo( vs[ i ++ ] );
+
+	});
+	
+});
+
 test("Evaluator's map function.", () => {
 	
 	const positions = [ -2, 2 ];
 	const values = [ -4, 4 ];
 	const linear = new Linear( positions, values );
 
-	const v = linear.map([ -2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2 ]);
+	const ps = [ -2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2 ];
+	const vs = linear.map( ps );
 
-	expect( v[ 0 ] ).toBeCloseTo( -4 );
-	expect( v[ 1 ] ).toBeCloseTo( -3 );
-	expect( v[ 2 ] ).toBeCloseTo( -2 );
-	expect( v[ 3 ] ).toBeCloseTo( -1 );
-	expect( v[ 4 ] ).toBeCloseTo( 0 );
-	expect( v[ 5 ] ).toBeCloseTo( 1 );
-	expect( v[ 6 ] ).toBeCloseTo( 2 );
-	expect( v[ 7 ] ).toBeCloseTo( 3 );
+	expect( vs[ 0 ] ).toBeCloseTo( -4 );
+	expect( vs[ 1 ] ).toBeCloseTo( -3 );
+	expect( vs[ 2 ] ).toBeCloseTo( -2 );
+	expect( vs[ 3 ] ).toBeCloseTo( -1 );
+	expect( vs[ 4 ] ).toBeCloseTo( 0 );
+	expect( vs[ 5 ] ).toBeCloseTo( 1 );
+	expect( vs[ 6 ] ).toBeCloseTo( 2 );
+	expect( vs[ 7 ] ).toBeCloseTo( 3 );
 
 });
 
-test('The Linear class.', () => {
+test("Evaluator's map function with the handler defined.", () => {
+	
+	const positions = [ -2, 2 ];
+	const values = [ -4, 4 ];
+	const linear = new Linear( positions, values );
+
+	const ps = [ -2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2 ];
+	const vs = [ -4, -3, -2, -1, 0, 1, 2, 3, 4 ];
+
+	let i = 0;
+	linear.map( ps, ( position, value ) => {
+
+		expect( position ).toBeCloseTo( ps[ i ] )
+		expect( value ).toBeCloseTo( vs[ i ++ ] );
+
+	});
+
+});
+
+test('Linear instance evaluation.', () => {
 
 	const positions = [ -2, 2 ];
 	const values = [ 10, 3 ];
@@ -104,7 +155,7 @@ test('The Linear class.', () => {
 });
 
 
-test('The Bilinear class.', () => {
+test('Bilinear instance evaluation.', () => {
 	
 	const positions = [ 
 		0, 0,
@@ -124,7 +175,7 @@ test('The Bilinear class.', () => {
 });
 
 
-test('The Trilinear class.', () => {
+test('Trilinear instance evaluation.', () => {
 	
 	const positions = [ 
 		0, 0, 0,
@@ -152,7 +203,7 @@ test('The Trilinear class.', () => {
 });
 
 
-test('The Quadratic class.', () => {
+test('Quadratic instance evaluation.', () => {
 	
 	const positions = [ 0, 1, 2 ];
 	const values = [ 10,-2,  3,11,  -2,8 ];
@@ -172,7 +223,7 @@ test('The Quadratic class.', () => {
 
 });
 
-test('The Biquadratic class.', () => {
+test('Biquadratic instance evaluation.', () => {
 	
 	const positions = [ 
 		0, 0,
@@ -199,7 +250,7 @@ test('The Biquadratic class.', () => {
 });
 
 
-test('The Triquadratic class.', () => {
+test('Triquadratic instance evaluation.', () => {
 	
 	const positions = [ 
 		0, 0, 0,
@@ -254,7 +305,7 @@ test('The Triquadratic class.', () => {
 });
 
 
-test('The Cubic class.', () => {
+test('Cubic instance evaluation.', () => {
 	
 	const positions = [ 0, 1, 2, 3 ];
 	const values = [ 10, -1, 2, 4 ];
@@ -267,7 +318,7 @@ test('The Cubic class.', () => {
 
 });
 
-test('The Bicubic class.', () => {
+test('Bicubic instance evaluation.', () => {
 		
 	const positions = [ 
 		0, 0,
@@ -303,7 +354,7 @@ test('The Bicubic class.', () => {
 	
 });
 
-test('The Tricubic class.', () => {
+test('Tricubic instance evaluation.', () => {
 	
 	const positions = [ 
 		0, 0, 0,

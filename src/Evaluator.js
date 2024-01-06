@@ -147,10 +147,8 @@ export default class Evaluator {
 
 		}
 
-		if ( dimension === 1 && outputNotProvided ) return output[ outputOffset ];
+		if ( dimension === 1 ) return output[ outputOffset ];
 		else return output;
-
-
 
 	};
 
@@ -196,7 +194,7 @@ export default class Evaluator {
 
 			}
 
-			if ( handler ) handler( input, this.evaluate( input, 0, output, 0 ) );
+			if ( handler ) handler( variables > 1 ? input : input[ 0 ], this.evaluate( input, 0, output, 0 ) );
 			else this.evaluate( input, 0, output, i );
 
 		}
@@ -244,7 +242,7 @@ export default class Evaluator {
 
 			}
 
-			if ( handler ) handler( input, this.evaluate( input, 0, output, 0 ) );
+			if ( handler ) handler( variables > 1 ? input : input[ 0 ], this.evaluate( input, 0, output, 0 ) );
 			else this.evaluate( input, 0, output, i );
 
 		}
@@ -280,8 +278,11 @@ export default class Evaluator {
 				input[ j ] = positions[ i + j ];
 			}
 
-			if ( handler ) handler( input, this.evaluate( input, 0, output, 0 ) );
-			else this.evaluate( input, 0, output, i );
+			if ( handler ) {
+
+				handler( variables > 1 ? input : input[ 0 ], this.evaluate( input, 0, output, 0 ) );
+			
+			} else this.evaluate( input, 0, output, i );
 
 		}
 

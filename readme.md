@@ -15,7 +15,13 @@
 
 ## Installation
 
-### Browser
+### NodeJS Enviroment
+
+#### Using NPM
+
+#### Using Yarn
+
+### Browser Enviroment
 There's a couple ways to use **Numfit** in you browser based projects:
  
 #### Using CDN (Recommended)

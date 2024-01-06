@@ -82,7 +82,7 @@
           output[outputOffset + i] += c * v;
         }
       }
-      if (dimension === 1 && outputNotProvided)
+      if (dimension === 1)
         return output[outputOffset];
       else
         return output;
@@ -112,7 +112,7 @@
           input[j] = _start + multiplier * _size;
         }
         if (handler)
-          handler(input, this.evaluate(input, 0, output, 0));
+          handler(variables > 1 ? input : input[0], this.evaluate(input, 0, output, 0));
         else
           this.evaluate(input, 0, output, i);
       }
@@ -144,7 +144,7 @@
           input[d] = _start + multiplier * size;
         }
         if (handler)
-          handler(input, this.evaluate(input, 0, output, 0));
+          handler(variables > 1 ? input : input[0], this.evaluate(input, 0, output, 0));
         else
           this.evaluate(input, 0, output, i);
       }
@@ -164,12 +164,11 @@
         for (let j = 0; j < variables; j++) {
           input[j] = positions[i + j];
         }
-        if (handler)
-          handler(input, this.evaluate(input, 0, output, 0));
-        else
+        if (handler) {
+          handler(variables > 1 ? input : input[0], this.evaluate(input, 0, output, 0));
+        } else
           this.evaluate(input, 0, output, i);
       }
-      console.log(output);
       return handler ? this : output;
     }
   };
