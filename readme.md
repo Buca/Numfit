@@ -24,7 +24,7 @@ To harness the library without the complexities of local deployment, consider em
 
 ```html
 <head>
-  <script src="[https://cdn.jsdelivr.net/gh/buca/numfit/build/Numfit.min.js](https://cdn.jsdelivr.net/gh/buca/numfit/build/Numfit.min.js)"></script>
+  <script src="https://cdn.jsdelivr.net/gh/buca/numfit/build/Numfit.min.js"></script>
 </head>
 ```
 
