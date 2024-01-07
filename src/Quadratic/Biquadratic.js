@@ -13,6 +13,18 @@ export class Biquadratic extends Evaluator {
 	
 	) {
 
+		if ( !output ) output = new values.constructor( dimension );
+
+		const x = position[ 0 ];
+		const y = position[ 1 ];
+
+		const x0 = positions[ 0 ];
+		const y0 = positions[ 1 ];
+		const x1 = positions[ 2 ];
+		const y1 = positions[ 3 ];
+		const x2 = positions[ 4 ];
+		const y2 = positions[ 5 ];
+
 		const dX01 = x0 - x1;
 		const dX02 = x0 - x2;
 		const dX12 = x1 - x2;
@@ -20,14 +32,6 @@ export class Biquadratic extends Evaluator {
 		const dX0 = x - x0;
 		const dX1 = x - x1;
 		const dX2 = x - x2;
-
-		const k0 = (dX1*dX2)/(d01*d02);
-		const k1 = -(dX1*dX2)/(d01*d02);
-		const k2 = (dX1*dX2)/(d01*d02);
-
-		const w0 = k0*w00 - k1*w10 + k2*w20;
-		const w1 = k0*w01 - k1*w11 + k2*w21;
-		const w2 = k0*w02 - k1*w12 + k2*w22;
 
 		const dY0 = y - y0;
 		const dY1 = y - y1;
@@ -37,9 +41,38 @@ export class Biquadratic extends Evaluator {
 		const dY02 = y0 - y2;
 		const dY12 = y1 - y2; 
 
-		return 	((dY1*dY2)/(dY01*dY02))*w0 
-			-	((dY0*dY2)/(dY01*dY12))*w1 
-			+	((dY0*dY1)/(dY01*dY02))*w2;
+		const k0 = (dX1*dX2)/(dX01*dX02);
+		const k1 = -(dX0*dX2)/(dX01*dX12);
+		const k2 = (dX0*dX1)/(dX02*dX12);
+
+		const q0 = (dY1*dY2)/(dY01*dY02);
+		const q1 = -(dY0*dY2)/(dY01*dY12);
+		const q2 = (dY0*dY1)/(dY02*dY12);
+
+		for ( let i = 0; i < dimension; i ++ ) {
+
+			let k = i;
+
+			const v00 = values[ k ];
+			const v10 = values[ k += dimension ];
+			const v20 = values[ k += dimension ];
+			const v01 = values[ k += dimension ];
+			const v11 = values[ k += dimension ];
+			const v21 = values[ k += dimension ];
+			const v02 = values[ k += dimension ];
+			const v12 = values[ k += dimension ];
+			const v22 = values[ k += dimension ];
+
+			const v0 = k0*v00 + k1*v10 + k2*v20;
+			const v1 = k0*v01 + k1*v11 + k2*v21;
+			const v2 = k0*v02 + k1*v12 + k2*v22;
+
+			output[ outputOffset + i ] = q0*v0 + q1*v1 + q2*v2;
+
+		}
+
+		if ( dimension === 1 ) return output[ outputOffset ];
+		else return output;
 
 
 	};

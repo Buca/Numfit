@@ -179,14 +179,26 @@ export class Bicubic extends Evaluator {
 
 		if ( !output ) output = new values.constructor( dimension ); 
 
+		const x = position[ 0 ];
+		const y = position[ 1 ];
+
+		const x0 = positions[ 0 ];
+		const y0 = positions[ 1 ];
+		const x1 = positions[ 2 ];
+		const y1 = positions[ 3 ];
+		const x2 = positions[ 4 ];
+		const y2 = positions[ 5 ];
+		const x3 = positions[ 6 ];
+		const y3 = positions[ 7 ];
+
 		const dX0 = x - x0;
 		const dX1 = x - x1;
 		const dX2 = x - x2;
 		const dX3 = x - x3;
 
 		const dX01 = x0 - x1;
-		const dX02 = x0 - x1;
-		const dX03 = x0 - x2;
+		const dX02 = x0 - x2;
+		const dX03 = x0 - x3;
 		const dX12 = x1 - x2;
 		const dX13 = x1 - x3;
 		const dX23 = x2 - x3;
@@ -197,8 +209,8 @@ export class Bicubic extends Evaluator {
 		const dY3 = y - y3;
 
 		const dY01 = y0 - y1;
-		const dY02 = y0 - y1;
-		const dY03 = y0 - y2;
+		const dY02 = y0 - y2;
+		const dY03 = y0 - y3;
 		const dY12 = y1 - y2;
 		const dY13 = y1 - y3;
 		const dY23 = y2 - y3;
@@ -213,12 +225,40 @@ export class Bicubic extends Evaluator {
 		const dY013 = dY0*dY1*dY3/(dY02*dY12*dY23);
 		const dY012 = -dY0*dY1*dY2/(dY03*dY13*dY23);
 
-		const v0 = v00*dX123 + v10*dX023 + v20*dX013 + v30*dX012;
-		const v1 = v01*dX123 + v11*dX023 + v21*dX013 + v31*dX012;
-		const v2 = v02*dX123 + v12*dX023 + v22*dX013 + v32*dX012;
-		const v3 = v03*dX123 + v13*dX023 + v23*dX013 + v33*dX012;
+		const d = dimension;
 
-		return v0*dY123 + v1*dY023 + v2*dY013 + v3*dY012;
+		for ( let i = 0; i < d; i ++ ) {
+
+			let k = i;
+
+			const v00 = values[ k ];
+			const v10 = values[ k += d ];
+			const v20 = values[ k += d ];
+			const v30 = values[ k += d ];
+			const v01 = values[ k += d ];
+			const v11 = values[ k += d ];
+			const v21 = values[ k += d ];
+			const v31 = values[ k += d ];
+			const v02 = values[ k += d ];
+			const v12 = values[ k += d ];
+			const v22 = values[ k += d ];
+			const v32 = values[ k += d ];
+			const v03 = values[ k += d ];
+			const v13 = values[ k += d ];
+			const v23 = values[ k += d ];
+			const v33 = values[ k += d ];
+
+			const v0 = v00*dX123 + v10*dX023 + v20*dX013 + v30*dX012;
+			const v1 = v01*dX123 + v11*dX023 + v21*dX013 + v31*dX012;
+			const v2 = v02*dX123 + v12*dX023 + v22*dX013 + v32*dX012;
+			const v3 = v03*dX123 + v13*dX023 + v23*dX013 + v33*dX012;
+
+			output[ outputOffset + i ] = v0*dY123 + v1*dY023 + v2*dY013 + v3*dY012;
+
+		}
+
+		if ( d === 1 ) return output[ outputOffset ];
+		else return output;
 
 	};
 

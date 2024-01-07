@@ -15,7 +15,7 @@ export class Cubic extends Evaluator {
 
 		if ( !output ) output = new values.constructor( dimension );
 
-		const x = position[ 0 ];
+		const x = typeof position === 'number' ? position : position[ 0 ];
 		
 		const x0 = positions[ 0 ];
 		const x1 = positions[ 1 ];
@@ -35,9 +35,9 @@ export class Cubic extends Evaluator {
 		const d3 = x - x3;
 
 		const r0 = d1*d2*d3/(d01*d02*d03);
-		const r1 = d0*d2*d3/(d01*d12*d13);
+		const r1 = -d0*d2*d3/(d01*d12*d13);
 		const r2 = d0*d1*d3/(d02*d12*d23);
-		const r3 = d0*d1*d2/(d03*d13*d23);
+		const r3 = -d0*d1*d2/(d03*d13*d23);
 
 		const d = dimension;
 
@@ -50,7 +50,7 @@ export class Cubic extends Evaluator {
 			const v2 = values[ k += d ];
 			const v3 = values[ k += d ];
 
-			output[ outputOffset + i ] = v0*r0 - v1*r1 + v2*r2 - v3*r3;
+			output[ outputOffset + i ] = v0*r0 + v1*r1 + v2*r2 + v3*r3;
 
 		}
 

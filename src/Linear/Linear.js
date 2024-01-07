@@ -61,13 +61,13 @@ export class Linear extends Evaluator {
 			const c1 = (v1 - v0)/dX;
 			const c0 = v0 - p0*c1;
 
-			const x = position[ i ];
+			const x = typeof position === 'number' ? position : position[ 0 ];
 
-			output[ i + outputOffset ] = c1*x + c0;
+			output[ outputOffset + i ] = c1*x + c0;
 
 		}
 
-		if ( dimension === 1 ) output[ outputOffset ];
+		if ( dimension === 1 ) return output[ outputOffset ];
 		else return output;
 
 	};

@@ -454,27 +454,27 @@ export class Tricubic extends Evaluator {
 			const v00 = v000*rX0 + v100*rX1 + v200*rX2 + v300*rX3;
 			const v10 = v010*rX0 + v110*rX1 + v210*rX2 + v310*rX3;
 			const v20 = v020*rX0 + v120*rX1 + v220*rX2 + v320*rX3;
-			const v30 = v020*rx0 + v130*rX1 + v230*rX2 + v330*rX3;
+			const v30 = v030*rX0 + v130*rX1 + v230*rX2 + v330*rX3;
 
 			const v01 = v001*rX0 + v101*rX1 + v201*rX2 + v301*rX3;
 			const v11 = v011*rX0 + v111*rX1 + v211*rX2 + v311*rX3;
 			const v21 = v021*rX0 + v121*rX1 + v221*rX2 + v321*rX3;
-			const v31 = v021*rx0 + v131*rX1 + v231*rX2 + v331*rX3;
+			const v31 = v031*rX0 + v131*rX1 + v231*rX2 + v331*rX3;
 
 			const v02 = v002*rX0 + v102*rX1 + v202*rX2 + v302*rX3;
 			const v12 = v012*rX0 + v112*rX1 + v212*rX2 + v312*rX3;
 			const v22 = v022*rX0 + v122*rX1 + v222*rX2 + v322*rX3;
-			const v32 = v022*rx0 + v132*rX1 + v232*rX2 + v332*rX3;
+			const v32 = v032*rX0 + v132*rX1 + v232*rX2 + v332*rX3;
 
 			const v03 = v003*rX0 + v103*rX1 + v203*rX2 + v303*rX3;
 			const v13 = v013*rX0 + v113*rX1 + v213*rX2 + v313*rX3;
 			const v23 = v023*rX0 + v123*rX1 + v223*rX2 + v323*rX3;
-			const v33 = v023*rx0 + v133*rX1 + v233*rX2 + v333*rX3;
+			const v33 = v033*rX0 + v133*rX1 + v233*rX2 + v333*rX3;
 
 			const v0 = v00*rY0 + v10*rY1 + v20*rY2 + v30*rY3;
 			const v1 = v01*rY0 + v11*rY1 + v21*rY2 + v31*rY3;
 			const v2 = v02*rY0 + v12*rY1 + v22*rY2 + v32*rY3; 
-			const v3 = v02*rY0 + v12*rY1 + v22*rY2 + v33*rY3;
+			const v3 = v03*rY0 + v13*rY1 + v23*rY2 + v33*rY3;
 
 			output[ outputOffset + i ] = v0*rZ0 + v1*rZ1 + v2*rZ2 + v3*rZ3;
 

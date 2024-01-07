@@ -84,7 +84,7 @@ export class Bilinear extends Evaluator {
 
 		}
 
-		if ( dimension === 1 ) output[ outputOffset ];
+		if ( dimension === 1 ) return output[ outputOffset ];
 		else return output;
  
 	};

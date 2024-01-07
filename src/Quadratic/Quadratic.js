@@ -81,7 +81,7 @@ export class Quadratic extends Evaluator {
 			const v1 = values[ k += dimension ];
 			const v2 = values[ k += dimension ];
 
-			output[ outputOffset + i ] = r0*v0 - r1*v1 + r2*v2;
+			output[ outputOffset + i ] = r0*v0 + r1*v1 + r2*v2;
 
 		}
 
