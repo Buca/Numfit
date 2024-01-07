@@ -1,9 +1,15 @@
 {
+  "name": "numfit",
+  "version": "1.0.6",
+  "description": "Javascript library for numerical interpolation and extrapolation.",
+  "main": "src/index.js",
+  "author": "Buca Hajdini",
+  "license": "ISC",
   "scripts": {
     "test": "vitest",
     "build": "esbuild src/index.js --bundle --minify --platform=browser --outfile=build/Numfit.min.js & esbuild src/index.js --bundle --platform=browser --outfile=build/Numfit.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "esbuild": "^0.19.11",
     "vitest": "^1.1.1"
   }

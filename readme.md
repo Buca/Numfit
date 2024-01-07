@@ -29,9 +29,7 @@ There's a couple ways to use **Numfit** in you browser based projects:
 To harness the library without the complexities of local deployment, consider employing a Content Delivery Network (CDN). Simply incorporate the following script tag into your HTML document's `<head>` section:
 
 ```html
-<head>
-  <script src="https://cdn.jsdelivr.net/gh/buca/numfit/build/Numfit.min.js"></script>
-</head>
+<script src="https://cdn.jsdelivr.net/gh/buca/numfit/build/Numfit.min.js"></script>
 ```
 
 #### Using a Local Copy
@@ -39,9 +37,7 @@ To harness the library without the complexities of local deployment, consider em
 Alternatively, you can opt for a local deployment of the library. Locate the `/build/` directory within this repository and download either the standard `Numfit.js` file or the minified version `Numfit.min.js`. Then, incorporate the downloaded file into your HTML document's `<head>` section using a `<script>` tag:
 
 ```html
-<head>
-  <script src="my-directory/Numfit.min.js"></script>
-</head>
+<script src="my-directory/Numfit.min.js"></script>
 ```
 
 Replace `my-directory` with the actual path to the downloaded file.
@@ -77,7 +73,7 @@ bicubic.step( [0,0], [1,1], [.1,.1] ( position, value ) => {
 ## Building and Testing
 
 ### Setup
-Running the build and testing procedures is easy. First make sure you have ```npm``` installed. Secondly navigate to the root directory ```/``` in your CLI and run ```npm install``` which will install two dependencies required in the build and testing phases, ```esbuild``` and ```vitest``` respectively.
+Running the build and testing procedures is easy. First make sure you have ```npm``` installed. Secondly navigate to the root directory ```/``` in your CLI and run ```npm install --save-dev``` which will install two dependencies required in the build and testing phases, ```esbuild``` and ```vitest``` respectively.
 
 ### Building
 To run the build procedure, you simply navigate to the root directory ```/``` in your CLI and run
