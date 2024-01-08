@@ -24,6 +24,18 @@ export default class Evaluator {
 
 	};
 
+	get variables() {
+
+		// Should be implemented in the extended class.
+
+	};
+
+	get degree() {
+
+		// Should be implemented in the extended class.
+
+	};	
+
 	update() {
 
 		this.coefficients = this.constructor.coefficients(

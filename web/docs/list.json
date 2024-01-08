@@ -37,16 +37,6 @@
 			{ "name": "Multipolynomial", "href": "multipolynomial.html" }
 		]
 
-	}, {
-	
-		"name": "Nearest Neighbor",
-		"list": [
-			{ "name": "NearestNeighbor", "href": "nearestneighbor.html" },
-			{ "name": "NearestNeighbor2D", "href": "nearestneighbor2d.html" },
-			{ "name": "NearestNeighbor3D", "href": "nearestneighbor3d.html" },
-			{ "name": "NearestNeighborND", "href": "nearestneighbornd.html" }
-		]
-
 	}
 
 ]
