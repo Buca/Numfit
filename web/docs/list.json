@@ -5,8 +5,7 @@
 		"list": [
 			{ "name": "Linear", "href": "linear.html" },
 			{ "name": "Bilinear", "href": "bilinear.html" },
-			{ "name": "Trilinear", "href": "trilinear.html" },
-			{ "name": "Multilinear", "href": "multilinear.html" }
+			{ "name": "Trilinear", "href": "trilinear.html" }
 		]
 	
 	}, {
@@ -15,8 +14,7 @@
 		"list": [
 			{ "name": "Quadratic", "href": "quadratic.html" },
 			{ "name": "Biquadratic", "href": "biquadratic.html" },
-			{ "name": "Triquadratic", "href": "triquadratic.html" },
-			{ "name": "Multiquadratic", "href": "multiquadratic.html" }
+			{ "name": "Triquadratic", "href": "triquadratic.html" }
 		]
 
 	}, {
@@ -25,16 +23,14 @@
 		"list": [
 			{ "name": "Cubic", "href": "cubic.html" },
 			{ "name": "Bicubic", "href": "bicubic.html" },
-			{ "name": "Tricubic", "href": "tricubic.html" },
-			{ "name": "Multicubic", "href": "multicubic.html" }
+			{ "name": "Tricubic", "href": "tricubic.html" }
 		]
 	
 	}, {
 	
 		"name": "Polynomial",
 		"list": [
-			{ "name": "Polynomial", "href": "polynomial.html" },
-			{ "name": "Multipolynomial", "href": "multipolynomial.html" }
+			{ "name": "Polynomial", "href": "polynomial.html" }
 		]
 
 	}
