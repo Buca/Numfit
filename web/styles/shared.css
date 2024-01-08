@@ -87,6 +87,7 @@ header nav a {
 	font-size: 24px;
 	padding: 4px 20px;
 	color: #dce6ea;
+	transition: background .2s, box-shadow .2s;
 
 }
 
@@ -95,6 +96,16 @@ header nav a.selected {
 	background: #c9d0ce;
 	color: #070707;
 	box-shadow: 0 4px #62b99d, 14px 20px 0 -4px #3d4342;
+
+}
+
+header nav a:focus,
+header nav a:active {
+
+	background: #62b99d;
+	outline: none;
+	text-decoration: none;
+	box-shadow: 0 4px #62b99d ;
 
 }
 
