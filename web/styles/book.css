@@ -247,6 +247,12 @@ main {
 
 }
 
+#content td:nth-child( odd ) {
+
+	text-align: end;
+	
+}
+
 #content tr {
 
 	box-shadow: 0 2px #6f6f6f
@@ -275,6 +281,11 @@ main {
 
 }
 
+#content td:nth-child( odd ) {
+
+	white-space: nowrap;
+
+}
 #content p b {
 
 	color: #d7d4d4;

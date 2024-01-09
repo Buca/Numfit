@@ -32,7 +32,7 @@
 						<td>
 							A numerical array of length <b>2 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array.
 						</td>
-						
+
 					</tr>
 					<tr>
 						<td><b>dimension</b>: Number</td>
@@ -46,21 +46,6 @@
 			<p>The constructor initializes the <b>Linear</b> instance with the provided positions, values and dimension. 
 			</p>
 		</section>
-	</section>
-
-	<section>
-		<h3>Static Properties</h3>
-		
-		<section class="part">       
-			<div class="code">Linear.variables: Number</div>
-			<p>The number of free variables. Returns <b>1</b>.</p>
-		</section>
-
-		<section class="part">
-			<div class="code">Linear.degree: Number</div>
-			<p>The maximum degree of the polynomial. Returns <b>1</b>.</p>
-		</section>
-
 	</section>
 
 	<section>
@@ -176,10 +161,23 @@
 
 	<section>
 		<h3>Instance Properties</h3>
-			
+		
+		<section class="part">
+			<div class="code">.variables: Number</div>
+			<p>
+				The number of free variables. This property is read-only. Returns <b>1</b>.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.degree: Number</div>
+			<p>
+				The maximum degree of the equation. This property is read-only. Returns <b>1</b>.
+			</p>
+		</section>
+
 		<section class="part">
 			<div class="code">.positions: Array</div>
-
 			<p>
 				The <i>positions</i> property of the <i>Linear</i> instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length <b>2</b> containing the numerical positions. The layout of the values array is: <b>[ x<sub>0</sub>, x<sub>1</sub> ]</b>.
 			</p>
@@ -187,7 +185,6 @@
 
 		<section class="part">
 			<div class="code">.values: Array</div>
-
 			<p>
 				The <i>values</i> property of the <i>Linear</i> instance represents the array of values corresponding to the known data points. Returns an array of length <b>d &times; 2</b> containing the numerical values, where <b>d</b> is the dimension of the <i>value-space</i>.
 			</p>
@@ -236,7 +233,7 @@
 		</section>
 
 		<section class="part">
-			<div class="code">.translate( <b>t</b>): Linear</div>
+			<div class="code">.translate( <b>t</b> ): Linear</div>
 
 			<p>
 				The <i>translate()</i> method translates the positions of the <i>Linear</i> instance by a specified value <b>t</b>. This means that it adds <b>t</b> to each position. It returns the instance itself.
@@ -274,17 +271,17 @@
 		<section class="part">
 			<div class="code">.evaluate( <b>position, inputOffset, output, outputOffset</b> ): Number | Array</div>
 			<p>
-		    	The <i>evaluate()</i> method evaluates the linear equation(s) for a given position <b>[ x ]</b>. It returns an array with the corresponding value(s).
+		    	The <i>evaluate()</i> method evaluates the linear equation(s) for a given position. It returns an array with the corresponding value(s).
 			</p>
 			<p>
 			<table>
 				<tr>
 					<td><b>position</b>: Number | Array</td>
-			   		<td>The position to be evaluated. The layout of the position array is: <b>[ x ]</b>.</td>
+			   		<td>The position to be evaluated. Either a numerical value or position may be used. The layout of the array would be: <b>[ x ]</b>, where x is </td>
 				</tr>
 				<tr>
 					<td><b>inputOffset</b>: Number</td>
-			   		<td>(Optional) The index offset for the position array. Defaults to <b>0</b>.</td>
+			   		<td>(Optional) The index offset for the position array. This will be used in case an array is supplied in the position argument. Defaults to <b>0</b>.</td>
 				</tr>
 				<tr>
 					<td><b>output</b>: Array</td>
@@ -307,15 +304,15 @@
 			<table>
 				<tr>
 					<td><b>start</b>: Number | Array</td>
-					<td>The array containing the starting value of the interpolation range. The layout of the array is: <b>[ s ]</b>, where <b>s</b> is the starting value.</td>
+					<td>The starting value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ s ]</b>, where <b>s</b> is the starting value.</td>
 				</tr>
 				<tr>
 					<td><b>end</b>: Number | Array</td>
-					<td>The array containing the ending value of the interpolation range. The layout of the array is: <b>[ e ]</b>, where <b>e</b> is the ending value.</td>
+					<td>The ending value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array is: <b>[ e ]</b>, where <b>e</b> is the ending value.</td>
 				</tr>
 				<tr>
 					<td><b>size</b>: Number | Array</td>
-					<td>The array containing the step size in the interpolation range. The layout of the array is: <b>[ stepSize ]</b>, where <b>stepSize</b> is the step size.</td>
+					<td>The step size of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ stepSize ]</b>, where <b>stepSize</b> is the step size.</td>
 				</tr>
 				<tr>
 					<td><b>handler</b>: Function</td>
@@ -334,15 +331,15 @@
 			<table>
 				<tr>
 					<td><b>start</b>: Number | Array</td>
-					<td>The array containing the starting value of the interpolation range. The layout of the array is: <b>[ s ]</b>, where <b>s</b> is the starting value.</td>
+					<td>The starting value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ s ]</b>, where <b>s</b> is the starting value.</td>
 				</tr>
 				<tr>
 					<td><b>end</b>: Number | Array</td>
-					<td>The array containing the ending value of the interpolation range. The layout of the array is: <b>[ e ]</b>, where <b>e</b> is the ending value.</td>
+					<td>The ending value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array is: <b>[ e ]</b>, where <b>e</b> is the ending value.</td>
 				</tr>
 				<tr>
 					<td><b>segments</b>: Number | Array</td>
-					<td>The array containing the number of segments in the interpolation range. The layout of the array is: <b>[ segs ]</b>, where <b>segs</b> is the number of segments.</td>
+					<td>The number of segments in the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ segs ]</b>, where <b>segs</b> is the number of segments.</td>
 				</tr>
 				<tr>
 					<td><b>handler</b>: Function</td>
