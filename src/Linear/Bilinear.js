@@ -94,6 +94,72 @@ export class Bilinear extends Evaluator {
 		super( positions, values, dimension );
 
 	};
+	/*
+	step( start, end, size, handler ) {
+
+		const variables = this.constructor.variables;
+		const dimension = this.dimension;
+
+		let length = 1;
+
+		length *= Math.floor( (end[0]-start[0])/size[0] );
+		length *= Math.floor( (end[1]-start[1])/size[1] );
+		length *= dimension;
+
+		const input = new this.positions.constructor( variables );
+		const output = new this.values.constructor( length)
+
+		for ( let y = start[1], j = 0; y <= end[1]; y += size[1] ) {
+			for ( let x = start[0]; x <= end[0]; x += size[0] ) {
+
+				input[0] = x;
+				input[1] = y;
+
+				this.evaluate( input, 0, output, j );
+
+				j += dimension;
+
+			}
+		}
+
+		return output;
+
+	};*/
+
+	/*
+	segment( start, end, amount ) {
+
+		const variables = this.constructor.variables;
+		const dimension = this.dimension;
+
+		let length = 1;
+
+		length *= amount[0];
+		length *= amount[1];
+		length *= dimension;
+
+		const sizeX = (end[0] - start[0])/(amount[0]-1);
+		const sizeY = (end[1] - start[1])/(amount[1]-1);
+
+		const input = new this.positions.constructor( variables );
+		const output = new this.values.constructor( length)
+
+		for ( let y = start[1], j = 0; y <= end[1]; y += sizeY ) {
+			for ( let x = start[0]; x <= end[0]; x += sizeX ) {
+
+				input[0] = x;
+				input[1] = y;
+
+				this.evaluate( input, 0, output, j );
+
+				j += dimension;
+
+			}
+		}
+
+		return output;
+
+	};*/
 
 /*
 	evaluate( 

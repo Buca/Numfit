@@ -1,0 +1,42 @@
+<div id="content">
+	
+	<section>
+		<div class="page-title" class="row">
+			<h2>Building & Testing Guide</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/guides/build-guide.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				We will show how to build and bundle up the project for the browser enviroment, using <a href="https:/esbuild.github.io/">esbuild</a> as well as running tests with <a href="https://vitest.dev/">vitest</a>.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Setup</h3>
+		<section class="part">
+			<p>
+				Running the build and testing procedures are quite easy. First make sure you have <code>npm</code> installed. Secondly navigate to the root directory <code>/</code> of the <b>Numfit</b> repository in your CLI and run <code>npm install --save-dev</code> which will install two development dependencies required in the build and testing phases, <code>esbuild</code> and <code>vitest</code> respectively.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Building</h3>
+		<section class="part">
+			<p>
+				To run the build procedure, you simply navigate to the root directory <code>/</code> in your CLI and run <code>npm run build</code> which will produce two files in the <code>/build/</code> directory: <code>Numfit.js</code> and <code>Numfit.min.js</code>.
+			</p>
+		</section>	
+	</section>
+
+	<section>
+		<h3>Testing</h3>
+		<section class="part">
+			<p>
+				To run the tests, you again navigate to the root directory <code>/</code> in your CLI and run <code>npm run test</code> which will produce the test results.
+			</p>
+		</section>	
+	</section>
+
+</div>

@@ -274,7 +274,7 @@ export class Bicubic extends Evaluator {
 
 	};
 
-	evaluate(
+	/*evaluate(
 
 		position, inputOffset = 0,
 		output, outputOffset = 0
@@ -320,7 +320,7 @@ export class Bicubic extends Evaluator {
 
 		return output;
 
-	}
+	}*/
 
 };
 

@@ -5,6 +5,16 @@
     text-align: justify;
     margin-top: 60px;
     text-shadow: 0 1px #f3f3f3;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+#description p {
+
+	max-width: 1100px;
+    align-self: center;
 
 }
 
@@ -24,16 +34,72 @@
 
 }
 
+#examples {
+
+	align-self: center;
+    width: 100%;
+    max-width: 1100px;
+
+}
+
 .example {
 
 	justify-content: center;
 	align-items: center;
-	transition: all .6s;
+	margin: 20px 30px;
+	background: #34363a;
+	transition: filter .3s;
+
+}
+
+.example h3 {
+
+	text-align: center;
+	color: #e7e7e7;
+    text-shadow: 0 3px #363636;
+    margin-bottom: 24px;
+
+}
+
+.example .code {
+
+	align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+
+}
+
+.example .code a {
+
+	padding: 10px 14px;
+    background: #54585c;
+    border-bottom: 2px solid #91efde;
+    font-size: 16px;
+    font-family: 'Ubuntu Mono';
+    transition: border-bottom .2s, background .2s, color .1s;
+
+}
+
+.example .code a:hover {
+
+    border-bottom: 2px solid #c9d0ce;
+    background: #c9d0ce;
+    color: black;
+
+}
+
+.example .code a:active,
+.example .code a:focus {
+
+	outline-offset: 3px;
 
 }
 
 .example .column {
 
+	display: flex;
+	flex-direction: column;
 	flex: 1;
 	padding: 40px 60px;
 	max-width: 690px;
@@ -43,19 +109,19 @@
 .plot {
 
 	min-width: 340px;
-	min-height: 340px;
-	display: flex;
-    align-content: center;
+    min-height: 340px;
+    display: flex;
     flex-wrap: wrap;
-    padding: 40px 40px 40px 0px !important;
-    max-height: 600px;
+    height: 100%;
     max-width: 560px !important;
+    max-height: 350px;
+    padding: 30px !important;
+    padding-left: 0px !important;
 
 }
 
 .blur {
 
-	filter: blur( 10px );
-	transform: scale(0.95);
+	filter: blur( 3px );
 
 }

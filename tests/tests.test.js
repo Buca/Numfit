@@ -33,7 +33,7 @@ test('Scaling positions around a point and updating the instance.', () => {
 
 });
 
-test("Evaluator's step function.", () => {
+test("Step sampling function using linear evaluation.", () => {
 	
 	const positions = [ -2, 2 ];
 	const values = [ -4, 4 ];
@@ -50,6 +50,176 @@ test("Evaluator's step function.", () => {
 	expect( v[ 6 ] ).toBeCloseTo( 2 );
 	expect( v[ 7 ] ).toBeCloseTo( 3 );
 	expect( v[ 8 ] ).toBeCloseTo( 4 );
+
+});
+
+test("Step sampling function using bilinear evaluation.", () => {
+	
+	const positions = [ 
+		0, 0, 
+		1, 1
+	];
+	const values = [ 
+		255, 0,
+		0, 255 
+	];
+	const bilinear = new Bilinear( positions, values );
+
+	const v = bilinear.step( [0,0], [1,1], [0.5,0.5] );
+
+	expect( v[ 0 ] ).toBeCloseTo( bilinear.evaluate([  0,   0]) ); 
+	expect( v[ 1 ] ).toBeCloseTo( bilinear.evaluate([0.5,   0]) );
+	expect( v[ 2 ] ).toBeCloseTo( bilinear.evaluate([  1,   0]) );
+	expect( v[ 3 ] ).toBeCloseTo( bilinear.evaluate([  0, 0.5]) );
+	expect( v[ 4 ] ).toBeCloseTo( bilinear.evaluate([0.5, 0.5]) );
+	expect( v[ 5 ] ).toBeCloseTo( bilinear.evaluate([  1, 0.5]) );
+	expect( v[ 6 ] ).toBeCloseTo( bilinear.evaluate([  0,   1]) );
+	expect( v[ 7 ] ).toBeCloseTo( bilinear.evaluate([0.5,   1]) );
+	expect( v[ 8 ] ).toBeCloseTo( bilinear.evaluate([  1,   1]) );
+
+});
+
+test("Segment sampling function using bilinear evaluation.", () => {
+	
+	const positions = [ 
+		0, 0, 
+		1, 1
+	];
+	const values = [ 
+		255, 0,
+		0, 255 
+	];
+	const bilinear = new Bilinear( positions, values );
+
+	const v = bilinear.segment( [0,0], [1,1], [3,3] );
+
+	expect( v[ 0 ] ).toBeCloseTo( bilinear.evaluate([  0,   0]) ); 
+	expect( v[ 1 ] ).toBeCloseTo( bilinear.evaluate([0.5,   0]) );
+	expect( v[ 2 ] ).toBeCloseTo( bilinear.evaluate([  1,   0]) );
+	expect( v[ 3 ] ).toBeCloseTo( bilinear.evaluate([  0, 0.5]) );
+	expect( v[ 4 ] ).toBeCloseTo( bilinear.evaluate([0.5, 0.5]) );
+	expect( v[ 5 ] ).toBeCloseTo( bilinear.evaluate([  1, 0.5]) );
+	expect( v[ 6 ] ).toBeCloseTo( bilinear.evaluate([  0,   1]) );
+	expect( v[ 7 ] ).toBeCloseTo( bilinear.evaluate([0.5,   1]) );
+	expect( v[ 8 ] ).toBeCloseTo( bilinear.evaluate([  1,   1]) );
+
+});
+
+test("Segment sampling function using bilinear evaluation.", () => {
+	
+	const positions = [ 
+		0, 0, 
+		1, 1
+	];
+	const values = [ 
+		255, 0,
+		0, 255 
+	];
+	const bilinear = new Bilinear( positions, values );
+
+	const v = bilinear.segment( [0,0], [1,1], [3,3] );
+
+	expect( v[ 0 ] ).toBeCloseTo( bilinear.evaluate([  0,   0]) ); 
+	expect( v[ 1 ] ).toBeCloseTo( bilinear.evaluate([0.5,   0]) );
+	expect( v[ 2 ] ).toBeCloseTo( bilinear.evaluate([  1,   0]) );
+	expect( v[ 3 ] ).toBeCloseTo( bilinear.evaluate([  0, 0.5]) );
+	expect( v[ 4 ] ).toBeCloseTo( bilinear.evaluate([0.5, 0.5]) );
+	expect( v[ 5 ] ).toBeCloseTo( bilinear.evaluate([  1, 0.5]) );
+	expect( v[ 6 ] ).toBeCloseTo( bilinear.evaluate([  0,   1]) );
+	expect( v[ 7 ] ).toBeCloseTo( bilinear.evaluate([0.5,   1]) );
+	expect( v[ 8 ] ).toBeCloseTo( bilinear.evaluate([  1,   1]) );
+
+});
+
+test("Segment sampling function using bicubic evaluation.", () => {
+	
+	const positions = [ 
+		0, 0, 
+		1, 1,
+		2, 2,
+		3, 3
+	];
+	const values = [ 
+		1, 2, 3, 4,
+		5, 6, 7, 8,
+		9, 10, 11, 12,
+		13, 14, 15, 16
+
+	];
+	const bicubic = new Bicubic( positions, values );
+
+	const v = bicubic.segment( [0,0], [1,1], [3,3] );
+
+	expect( v[ 0 ] ).toBeCloseTo( bicubic.evaluate([  0,   0]) ); 
+	expect( v[ 1 ] ).toBeCloseTo( bicubic.evaluate([0.5,   0]) );
+	expect( v[ 2 ] ).toBeCloseTo( bicubic.evaluate([  1,   0]) );
+	expect( v[ 3 ] ).toBeCloseTo( bicubic.evaluate([  0, 0.5]) );
+	expect( v[ 4 ] ).toBeCloseTo( bicubic.evaluate([0.5, 0.5]) );
+	expect( v[ 5 ] ).toBeCloseTo( bicubic.evaluate([  1, 0.5]) );
+	expect( v[ 6 ] ).toBeCloseTo( bicubic.evaluate([  0,   1]) );
+	expect( v[ 7 ] ).toBeCloseTo( bicubic.evaluate([0.5,   1]) );
+	expect( v[ 8 ] ).toBeCloseTo( bicubic.evaluate([  1,   1]) );
+
+});
+
+test("Segment sampling function using bilinear evaluation of RGBA values.", () => {
+	
+	const positions = [ 
+		0, 0, 
+		1, 1
+	];
+	const values = [ 
+		255,0,0,255, 0,255,0,255,
+		0,0,255,255, 255,0,0,255 
+	];
+	const bilinear = new Bilinear( positions, values, 4 );
+
+	const v = bilinear.segment( [0,0], [1,1], [3,3] );
+
+	expect( v[ 0 ] ).toBeCloseTo( 255 ); 
+	expect( v[ 1 ] ).toBeCloseTo( 0 ); 
+	expect( v[ 2 ] ).toBeCloseTo( 0 ); 
+	expect( v[ 3 ] ).toBeCloseTo( 255 ); 
+
+	expect( v[ 4 ] ).toBeCloseTo( bilinear.evaluate([0.5,   0])[0] );
+	expect( v[ 5 ] ).toBeCloseTo( bilinear.evaluate([0.5,   0])[1] );
+	expect( v[ 6 ] ).toBeCloseTo( bilinear.evaluate([0.5,   0])[2] );
+	expect( v[ 7 ] ).toBeCloseTo( bilinear.evaluate([0.5,   0])[3] );
+
+	expect( v[  8 ] ).toBeCloseTo( 0 );
+	expect( v[  9 ] ).toBeCloseTo( 255 );
+	expect( v[ 10 ] ).toBeCloseTo( 0 );
+	expect( v[ 11 ] ).toBeCloseTo( 255 );
+
+	expect( v[ 12 ] ).toBeCloseTo( bilinear.evaluate([  0, 0.5])[0] );
+	expect( v[ 13 ] ).toBeCloseTo( bilinear.evaluate([  0, 0.5])[1] );
+	expect( v[ 14 ] ).toBeCloseTo( bilinear.evaluate([  0, 0.5])[2] );
+	expect( v[ 15 ] ).toBeCloseTo( bilinear.evaluate([  0, 0.5])[3] );
+
+	expect( v[ 16 ] ).toBeCloseTo( bilinear.evaluate([0.5, 0.5])[0] );
+	expect( v[ 17 ] ).toBeCloseTo( bilinear.evaluate([0.5, 0.5])[1] );
+	expect( v[ 18 ] ).toBeCloseTo( bilinear.evaluate([0.5, 0.5])[2] );
+	expect( v[ 19 ] ).toBeCloseTo( bilinear.evaluate([0.5, 0.5])[3] );
+
+	expect( v[ 20 ] ).toBeCloseTo( bilinear.evaluate([  1, 0.5])[0] );
+	expect( v[ 21 ] ).toBeCloseTo( bilinear.evaluate([  1, 0.5])[1] );
+	expect( v[ 22 ] ).toBeCloseTo( bilinear.evaluate([  1, 0.5])[2] );
+	expect( v[ 23 ] ).toBeCloseTo( bilinear.evaluate([  1, 0.5])[3] );
+
+	expect( v[ 24 ] ).toBeCloseTo( 0 );
+	expect( v[ 25 ] ).toBeCloseTo( 0 );
+	expect( v[ 26 ] ).toBeCloseTo( 255 );
+	expect( v[ 27 ] ).toBeCloseTo( 255 );
+
+	expect( v[ 28 ] ).toBeCloseTo( bilinear.evaluate([0.5,   1])[0] );
+	expect( v[ 29 ] ).toBeCloseTo( bilinear.evaluate([0.5,   1])[1] );
+	expect( v[ 30 ] ).toBeCloseTo( bilinear.evaluate([0.5,   1])[2] );
+	expect( v[ 31 ] ).toBeCloseTo( bilinear.evaluate([0.5,   1])[3] );
+
+	expect( v[ 32 ] ).toBeCloseTo( 255 );
+	expect( v[ 33 ] ).toBeCloseTo( 0 );
+	expect( v[ 34 ] ).toBeCloseTo( 0 );
+	expect( v[ 35 ] ).toBeCloseTo( 255 );
 
 });
 
@@ -75,7 +245,7 @@ test("Evaluator's segment function.", () => {
 	const values = [ -4, 4 ];
 	const linear = new Linear( positions, values );
 
-	const v = linear.segment( -2, 2, 8 );
+	const v = linear.segment( -2, 2, 9 );
 
 	expect( v[ 0 ] ).toBeCloseTo( -4 );
 	expect( v[ 1 ] ).toBeCloseTo( -3 );
@@ -85,6 +255,7 @@ test("Evaluator's segment function.", () => {
 	expect( v[ 5 ] ).toBeCloseTo( 1 );
 	expect( v[ 6 ] ).toBeCloseTo( 2 );
 	expect( v[ 7 ] ).toBeCloseTo( 3 );
+	expect( v[ 8 ] ).toBeCloseTo( 4 );
 
 });
 

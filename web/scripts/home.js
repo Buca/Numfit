@@ -20,106 +20,119 @@ observer.observe( document.getElementById('linear-example') );
 observer.observe( document.getElementById('cubic-example') );
 observer.observe( document.getElementById('linear-reg-example') );
 
+function plot2D( context, width, height, data ) {
 
+	const image = new ImageData( width, height );
 
-const options = {
-	responsive: true,
-    maintainAspectRatio: false,
-	layout: {
-        padding: 0
-    },
-	plugins: {
-		legend: {
-			display: false
-		}
-	},
-	scales: {
-		x: {
-			//type: 'linear',
-			lineWidth: 10,
-			position: 'bottom',
-			display: true
-		},
-		y: {
-			tickColor: 'rgb(255, 0, 0)',
-			display: true,
-			position: 'right'
-		}
+	console.log( data.length, image.data.length, image.data.length - data.length );
+
+	for ( let x = 0, j = 0; x < width; x ++ ) {
+	for ( let y = 0; y < height; y ++ ) {
+
+		image.data[ j ] = data[ j ++ ];
+		image.data[ j ] = data[ j ++ ];
+		image.data[ j ] = data[ j ++ ];
+		image.data[ j ] = data[ j ++ ];
+
 	}
+	}
+
+	context.putImageData( image, 0, 0 );
+
 };
 
+function createPlot2D({ canvas, type, positions, values, dimension }) {
 
-const linearCTX = document.getElementById('linear-plot');
+	const context = canvas.getContext('2d');
+	const parent = canvas.parentElement;
+	const evaluator = new type( positions, values, dimension );
+	const degree = type.degree;
+	const start = [ 0, 0 ];
+	const end = [ 0, 0 ];
+	const segments = [ 0, 0 ];
 
-const linearData = {
-	datasets: [{
-		label: 'Samples',
-		data: [[.2,.2],[.7,.7]],
-		backgroundColor: 'rgb(111,111,111)',
-		size: 10
-	},{
-		label: 'Linear Evaluation',
-		data: [[0,0],[.1,.1],[.2,.2],[.3,.3],[.4,.4],[.5,.5],[.6,.6],[.7,.7],[.8,.8],[.9,.9],[1,1]],
-		backgroundColor: '#3dedcd'
-	}],
+	const observer = new ResizeObserver( () => {
+
+		let width = parent.clientWidth;
+		let height = parent.clientHeight;
+
+		const computedStyle = getComputedStyle( parent );
+
+		height -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+		width -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+
+		canvas.width = width;
+		canvas.height = height;
+
+		const _width = positions[ positions.length - 2 ] - positions[ 0 ];
+		const _height = positions[ positions.length - 1 ] - positions[ 1 ];
+
+		const centerX = 0.5*_width + positions[ 0 ];
+		const centerY = 0.5*_height + positions[ 1 ];
+
+		segments[ 0 ] = width;
+		segments[ 1 ] = height;
+		start[ 0 ] = centerX - .5*_width;
+		start[ 1 ] = centerY - .5*_height;
+		end[ 0 ] = centerX + .5*_width;
+		end[ 1 ] = centerY + .5*_height;
+
+		const data = evaluator.segment( start, end, segments );
+
+
+
+		plot2D( context, width, height, data );
+	
+	});
+
+	observer.observe( parent );
+
 };
 
-const linearConfig = {
-	type: 'scatter',
-	data: linearData,
-	options: options
-};
+createPlot2D({
+	canvas: document.getElementById('bilinear-plot'), 
+	type: Bilinear,
+	positions: [
+		0, 0,
+		1, 1
+	],
+	values: [
+		255,0,0,255,	0,0,255,255,
+		0,255,0,255,	255,255,0,255
+	],
+	dimension: 4
+});
 
+createPlot2D({
+	canvas: document.getElementById('biquadratic-plot'), 
+	type: Biquadratic,
+	positions: [
+		0, 0,
+		1, 1,
+		2, 2
+	],
+	values: [
+		255,0,0,255,		0,0,255,255,		0,255,0,255,
+		0,255,0,255,		255,0,0,255,		255,0,255,255,
+		255,255,0,255,	255,0,255,255,	0,0,255,255
+	],
+	dimension: 4
+});
 
-const linearChart = new Chart( linearCTX, linearConfig );
-
-
-/*Generate cubic data*/
-
-const cubicCTX = document.getElementById('cubic-plot');
-
-const cubicData = {
-	datasets: [{
-		label: 'Samples',
-		data: [[.2,.2],[.7,.7]],
-		backgroundColor: 'rgb(111,111,111)',
-		size: 10
-	},{
-		label: 'Linear Evaluation',
-		data: [[0,0],[.1,.1],[.2,.2],[.3,.3],[.4,.4],[.5,.5],[.6,.6],[.7,.7],[.8,.8],[.9,.9],[1,1]],
-		backgroundColor: '#3dedcd'
-	}],
-};
-
-const cubicConfig = {
-	type: 'scatter',
-	data: cubicData,
-	options: options
-};
-
-const cubicChart = new Chart( cubicCTX, cubicConfig );
-
-/* Linear Regression */
-
-const linearRegCTX = document.getElementById('linear-reg-plot');
-
-const linearRegData = {
-	datasets: [{
-		label: 'Samples',
-		data: [[.2,.2],[.7,.7]],
-		backgroundColor: 'rgb(111,111,111)',
-		size: 10
-	},{
-		label: 'Linear Evaluation',
-		data: [[0,0],[.1,.1],[.2,.2],[.3,.3],[.4,.4],[.5,.5],[.6,.6],[.7,.7],[.8,.8],[.9,.9],[1,1]],
-		backgroundColor: '#3dedcd'
-	}],
-};
-
-const linearRegConfig = {
-	type: 'scatter',
-	data: linearRegData,
-	options: options
-};
-
-const linearRegChart = new Chart( linearRegCTX, linearRegConfig );
+createPlot2D({
+	canvas: document.getElementById('bicubic-plot'), 
+	type: Bicubic,
+	positions: [
+		0, 0,
+		1, 1,
+		2, 2,
+		3, 3
+	],
+	values: [
+		255,0,0,255,		0,0,255,255,		0,255,0,255,		0,255,0,255,
+		0,255,0,255,		255,0,0,255,		255,0,255,255,	255,0,0,255,
+		255,255,0,255,	255,0,255,255,	0,0,255,255,		0,0,255,255,
+		255,0,0,255,		0,0,255,255,		0,255,0,255,		0,255,0,255
+	],
+	dimension: 4
+});

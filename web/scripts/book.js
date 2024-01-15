@@ -41,7 +41,7 @@ async function getHTMLFromURL( url ) {
 	    response = await fetch( url );
 	    let status = response.ok;
 
-	    if ( !status ) response = await fetch('not-found.html');
+	    if ( !status ) response = await fetch('../not-found.html');
 
 	    const text = await response.text();
 		html = stringToHTML( text ).querySelector('#content');
@@ -50,7 +50,7 @@ async function getHTMLFromURL( url ) {
 		
 	} catch ( e ) {
 	    
-		response = await fetch('not-found.html');
+		response = await fetch('../not-found.html');
 
 		const text = await response.text();
 		html = stringToHTML( text ).querySelector('#content');
@@ -164,6 +164,8 @@ async function retrieveAndDisplayPage( href ) {
 	document
 		.getElementById('content')
 		.replaceWith( element );
+
+	hljs.highlightAll();
 
 };
 

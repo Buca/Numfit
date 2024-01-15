@@ -2,11 +2,11 @@
 	<section>
 		<div class="page-title" class="row">
 			<h2>Bicubic</h2>
-			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/bilinear.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Bilinear.js">Source</a></div>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/bicubic.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Cubic/Bicubic.js">Source</a></div>
 		</div>
 		<section class="part">
 			<p>
-				The Bicubic class provides tools for performing two dimensional quadratic interpolation aka biquadratic interpolation and extrapolation, which are foundational techniques in data science for estimating values within or beyond a range of known data points. Interpolation employs biquadratic polynomials to construct new data points within the range of known values, essentially bridging the gaps between discrete points. In contrast, extrapolation extends the quadratic relationship beyond the known data, enabling predictions outside the given range. These techniques are widely employed in various applications, including signal processing, image analysis, and scientific simulations.
+				The Bicubic class provides tools for performing two dimensional cubic interpolation and extrapolation.
 			</p>
 		</section>
 	</section>
@@ -15,50 +15,41 @@
 		<h3>Constructor</h3>
 
 		<section class="part">
-			<div class="code">new Bicubic( <b>positions, values, ?coefficients</b>: Array ): Bicubic</div>
+			<div class="code">new Bicubic( <b>positions, values, ?dimension</b> ): Bicubic</div>
 
-			<p>The <b><i>Bicubic()</i></b> constructor creates a new instance of the <b>Biquadratic</b> class. It takes three parameters:</p>
+			<p>The <b><i>Bicubic()</i></b> constructor creates a new instance of the <b>Bicubic</b> class. It takes three parameters:</p>
 
 			<p>
 				<table>
 					<tr>
-						<td><b>positions</b>:</td>
+						<td><b>positions</b>: Array</td>
 						<td>
-							A numerical array of length 8 that specifies the positions of the values to be interpolated. The format of the array is: [ 
+							A numerical array of length <b>9</b> that specifies the positions of the values to be interpolated. The layout of the array is: <b>[ 
 							<br>
 							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>,
 							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>, y<sub>1</sub>,
 							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>,
 							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>3</sub>, y<sub>3</sub>
 							<br>
-							<br>].
+							<br>]</b>.
 						</td>
 					</tr>
 					<tr>
-						<td><b>values</b>:</td>
+						<td><b>values</b>: Array</td>
 						<td>
-							A numerical array of length 16 that contains the values to be interpolated. The format of the array is: [ 
+							A numerical array of length <b>16 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array. The layout of the array is: <b>[ 
 							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>00</sub>, v<sub>10</sub>, v<sub>20</sub>, v<sub>30</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>01</sub>, v<sub>11</sub>, v<sub>21</sub>, v<sub>31</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>02</sub>, v<sub>12</sub>, v<sub>22</sub>, v<sub>32</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>03</sub>, v<sub>13</sub>, v<sub>23</sub>, v<sub>33</sub>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>000</sub>, …, v<sub>(d-1)00</sub>, v<sub>010</sub>, …, v<sub>(d-1)10</sub>, v<sub>020</sub>, …, v<sub>(d-1)20</sub>, v<sub>030</sub>, …, v<sub>(d-1)30</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>001</sub>, …, v<sub>(d-1)01</sub>, v<sub>011</sub>, …, v<sub>(d-1)11</sub>, v<sub>021</sub>, …, v<sub>(d-1)21</sub>, v<sub>031</sub>, …, v<sub>(d-1)31</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)02</sub>, v<sub>012</sub>, …, v<sub>(d-1)12</sub>, v<sub>022</sub>, …, v<sub>(d-1)22</sub>, v<sub>032</sub>, …, v<sub>(d-1)32</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)03</sub>, v<sub>013</sub>, …, v<sub>(d-1)13</sub>, v<sub>023</sub>, …, v<sub>(d-1)23</sub>, v<sub>033</sub>, …, v<sub>(d-1)33</sub>
 							<br>
-							<br>], where the first index correponds to the x-position and the second corresponds to the y-position.
+							<br>]</b>, where the second index correponds to the x-position and the third corresponds to the y-position.
 						</td>
 					</tr>
 					<tr>
-						<td><b>coefficients</b>:</td>
-						<td>
-							(Optional) An optional numerical array of coefficients used internally for evaluating interpolated values. The format of the coeffiecients array is: [
-							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>00</sub>, c<sub>10</sub>, c<sub>20</sub>, c<sub>30</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>01</sub>, c<sub>11</sub>, c<sub>21</sub>, c<sub>31</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>02</sub>, c<sub>12</sub>, c<sub>22</sub>, c<sub>32</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>03</sub>, c<sub>13</sub>, c<sub>23</sub>, c<sub>33</sub>
-							<br>
-							<br>], where the first index corresponds to the exponent of the x-variable and the second index corresponds to the exponent of the y-variable.
-						</td>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A positive integer value that ddefines the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
 					</tr>
 				</table>
 			</p>
@@ -70,280 +61,170 @@
 	</section>
 
 	<section>
-		<h3>Static Properties</h3>
-		
-		<section class="part">       
-			<div class="code">Bicubic.variables: Number</div>
-			<p>The number of free variables. Since <b>Bicubic</b> is a binomial - it is 2.</p>
-		</section>
-
-		<section class="part">
-			<div class="code">Bicubic.degree: Number</div>
-			<p>The maximum degree of the polynomial. Returns 3.
-		</section>
-	</section>
-
-	<section>
 		<h3>Static Methods</h3>
 		<section class="part">
-			<div class="code">Bicubic.coefficients( <b>x0, y0, x1, y1, x2, y2, x3, y3, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32, v03, v13, v23, v33</b>: Number, <b>?output</b>: Array ): Array</div>
+			<div class="code">Bicubic.coefficients( <b>positions, values, ?dimension, ?output, ?outputOffset</b> ): Array</div>
 
 			<p>
-				The <i>Bicubic.coefficients()</i> static method determines the coefficients of the biquadratic equation. It takes 16 arguments:
+				The <i>Bicubic.coefficients()</i> static method determines the coefficients of the bilinear equation. It takes five arguments:
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>x0</b>:</td>
-						<td>The x-coordinate of the points on the left side.</td>
-					</tr>
-					<tr>
-						<td><b>y0</b>:</td>
-						<td>The y-coordinate of the points on the upper side.</td>
-					</tr>
-					<tr>
-						<td><b>x1</b>:</td>
-						<td>The x-coordinate of the points on the middle.</td>
-					</tr>
-					<tr>
-						<td><b>y1</b>:</td>
-						<td>The y-coordinate of the points on the middle.</td>
-					</tr>
-					<tr>
-						<td><b>x2</b>:</td>
-						<td>The x-coordinate of the points on the right side.</td>
-					</tr>
-					<tr>
-						<td><b>y2</b>:</td>
-						<td>The y-coordinate of the points on the lower side.</td>
-					</tr>
-					<tr>
-						<td><b>x3</b>:</td>
-						<td>The x-coordinate of the points on the right side.</td>
-					</tr>
-					<tr>
-						<td><b>y3</b>:</td>
-						<td>The y-coordinate of the points on the lower side.</td>
-					</tr>
-					<tr>
-						<td><b>v00</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v10</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v20</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v30</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v01</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v11</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v21</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v31</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v02</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v12</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v22</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v32</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v03</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v13</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v23</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v33</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>output</b>:</td>
+						<td><b>positions</b>: Array</td>
 						<td>
-							(Optional) An optional array to store the calculated coefficients. If not provided, a new array will be created.
+							A numerical array of length <b>6</b> that specifies the positions of the values to be interpolated. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>, y<sub>1</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>3</sub>, y<sub>3</sub>
+							<br>
+							<br>]</b>.
 						</td>
+					</tr>
+					<tr>
+						<td><b>values</b>: Array</td>
+						<td>
+							A numerical array of length <b>16 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>000</sub>, …, v<sub>(d-1)00</sub>, v<sub>010</sub>, …, v<sub>(d-1)10</sub>, v<sub>020</sub>, …, v<sub>(d-1)20</sub>, v<sub>030</sub>, …, v<sub>(d-1)30</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>001</sub>, …, v<sub>(d-1)01</sub>, v<sub>011</sub>, …, v<sub>(d-1)11</sub>, v<sub>021</sub>, …, v<sub>(d-1)21</sub>, v<sub>031</sub>, …, v<sub>(d-1)31</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)02</sub>, v<sub>012</sub>, …, v<sub>(d-1)12</sub>, v<sub>022</sub>, …, v<sub>(d-1)22</sub>, v<sub>032</sub>, …, v<sub>(d-1)32</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)03</sub>, v<sub>013</sub>, …, v<sub>(d-1)13</sub>, v<sub>023</sub>, …, v<sub>(d-1)23</sub>, v<sub>033</sub>, …, v<sub>(d-1)33</sub>
+							<br>
+							<br>]</b>, where the second index correponds to the x-position and the third corresponds to the y-position.
+						</td>
+					</tr>
+					<tr>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A positive integer value that ddefines the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
+					</tr>
+					<tr>
+						<td><b>output</b>: Array</td>
+						<td>
+							(Optional) An array to store the calculated coefficients. If not provided, a new array will be created. The layout of the output array is: <b>[
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>000</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>100</sub>, &nbsp;&nbsp; c<sub>200</sub>, &nbsp;&nbsp; c<sub>300</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>010</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>110</sub>, &nbsp;&nbsp; c<sub>210</sub>, &nbsp;&nbsp; c<sub>310</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>020</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>120</sub>, &nbsp;&nbsp; c<sub>220</sub>, &nbsp;&nbsp; c<sub>320</sub>, 
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>030</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>130</sub>, &nbsp;&nbsp; c<sub>230</sub>, &nbsp;&nbsp; c<sub>330</sub>, 
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>001</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>101</sub>, &nbsp;&nbsp; c<sub>201</sub>, &nbsp;&nbsp; c<sub>301</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>011</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>111</sub>, &nbsp;&nbsp; c<sub>211</sub>, &nbsp;&nbsp; c<sub>311</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>021</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>121</sub>, &nbsp;&nbsp; c<sub>221</sub>, &nbsp;&nbsp; c<sub>321</sub>, 
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>031</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>131</sub>, &nbsp;&nbsp; c<sub>231</sub>, &nbsp;&nbsp; c<sub>331</sub>, 
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>00(d-1)</sub>, c<sub>10(d-1)</sub>, c<sub>20(d-1)</sub>, c<sub>30(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>01(d-1)</sub>, c<sub>11(d-1)</sub>, c<sub>21(d-1)</sub>, c<sub>31(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>02(d-1)</sub>, c<sub>12(d-1)</sub>, c<sub>22(d-1)</sub>, c<sub>32(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>03(d-1)</sub>, c<sub>13(d-1)</sub>, c<sub>23(d-1)</sub>, c<sub>33(d-1)</sub>
+								<br>
+								<br>]</b>, where <b>d</b> is the dimension of the <i>values-space</i> and the first index corresponds to the exponent of the <i>free variables</i>. 
+						</td>
+					</tr>
+					<tr>
+						<td><b>outputOffset</b>: Number</td>
+						<td>(Optional) A positive integer which describes how much to offset the index layout in the output.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns an array containing the nine coefficients of the biquadratic equation: [
-				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>00</sub>, c<sub>10</sub>, c<sub>20</sub>, c<sub>30</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>01</sub>, c<sub>11</sub>, c<sub>21</sub>, c<sub>31</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>02</sub>, c<sub>12</sub>, c<sub>22</sub>, c<sub>32</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>03</sub>, c<sub>13</sub>, c<sub>23</sub>, c<sub>33</sub>
-				<br>
-				<br>], where the polynomial is expressed as v = c<sub>00</sub> + c<sub>10</sub>x + c<sub>20</sub>x<sup>2</sup> + c<sub>30</sub>x<sup>3</sup> + c<sub>01</sub>y + c<sub>11</sub>xy + c<sub>21</sub>x<sup>2</sup>y + c<sub>31</sub>x<sup>3</sup>y + c<sub>02</sub>y<sup>2</sup> + c<sub>12</sub>xy<sup>2</sup> + c<sub>22</sub>x<sup>2</sup>y<sup>2</sup> + c<sub>32</sub>x<sup>3</sup>y<sup>2</sup> + c<sub>03</sub>y<sup>3</sup> + c<sub>13</sub>xy<sup>3</sup> + c<sub>23</sub>x<sup>2</sup>y<sup>3</sup> + c<sub>33</sub>x<sup>3</sup>y<sup>3</sup>.
+				Returns the array of calculated coefficients. If not provided, a new array will be created. 
 			</p>
 		</section>
 		
 		<section class="part">
-			<div class="code">Biquadratic.evaluate( <b>x0, y0, x1, y1, x2, y2, x3, y3, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32, v03, v13, v23, v33, x, y</b>: Number ): Number</div>
+			<div class="code">Bicubic.evaluate( <b>positions, values, ?dimension, position, ?output, ?outputOffset </b> ): Number | Array</div>
 
 			<p>
-				The <i>Biquadratic.evaluate()</i> static method evaluates the biquadratic equation for the given inputs <b>x</b> and <b>y</b>. It takes seventeen arguments:
+				The <i>Bicubic.evaluate()</i> static method evaluates the bilinear equation for the given inputs <b>x</b> and <b>y</b>. It takes ten arguments:
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>x0</b>:</td>
-						<td>The x-coordinate of the points on the left side.</td>
+						<td><b>positions</b>: Array</td>
+						<td>
+							A numerical array of length <b>6</b> that specifies the positions of the values to be interpolated. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>, y<sub>1</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>3</sub>, y<sub>3</sub>
+							<br>
+							<br>]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>y0</b>:</td>
-						<td>The y-coordinate of the points on the upper side.</td>
+						<td><b>values</b>: Array</td>
+						<td>
+							A numerical array of length <b>16 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>000</sub>, …, v<sub>(d-1)00</sub>, v<sub>010</sub>, …, v<sub>(d-1)10</sub>, v<sub>020</sub>, …, v<sub>(d-1)20</sub>, v<sub>030</sub>, …, v<sub>(d-1)30</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>001</sub>, …, v<sub>(d-1)01</sub>, v<sub>011</sub>, …, v<sub>(d-1)11</sub>, v<sub>021</sub>, …, v<sub>(d-1)21</sub>, v<sub>031</sub>, …, v<sub>(d-1)31</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)02</sub>, v<sub>012</sub>, …, v<sub>(d-1)12</sub>, v<sub>022</sub>, …, v<sub>(d-1)22</sub>, v<sub>032</sub>, …, v<sub>(d-1)32</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)03</sub>, v<sub>013</sub>, …, v<sub>(d-1)13</sub>, v<sub>023</sub>, …, v<sub>(d-1)23</sub>, v<sub>033</sub>, …, v<sub>(d-1)33</sub>
+							<br>
+							<br>]</b>, where the second index correponds to the x-position and the third corresponds to the y-position.
+						</td>
 					</tr>
 					<tr>
-						<td><b>x1</b>:</td>
-						<td>The x-coordinate of the points on the middle.</td>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A positive integervalue that defines the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
 					</tr>
 					<tr>
-						<td><b>y1</b>:</td>
-						<td>The y-coordinate of the points on the middle.</td>
+						<td><b>position</b>: Array</td>
+						<td>An array of two numerical values which describes the position to be evaluated. The layout of the position array is: <b>[ x, y ]</b>.</td>
 					</tr>
 					<tr>
-						<td><b>x2</b>:</td>
-						<td>The x-coordinate of the points on the right side.</td>
+						<td><b>output</b>: Array</td>
+						<td>
+							(Optional) An array to store the evaluated values. The layout of the output array is: <b>[v<sub>0</sub>, v<sub>1</sub>, ..., v<sub>d-1</sub>]</b>, where <b>d</b> is the dimension of the <i>value-space</i>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>y2</b>:</td>
-						<td>The y-coordinate of the points on the lower side.</td>
-					</tr>
-					<tr>
-						<td><b>x3</b>:</td>
-						<td>The x-coordinate of the points on the right side.</td>
-					</tr>
-					<tr>
-						<td><b>y3</b>:</td>
-						<td>The y-coordinate of the points on the lower side.</td>
-					</tr>
-					<tr>
-						<td><b>v00</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v10</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v20</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v30</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v01</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v11</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v21</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v31</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v02</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v12</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v22</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v32</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v03</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v13</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v23</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v33</b>:</td>
-						<td>The value at the point (x<sub>3</sub>, y<sub>3</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>x</b>:</td>
-						<td>The x-coordinate input which to evaluate the biquadratic equation.</td>
-					</tr>
-					<tr>
-						<td><b>y</b>:</td>
-						<td>The y-coordinate input which to evaluate the biquadratic equation.</td>
+						<td><b>outputOffset</b>: Number</td>
+						<td>(Optional) A integer greater than <b>0</b> which defines how much to offset the index layout in the output.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns the calculated value corresponding to the inputs <b>x</b> and <b>y</b> based on the biquadratic equation defined by the provided points and values.
+				The method returns the calculated value corresponding to the inputs <b>x</b> and <b>y</b> based on the bicubic equation(s) defined by the provided points and values.
 			</p>
 		</section>
 	</section>
 
 	<section>
 		<h3>Instance Properties</h3>
+
+		<section class="part">
+			<div class="code">.variables: Number</div>
+			<p>
+				The number of free variables. This property is read-only. Returns <b>2</b>.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.degree: Number</div>
+			<p>
+				The maximum degree of the equation. This property is read-only. Returns <b>2</b>.
+			</p>
+		</section>
 			
 		<section class="part">
 			<div class="code">.positions: Array</div>
 
 			<p>
-				The <i>positions</i> property of the <i>Bicubic</i> instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length 4 containing the numerical positions. The structure of the <i>positions</i> array is: [
+				The <i>positions</i> property of the <i>Bicubic</i> instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length 4 containing the numerical positions. The structure of the <i>positions</i> array is: <b>[
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;x0, y0, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;x1, y1,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;x2, y2,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;x3, y3
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>, y<sub>1</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>3</sub>, y<sub>3</sub>
 				<br>
-				<br>].
+				<br>]</b>.
 			</p>
 
 			<p>
@@ -355,18 +236,25 @@
 			<div class="code">.values: Array</div>
 
 			<p>
-				The <i>values</i> property of the <i>Bicubic</i> instance represents the array of values corresponding to the known data points. It is accessible using dot notation and returns an array of length 16 containing the numerical values. The structure of the <i>values</i> array is: [
+				The <i>values</i> property of the <i>Bicubic</i> instance represents the array of values corresponding to the known data points. It is accessible using dot notation and returns an array of length <b>d &times; 4</b> containing the numerical values. The layout of the <i>values</i> array is: <b>[ 
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v00, v10, v20, v30,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v01, v11, v21, v31,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v02, v12, v22, v32,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v03, v13, v23, v33
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>000</sub>, …, v<sub>(d-1)00</sub>, v<sub>010</sub>, …, v<sub>(d-1)10</sub>, v<sub>020</sub>, …, v<sub>(d-1)20</sub>, v<sub>030</sub>, …, v<sub>(d-1)30</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>001</sub>, …, v<sub>(d-1)01</sub>, v<sub>011</sub>, …, v<sub>(d-1)11</sub>, v<sub>021</sub>, …, v<sub>(d-1)21</sub>, v<sub>031</sub>, …, v<sub>(d-1)31</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)02</sub>, v<sub>012</sub>, …, v<sub>(d-1)12</sub>, v<sub>022</sub>, …, v<sub>(d-1)22</sub>, v<sub>032</sub>, …, v<sub>(d-1)32</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, …, v<sub>(d-1)03</sub>, v<sub>013</sub>, …, v<sub>(d-1)13</sub>, v<sub>023</sub>, …, v<sub>(d-1)23</sub>, v<sub>033</sub>, …, v<sub>(d-1)33</sub>
 				<br>
-				<br>].
+				<br>]</b>.
 			</p>
 
 			<p>
-				The <i>values</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal values of the <i>Bicubic</i> instance. This allows for dynamic modification of the interpolation range.
+				The <i>values</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal values of the Bilinear instance. This allows for dynamic modification of the interpolation range.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.dimension: Number</div>
+			<p>
+				The <i>dimension</i> property of the <i>Bilinear</i> instance represents the dimension of the <i>value-space</i>. It should treated as read-only.
 			</p>
 		</section>
 
@@ -374,186 +262,172 @@
 			<div class="code">.coefficients: Array</div>
 
 			<p>
-				The <i>coefficients</i> property of the <i>Bicubic</i> instance represents the array of coefficients used internally for evaluating interpolated values. It is accessible using dot notation and returns an array of length 16 containing the numerical coefficients. The structure of the <i>coefficients</i> array is: [
+				The <i>coefficients</i> property of the <i>Bicubic</i> instance represents the array of coefficients used internally for evaluating interpolated values. Returns an array of length 4 containing the numerical coefficients. TThe layout of the coefficients array is: <b>[
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c00, c10, c20, c30,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c01, c11, c21, c31,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c02, c12, c22, c32,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c03, c13, c23, c33
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>000</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>100</sub>, &nbsp;&nbsp; c<sub>200</sub>, &nbsp;&nbsp; c<sub>300</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>010</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>110</sub>, &nbsp;&nbsp; c<sub>210</sub>, &nbsp;&nbsp; c<sub>310</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>020</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>120</sub>, &nbsp;&nbsp; c<sub>220</sub>, &nbsp;&nbsp; c<sub>320</sub>, 
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>030</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>130</sub>, &nbsp;&nbsp; c<sub>230</sub>, &nbsp;&nbsp; c<sub>330</sub>, 
 				<br>
-				<br>], where the first index corresponds to the exponent of the x-variable and the second index corresponds to the exponent of the y-variable.
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>001</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>101</sub>, &nbsp;&nbsp; c<sub>201</sub>, &nbsp;&nbsp; c<sub>301</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>011</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>111</sub>, &nbsp;&nbsp; c<sub>211</sub>, &nbsp;&nbsp; c<sub>311</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>021</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>121</sub>, &nbsp;&nbsp; c<sub>221</sub>, &nbsp;&nbsp; c<sub>321</sub>, 
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>031</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>131</sub>, &nbsp;&nbsp; c<sub>231</sub>, &nbsp;&nbsp; c<sub>331</sub>, 
+				<br>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
+				<br>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>00(d-1)</sub>, c<sub>10(d-1)</sub>, c<sub>20(d-1)</sub>, c<sub>30(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>01(d-1)</sub>, c<sub>11(d-1)</sub>, c<sub>21(d-1)</sub>, c<sub>31(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>02(d-1)</sub>, c<sub>12(d-1)</sub>, c<sub>22(d-1)</sub>, c<sub>32(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>03(d-1)</sub>, c<sub>13(d-1)</sub>, c<sub>23(d-1)</sub>, c<sub>33(d-1)</sub>
+				<br>
+				<br>]</b>, where <b>d</b> is the dimension of the <i>values-space</i>, the first index corresponds to the exponent of the x-variable and the second index corresponds to the exponent of the y-variable.
 			</p>
 
 			<p>
 				The <i>coefficients</i> property is mutable. To recompute the internal coefficients, you need to call the <i>update()</i> method on the <i>Bicubic</i> instance.
 			</p>
 		</section>
+
 	</section>
 
 	<section>
 		<h3>Instance Methods</h3>
 		
+
+
 		<section class="part">
 			<div class="code">.update(): Bicubic</div>
 			<p>The <i>update()</i> method recalculates the coefficients. This should be used after performing a translation, scaling or when adjusting either the positions or values of the instance.</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.translate( <b>tX, tY</b>: Number ): Bicubic</div>
+			<div class="code">.translate( <b>offset</b> ): Bicubic</div>
 
 			<p>
-				The <i>translate()</i> method translates the positions of the <i>Bicubic</i> instance by <b>tX</b> and <b>tY</b>. It returns the instance itself.
+				The <i>translate()</i> method translates the positions of the <i>Bicubic</i> instance by the values specified in the offset array. It returns the instance itself.
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>tX</b>:</td>
-					<td>The value by which to translate the X-coordinates.</td>
-				</tr>
-				<tr>
-					<td><b>tY</b>:</td>
-					<td>The value by which to translate the y-coordinates.</td>
+					<td><b>offset</b>: Array</td>
+					<td>An array of two values by which to offset the positions. The layout of the offset array is: <b>[ offset<sub>x</sub>, offset<sub>y</sub> ]</b>, where <b>offset<sub>x</sub></b> and <b>offset<sub>y</sub></b> are the values by which to translate in the <b>x</b> and <b>y</b> direction respectively.</td>
 				</tr>
 			</table>
 			</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.scale( <b>sX, sY, ?aX, ?aY</b>: Number ): Bicubic</div>
+			<div class="code">.scale( <b>scalars, ?orgin</b> ): Bicubic</div>
 
 			<p>
-				The <i>scale()</i> method scales the positions of the <i>Bicubic</i> instance around an optional anchor point (<b>aX</b>, <b>aY</b> ) by a scaling vector (<b>sX</b>, <b>sY</b>). If no anchor point is provided, the scaling is done with respect to the origin (0,0). It returns the instance itself, allowing for chaining operations.
+				The <i>scale()</i> method scales the positions of the <i>Bicubic</i> instance around the anchor point <b>orgin</b> by the scaling vector <b>scalars</b>. If no anchor point is provided, the scaling is done with respect to the origin <b>[ 0, 0 ]</b>. It returns the instance itself, allowing for chaining operations.
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>sX</b>:</td>
-					<td>The scaling factor to apply to the x-coordinates.</td>
+					<td><b>scalars</b>: Array</td>
+					<td>The scaling values by which to scale the positions. The layout of the array is: <b>[ scalar<sub>x</sub>, scalar<sub>y</sub> ]</b>.</td>
 				</tr>
 				<tr>
-					<td><b>sY</b>:</td>
-					<td>The scaling factor to apply to the y-coordinates.</td>
-				</tr>
-				<tr>
-					<td><b>aX</b>:</td>
-					<td>An (optional) value around which to scale the x-coordinates. If omitted, the origin 0 is used.</td>
-				</tr>
-				<tr>
-					<td><b>aY</b>:</td>
-					<td>An (optional) value around which to scale the y-coordinates. If omitted, the origin 0 is used.</td>
+					<td><b>orgin</b>: Array</td>
+					<td>(Optional) The point around which to scale positions. The layout of the array is <b>[ orgin<sub>x</sub>, orgin<sub>y</sub> ]</b>. Defaults to <b>[ 0, 0 ]</b>.</td>
 				</tr>
 			</table>
 			</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.evaluate( <b>x, y</b>: Number ): Number</div>
+			<div class="code">.evaluate( <b>position</b> ): Number</div>
 			<p>
-		    	The <i>evaluate()</i> method evaluates the Bicubic equation for a given input values <b>x</b> and <b>y</b>. It returns the corresponding evaluated value based on the biquadratic relationship defined by the instance's positions and values.
+		    	The <i>evaluate()</i> method evaluates the bicubic equation(s) for a given position. It returns the corresponding evaluated value based on the coefficients of the instance.
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>x</b>:</td>
-						<td>The x-coordinate for which to evaluate the bicubic equation.</td>
-					</tr>
-					<tr>
-						<td><b>y</b>:</td>
-						<td>The y-coordinate for which to evaluate the bicubic equation.</td>
+						<td><b>position</b>: Array</td>
+						<td>
+							The coordinates for which to evaluate the bicubic equation(s). The layout of the array is: <b>[ x, y ]</b>.
+						</td>
 					</tr>
 				</table>
 			</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.step( <b>startX, startY, endX, endY, sizeX, sizeY</b>: Number ) : Array</div>
+			<div class="code">.step( <b>start, end, size</b> ): Array</div>
 			<p>
-				The <i>step()</i> method evaluates the biquadratic equation at a specified number of equally spaced intervals between a given starting values <b>startX</b> and <b>startY</b>  and ending values <b>endX</b> and <b>startY</b>. The number of intervals is determined by the step-sizes <b>sizeX</b> and <b>sizeY</b>, which specifies the distance between each evaluation point. It returns an array of interpolated values corresponding to the evaluation points.
+				The <i>step()</i> method evaluates the bicubic equation at a specified number of equally spaced intervals between a given starting and ending values defined in <b>start</b> and <b>end</b>. The number of intervals is determined by the step-sizes defined in <b>step</b>, which specifies the distance between each evaluation point. It returns an array of interpolated values corresponding to the evaluation points.
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>startX</b>:</td>
-						<td>The starting x-coordinate of the interpolation range.</td>
+						<td><b>start</b>: Array</td>
+						<td>
+							The starting coordinates of the interpolation range. The layout of the array is: <b>[ start<sub>x</sub>, start<sub>y</sub>]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>startY</b>:</td>
-						<td>The starting y-coordinate of the interpolation range.</td>
+						<td><b>end</b>: Array</td>
+						<td>
+							The ending coordinates of the interpolation range. The layout of the array is <b>[ end<sub>x</sub>, end<sub>y</sub> ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending x-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending y-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>sizeX</b>:</td>
-						<td>The step-size in the x direction.</td>
-					</tr>
-									<tr>
-						<td><b>sizeY</b>:</td>
-						<td>The step-size in the y direction.</td>
+						<td><b>size</b>: Array</td>
+						<td>The step-sizes to take between points. The layout of the array is: <b>[ size<sub>x</sub>, size<sub>y</sub> ]</b>.</td>
 					</tr>
 				</table>
 			</p>
 		</section>
 		
 		<section class="part">   
-			<div class="code">.segment( <b>startX, startY, endX, endY, segmentsX, segmentsY</b>: Number ): Array</div>
+			<div class="code">.segment( <b>start, end, segments</b> ): Array</div>
 			<p>
 				This method calculates interpolated values between specified start and end points, dividing the interval into a given number of segments. It takes six parameters:
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>startX</b>:</td>
-						<td>The starting x-coordinate of the interpolation range.</td>
+						<td><b>start</b>: Array</td>
+						<td>
+							The starting coordinates of the interpolation range. The layout of the array is: <b>[ start<sub>x</sub>, start<sub>y</sub> ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>startY</b>:</td>
-						<td>The starting y-coordinate of the interpolation range.</td>
+						<td><b>end</b>: Array</td>
+						<td>
+							The ending coordinates of the interpolation range. The layout of the array is <b>[ end<sub>x</sub>, end<sub>y</sub> ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending x-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending y-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>segmentsX</b>:</td>
-						<td>The number of segments into which the range should be divided along the x direction.</td>
-					</tr>
-					<tr>
-						<td><b>segmentsY</b>:</td>
-						<td>The number of segments into which the range should be divided along the y direction.</td>
+						<td><b>segments</b>: Array</td>
+						<td>The amount of segments take points between the starting and ending points. The layout of the array is: <b>[ seg<sub>x</sub>, seg<sub>y</sub> ]</b>.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns an array of interpolated values, with each element corresponding to the value at a specific segment point. It utilizes bicubic interpolation to estimate the values within each segment.
+				The method returns an array of interpolated values, with each element corresponding to the value at a specific segment point.
 			</p>
 		</section>
 		<section class="part">
 			<div class="code">.apply( <b>positions</b>: Array ): Array</div>
 			<p>
-				The <i>apply()</i> method evaluates the bicubic equation for each value in a provided array of positions <b>positions</b>. It returns an array of corresponding values for each position. The array of positions should be formatted as: [
-				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;x0, y0, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;x1, y1,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;x2, y2,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;...
-				<br>
-				<br>], where (x<sub>0</sub>, y<sub>0</sub>), (x<sub>1</sub>, y<sub>1</sub>), (x<sub>2</sub>, y<sub>2</sub>), etc. are the points at which to evaluate the bicubic equation.
+				The <i>apply()</i> method evaluates the bicubic equation(s) for each value in a provided array of positions <b>positions</b>. It returns an array of corresponding values for each position.
 			</p>
 			<p>
 			<table>
 				<tr>
 					<td><b>positions</b>:</td>
-					<td>An array of positions at which to evaluate the bicubic equation. The array of positions should be formatted as [x<sub>0</sub>, y<sub>0</sub>, x<sub>1</sub>, y<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub>, ...], where (x<sub>0</sub>, y<sub>1</sub>), (x<sub>1</sub>, y<sub>1</sub>), (x<sub>2</sub>, y<sub>2</sub>), etc. are the points.</td>
+					<td>An array of positions at which to evaluate the bicubic equation(s). The layout of the positions array is: <b>[
+					<br>
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>,&nbsp; y<sub>0</sub>, 
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>,&nbsp; y<sub>1</sub>,
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>,&nbsp; y<sub>2</sub>,
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>n-1</sub>, y<sub>n-1</sub>
+					<br>
+					<br>]</b>, where <b>n</b> is the number of points and <b>[ x<sub>0</sub>, y<sub>0</sub> ]</b>, <b>[ x<sub>1</sub>, y<sub>1</sub> ]</b>, <b>[ x<sub>2</sub>, y<sub>2</sub> ]</b>, ..., <b>[ x<sub>n-1</sub>, y<sub>n-1</sub> ]</b> are the points at which to evaluate the bicubic equation(s).</td>
 				</tr>
 			</table>
 			</p>

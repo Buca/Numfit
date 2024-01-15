@@ -1,12 +1,12 @@
 <div id="content">
 	<section>
 		<div class="page-title" class="row">
-			<h2>Triquadratic</h2>
-			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/trilinear.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Trilinear.js">Source</a></div>
+			<h2>Triqudratic</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/triquadratic.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Quadratic/Triquadratic.js">Source</a></div>
 		</div>
 		<section class="part">
 			<p>
-				The Triquadratic class provides tools for performing three dimensional quadratic interpolation aka triquadratic interpolation and extrapolation, which are foundational techniques in data science for estimating values within or beyond a range of known data points. Interpolation employs biquadratic polynomial to construct new data points within the range of known values, essentially bridging the gaps between discrete points. In contrast, extrapolation extends the quadratic relationship beyond the known data, enabling predictions outside the given range. These techniques are widely employed in various applications, including signal processing, image analysis, and scientific simulations.
+				The Triquadratic class provides tools for performing three dimensional quadratic interpolation and extrapolation.
 			</p>
 		</section>
 	</section>
@@ -15,420 +15,248 @@
 		<h3>Constructor</h3>
 
 		<section class="part">
-			<div class="code">new Triquadratic( <b>positions, values, ?coefficients</b>: Array ): Trilinear</div>
+			<div class="code">new Triquadratic( <b>positions, values, ?dimension</b> ): Triquadratic</div>
 
 			<p>The <b><i>Triquadratic()</i></b> constructor creates a new instance of the <b>Triquadratic</b> class. It takes three parameters:</p>
 
 			<p>
 				<table>
 					<tr>
-						<td><b>positions</b>:</td>
+						<td><b>positions</b>: Array</td>
 						<td>
-							A numerical array of length 9 that specifies the positions of the values to be interpolated. The format of the array is: [ 
+							A numerical array of length <b>9</b> that specifies the positions of the values to be interpolated. The layout of the array is: <b>[ 
 							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, 
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>,
 							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub> 
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>
 							<br>
-							<br>].
+							<br>]</b>.
 						</td>
 					</tr>
 					<tr>
-						<td><b>values</b>:</td>
+						<td><b>values</b>: Array</td>
 						<td>
-							A numerical array of length 27 that contains the values to be interpolated. The format of the array is: [ 
+							A numerical array of length <b>8 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array. The layout of the array is: <b>[ 
 							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>000</sub>, v<sub>100</sub>, v<sub>200</sub>, 
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>010</sub>, v<sub>110</sub>, v<sub>210</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>020</sub>, v<sub>120</sub>, v<sub>220</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0000</sub>, ..., v<sub>(d-1)000</sub>, v<sub>0100</sub>, ..., v<sub>(d-1)100</sub>, v<sub>0200</sub>, ..., v<sub>(d-1)200</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0010</sub>, ..., v<sub>(d-1)010</sub>, v<sub>0110</sub>, ..., v<sub>(d-1)110</sub>, v<sub>0210</sub>, ..., v<sub>(d-1)210</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0020</sub>, ..., v<sub>(d-1)020</sub>, v<sub>0120</sub>, ..., v<sub>(d-1)120</sub>, v<sub>0220</sub>, ..., v<sub>(d-1)220</sub>,
 							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>001</sub>, v<sub>101</sub>, v<sub>201</sub>, 
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>011</sub>, v<sub>111</sub>, v<sub>211</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>021</sub>, v<sub>121</sub>, v<sub>221</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0001</sub>, ..., v<sub>(d-1)001</sub>, v<sub>0101</sub>, ..., v<sub>(d-1)101</sub>, v<sub>0201</sub>, ..., v<sub>(d-1)201</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0011</sub>, ..., v<sub>(d-1)011</sub>, v<sub>0111</sub>, ..., v<sub>(d-1)111</sub>, v<sub>0211</sub>, ..., v<sub>(d-1)211</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0021</sub>, ..., v<sub>(d-1)021</sub>, v<sub>0121</sub>, ..., v<sub>(d-1)121</sub>, v<sub>0221</sub>, ..., v<sub>(d-1)221</sub>,
 							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, v<sub>102</sub>, v<sub>202</sub>, 
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>012</sub>, v<sub>112</sub>, v<sub>212</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>022</sub>, v<sub>122</sub>, v<sub>222</sub>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0002</sub>, ..., v<sub>(d-1)002</sub>, v<sub>0102</sub>, ..., v<sub>(d-1)102</sub>, v<sub>0202</sub>, ..., v<sub>(d-1)202</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0012</sub>, ..., v<sub>(d-1)012</sub>, v<sub>0112</sub>, ..., v<sub>(d-1)112</sub>, v<sub>0212</sub>, ..., v<sub>(d-1)212</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0022</sub>, ..., v<sub>(d-1)022</sub>, v<sub>0122</sub>, ..., v<sub>(d-1)122</sub>, v<sub>0222</sub>, ..., v<sub>(d-1)222</sub>
 							<br>
-							<br>], where the first index correponds to the x-position, the second corresponds to the y-position and lastly the third corresponds to the z-position.
+							<br>]</b>, where the second index correponds to the x-position, the third corresponds to the y-position and the fourth corresponds to the y-position.
 						</td>
 					</tr>
 					<tr>
-						<td><b>coefficients</b>:</td>
-						<td>
-							(Optional) An optional numerical array of coefficients used internally for evaluating interpolated values. The format of the coeffiecients array is: [ 
-							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>000</sub>, c<sub>100</sub>, c<sub>200</sub>, 
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>010</sub>, c<sub>110</sub>, c<sub>210</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>020</sub>, c<sub>120</sub>, c<sub>220</sub>,
-							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>001</sub>, c<sub>101</sub>, c<sub>201</sub>, 
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>011</sub>, c<sub>111</sub>, c<sub>211</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>021</sub>, c<sub>121</sub>, c<sub>221</sub>,
-							<br>
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>002</sub>, c<sub>102</sub>, c<sub>202</sub>, 
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>012</sub>, c<sub>112</sub>, c<sub>212</sub>,
-							<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>022</sub>, c<sub>122</sub>, c<sub>222</sub>
-							<br>
-							<br>], where the first index corresponds to the exponent of the x-variable, the second index corresponds to the exponent of the y-variable and the third index corresponds to the exponent of the z-variable.
-						</td>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A positive integer value that ddefines the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
 					</tr>
 				</table>
 			</p>
 
 			<p>
-				The constructor initializes the <b>Triquadratic</b> instance with the provided positions and values. If the <b>coefficients</b> parameter is not provided, it will be calculated internally.
+				The constructor initializes the <b>Triquadratic</b> instance with the provided positions and values. It calculates the coefficients of the triquadratic equation(s).
 			</p>
-		</section>
-	</section>
-
-	<section>
-		<h3>Static Properties</h3>
-		
-		<section class="part">       
-			<div class="code">Triquadratic.variables: Number</div>
-			<p>The number of free variables. Since <b>Triquadratic</b> is a trinomial - it is 3.</p>
-		</section>
-
-		<section class="part">
-			<div class="code">Triquadaryic.degree: Number</div>
-			<p>The maximum degree of the polynomial. Returns 2.
 		</section>
 	</section>
 
 	<section>
 		<h3>Static Methods</h3>
 		<section class="part">
-			<div class="code">Triquadratic.coefficients( <b>x0, y0, z0, x1, y1, z1, x2, y2, z2, v000, v100, v200, v010, v110, v210, v020, v120, v220, v001, v101, v201, v011, v111, v211, v021, v121, v221, v002, v102, v202, v012, v112, v212, v022, v122, v222</b>: Number, <b>output</b>: Array ): Array</div>
+			<div class="code">Triquadratic.coefficients( <b>positions, values, ?dimension, ?output, ?outputOffset</b> ): Array</div>
 
 			<p>
-				The <i>Triquadratic.coefficients()</i> static method determines the coefficients of the triquadartic equation. It takes 28 arguments:
+				The <i>Triquadratic.coefficients()</i> static method determines the coefficients of the triquadratic equation(s). It takes nine arguments:
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>x0</b>:</td>
-						<td>The x-coordinate of the points on the left side.</td>
-					</tr>
-					<tr>
-						<td><b>y0</b>:</td>
-						<td>The y-coordinate of the points on the upper side.</td>
-					</tr>
-					<tr>
-						<td><b>z0</b>:</td>
-						<td>The z-coordinate of the points on the front side.</td>
-					</tr>
-					<tr>
-						<td><b>x1</b>:</td>
-						<td>The x-coordinate of the points on the right side.</td>
-					</tr>
-					<tr>
-						<td><b>y1</b>:</td>
-						<td>The y-coordinate of the points on the lower side.</td>
-					</tr>
-					<tr>
-						<td><b>z1</b>:</td>
-						<td>The z-coordinate of the points on the back side.</td>
-					</tr>
-					<tr>
-						<td><b>v000</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v100</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v200</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v010</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v110</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v210</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v020</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v120</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v220</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v001</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v101</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v201</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v011</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v111</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v211</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v021</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v121</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v221</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v002</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v102</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v202</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v012</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v112</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v212</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v022</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v122</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v222</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>output</b>:</td>
+						<td><b>positions</b>: Array</td>
 						<td>
-							(Optional) An optional array to store the calculated coefficients. If not provided, a new array will be created.
+							A numerical array of length <b>6</b> that specifies the positions of the values to be interpolated. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>
+							<br>
+							<br>]</b>.
 						</td>
+					</tr>
+					<tr>
+						<td><b>values</b>: Array</td>
+						<td>
+							A numerical array of length <b>27 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0000</sub>, ..., v<sub>(d-1)000</sub>, v<sub>0100</sub>, ..., v<sub>(d-1)100</sub>, v<sub>0200</sub>, ..., v<sub>(d-1)200</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0010</sub>, ..., v<sub>(d-1)010</sub>, v<sub>0110</sub>, ..., v<sub>(d-1)110</sub>, v<sub>0210</sub>, ..., v<sub>(d-1)210</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0020</sub>, ..., v<sub>(d-1)020</sub>, v<sub>0120</sub>, ..., v<sub>(d-1)120</sub>, v<sub>0220</sub>, ..., v<sub>(d-1)220</sub>,
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0001</sub>, ..., v<sub>(d-1)001</sub>, v<sub>0101</sub>, ..., v<sub>(d-1)101</sub>, v<sub>0201</sub>, ..., v<sub>(d-1)201</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0011</sub>, ..., v<sub>(d-1)011</sub>, v<sub>0111</sub>, ..., v<sub>(d-1)111</sub>, v<sub>0211</sub>, ..., v<sub>(d-1)211</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0021</sub>, ..., v<sub>(d-1)021</sub>, v<sub>0121</sub>, ..., v<sub>(d-1)121</sub>, v<sub>0221</sub>, ..., v<sub>(d-1)221</sub>,
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0002</sub>, ..., v<sub>(d-1)002</sub>, v<sub>0102</sub>, ..., v<sub>(d-1)102</sub>, v<sub>0202</sub>, ..., v<sub>(d-1)202</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0012</sub>, ..., v<sub>(d-1)012</sub>, v<sub>0112</sub>, ..., v<sub>(d-1)112</sub>, v<sub>0212</sub>, ..., v<sub>(d-1)212</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0022</sub>, ..., v<sub>(d-1)022</sub>, v<sub>0122</sub>, ..., v<sub>(d-1)122</sub>, v<sub>0222</sub>, ..., v<sub>(d-1)222</sub>
+							<br>
+							<br>]</b>, where the second index correponds to the x-position, the third corresponds to the y-position and the fourth corresponds to the y-position.
+						</td>
+					</tr>
+					<tr>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A positive integer value that defines the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
+					</tr>
+					<tr>
+						<td><b>output</b>: Array</td>
+						<td>
+							(Optional) An array to store the calculated coefficients. If not provided, a new array will be created. The layout of the output array is: <b>[
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0000</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1000</sub>, &nbsp;&nbsp; c<sub>2000</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0100</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1100</sub>, &nbsp;&nbsp; c<sub>2100</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0200</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1200</sub>, &nbsp;&nbsp; c<sub>2200</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0010</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1010</sub>, &nbsp;&nbsp; c<sub>2010</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0110</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1110</sub>, &nbsp;&nbsp; c<sub>2110</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0210</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1210</sub>, &nbsp;&nbsp; c<sub>2210</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0020</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1020</sub>, &nbsp;&nbsp; c<sub>2020</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0120</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1120</sub>, &nbsp;&nbsp; c<sub>2120</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0220</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1220</sub>, &nbsp;&nbsp; c<sub>2220</sub>,
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0001</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1001</sub>, &nbsp;&nbsp; c<sub>2001</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0101</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1101</sub>, &nbsp;&nbsp; c<sub>2101</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0201</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1201</sub>, &nbsp;&nbsp; c<sub>2201</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0011</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1011</sub>, &nbsp;&nbsp; c<sub>2011</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0111</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1111</sub>, &nbsp;&nbsp; c<sub>2111</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0211</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1211</sub>, &nbsp;&nbsp; c<sub>2211</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0021</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1021</sub>, &nbsp;&nbsp; c<sub>2021</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0121</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1121</sub>, &nbsp;&nbsp; c<sub>2121</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0221</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1221</sub>, &nbsp;&nbsp; c<sub>2221</sub>,
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>000(d-1)</sub>, c<sub>100(d-1)</sub>, c<sub>200(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>010(d-1)</sub>, c<sub>110(d-1)</sub>, c<sub>210(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>020(d-1)</sub>, c<sub>120(d-1)</sub>, c<sub>220(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>001(d-1)</sub>, c<sub>101(d-1)</sub>, c<sub>201(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>011(d-1)</sub>, c<sub>111(d-1)</sub>, c<sub>211(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>021(d-1)</sub>, c<sub>121(d-1)</sub>, c<sub>221(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>002(d-1)</sub>, c<sub>102(d-1)</sub>, c<sub>202(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>012(d-1)</sub>, c<sub>112(d-1)</sub>, c<sub>212(d-1)</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>022(d-1)</sub>, c<sub>122(d-1)</sub>, c<sub>222(d-1)</sub>
+								<br>
+								<br>]</b>, where <b>d</b> is the dimension of the <i>values-space</i> and the first, second and third index corresponds to the exponents of the <i>free-variables</i> <b>x, y</b> and <b>z</b>. 
+						</td>
+					</tr>
+					<tr>
+						<td><b>outputOffset</b>: Number</td>
+						<td>(Optional) A positive integer which describes how much to offset the index layout in the output.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns an array containing the two coefficients of the triquadratic equation: [ 
-				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>000</sub>, c<sub>100</sub>, c<sub>200</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>010</sub>, c<sub>110</sub>, c<sub>210</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>020</sub>, c<sub>120</sub>, c<sub>220</sub>,
-				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>001</sub>, c<sub>101</sub>, c<sub>201</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>011</sub>, c<sub>111</sub>, c<sub>211</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>021</sub>, c<sub>121</sub>, c<sub>221</sub>,
-				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>002</sub>, c<sub>102</sub>, c<sub>202</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>012</sub>, c<sub>112</sub>, c<sub>212</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>022</sub>, c<sub>122</sub>, c<sub>222</sub>
-				<br>
-				<br>], where the polynomial is expressed as v = c<sub>000</sub> + c<sub>100</sub>x + c<sub>200</sub>x<sup>2</sup> + c<sub>010</sub>y + c<sub>110</sub>xy + c<sub>210</sub>x<sup>2</sup>y + c<sub>020</sub>y<sup>2</sup> + c<sub>120</sub>xy<sup>2</sup> + c<sub>220</sub>x<sup>2</sup>y<sup>2</sup> + c<sub>001</sub>z + c<sub>101</sub>xz + c<sub>201</sub>x<sup>2</sup>z + c<sub>011</sub>yz + c<sub>111</sub>xyz + c<sub>211</sub>x<sup>2</sup>yz + c<sub>021</sub>y<sup>2</sup>z + c<sub>121</sub>xy<sup>2</sup>z + c<sub>221</sub>x<sup>2</sup>y<sup>2</sup>z + c<sub>002</sub>z<sup>2</sup> + c<sub>102</sub>xz<sup>2</sup> + c<sub>202</sub>x<sup>2</sup>z<sup>2</sup> + c<sub>012</sub>yz<sup>2</sup> + c<sub>112</sub>xyz<sup>2</sup> + c<sub>212</sub>x<sup>2</sup>yz<sup>2</sup> + c<sub>022</sub>y<sup>2</sup>z<sup>2</sup> + c<sub>122</sub>xy<sup>2</sup>z<sup>2</sup> + c<sub>222</sub>x<sup>2</sup>y<sup>2</sup>z<sup>2</sup>.
+				The method returns an array of calculated coefficients. If not provided, a new array will be created.
 			</p>
 		</section>
 		
 		<section class="part">
-			<div class="code">Triquadratic.evaluate( <b>x0, y0, z0, x1, y1, z1, v000, v100, v010, v110, v001, v101, v011, v111, x, y</b>: Number ): Number</div>
+			<div class="code">Triquadratic.evaluate( <b>positions, values, ?dimension, position, ?output, ?outputOffset </b> ): Number | Array</div>
 
 			<p>
-				The <b><i>Triquadratic.evaluate()</i></b> static method evaluates the triquadratic equation for the given input values <b>x</b> and <b>y</b>. It takes four arguments:
+				The <i>Triquadratic.evaluate()</i> static method evaluates the triquadratic equation for the given position. It takes <b>6</b> arguments:
 			</p>
 			<p>
 				<table>
-										<tr>
-						<td><b>x0</b>:</td>
-						<td>The x-coordinate of the points on the left side.</td>
+					<tr>
+						<td><b>positions</b>: Array</td>
+						<td>
+							A numerical array of length <b>9</b> that specifies the positions of the values to be interpolated. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub> 
+							<br>
+							<br>]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>y0</b>:</td>
-						<td>The y-coordinate of the points on the upper side.</td>
+						<td><b>values</b>: Array</td>
+						<td>
+							A numerical array of length <b>27 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array. The layout of the array is: <b>[ 
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0000</sub>, ..., v<sub>(d-1)000</sub>, v<sub>0100</sub>, ..., v<sub>(d-1)100</sub>, v<sub>0200</sub>, ..., v<sub>(d-1)200</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0010</sub>, ..., v<sub>(d-1)010</sub>, v<sub>0110</sub>, ..., v<sub>(d-1)110</sub>, v<sub>0210</sub>, ..., v<sub>(d-1)210</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0020</sub>, ..., v<sub>(d-1)020</sub>, v<sub>0120</sub>, ..., v<sub>(d-1)120</sub>, v<sub>0220</sub>, ..., v<sub>(d-1)220</sub>,
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0001</sub>, ..., v<sub>(d-1)001</sub>, v<sub>0101</sub>, ..., v<sub>(d-1)101</sub>, v<sub>0201</sub>, ..., v<sub>(d-1)201</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0011</sub>, ..., v<sub>(d-1)011</sub>, v<sub>0111</sub>, ..., v<sub>(d-1)111</sub>, v<sub>0211</sub>, ..., v<sub>(d-1)211</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0021</sub>, ..., v<sub>(d-1)021</sub>, v<sub>0121</sub>, ..., v<sub>(d-1)121</sub>, v<sub>0221</sub>, ..., v<sub>(d-1)221</sub>,
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0002</sub>, ..., v<sub>(d-1)002</sub>, v<sub>0102</sub>, ..., v<sub>(d-1)102</sub>, v<sub>0202</sub>, ..., v<sub>(d-1)202</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0012</sub>, ..., v<sub>(d-1)012</sub>, v<sub>0112</sub>, ..., v<sub>(d-1)112</sub>, v<sub>0212</sub>, ..., v<sub>(d-1)212</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0022</sub>, ..., v<sub>(d-1)022</sub>, v<sub>0122</sub>, ..., v<sub>(d-1)122</sub>, v<sub>0222</sub>, ..., v<sub>(d-1)222</sub>
+							<br>
+							<br>]</b>, where the second index correponds to the x-position and the third corresponds to the y-position.
+						</td>
 					</tr>
 					<tr>
-						<td><b>z0</b>:</td>
-						<td>The z-coordinate of the points on the front side.</td>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A numerical value that describes the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
 					</tr>
 					<tr>
-						<td><b>x1</b>:</td>
-						<td>The x-coordinate of the points on the right side.</td>
+						<td><b>position</b>: Array</td>
+						<td>An array of three numerical values which describes the position to be evaluated. The layout of the position array is: <b>[ x, y, z ]</b>.</td>
 					</tr>
 					<tr>
-						<td><b>y1</b>:</td>
-						<td>The y-coordinate of the points on the lower side.</td>
+						<td><b>output</b>: Array</td>
+						<td>
+							(Optional) An array to store the evaluated values. The layout of the output array is: <b>[ v<sub>0</sub>, v<sub>1</sub>, ..., v<sub>d-1</sub> ]</b>, where <b>d</b> is the dimension of the <i>value-space</i>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>z1</b>:</td>
-						<td>The z-coordinate of the points on the back side.</td>
-					</tr>
-					<tr>
-						<td><b>v000</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v100</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v200</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v010</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v110</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v210</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v020</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v120</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v220</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v001</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v101</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v201</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v011</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v111</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v211</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v021</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v121</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v221</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>, z<sub>1</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v002</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>0</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v102</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>0</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v202</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>0</sub>, z<sub>0</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v012</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>1</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v112</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>1</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v212</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>1</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v022</b>:</td>
-						<td>The value at the point (x<sub>0</sub>, y<sub>2</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v122</b>:</td>
-						<td>The value at the point (x<sub>1</sub>, y<sub>2</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>v222</b>:</td>
-						<td>The value at the point (x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>).</td>
-					</tr>
-					<tr>
-						<td><b>x</b>:</td>
-						<td>The input x-coordinate to evaluate the triquadratic equation.</td>
-					</tr>
-					<tr>
-						<td><b>y</b>:</td>
-						<td>The input y-coordinate to evaluate the triquadratic equation.</td>
+						<td><b>outputOffset</b>: Number</td>
+						<td>(Optional) A positive integer which describes how much to offset the index layout in the output.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns the calculated y-value corresponding to the input values <b>x</b> and <b>y</b> based on the triquadratic equation defined by the provided positions and corresponding values.
+				The method returns the calculated value corresponding to the position based on the triquadratic equation defined by the provided positions and values.
 			</p>
 		</section>
 	</section>
 
 	<section>
 		<h3>Instance Properties</h3>
+
+		<section class="part">
+			<div class="code">.variables: Number</div>
+			<p>
+				The number of free variables. This property is read-only. Returns <b>3</b>.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.degree: Number</div>
+			<p>
+				The maximum degree of the equation. This property is read-only. Returns <b>2</b>.
+			</p>
+		</section>
 			
 		<section class="part">
 			<div class="code">.positions: Array</div>
 
 			<p>
-				The <i>positions</i> property of the <i>Triquadratic</i> instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length 9 containing the numerical positions. The format of the <i>positions</i> array is: [x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>].
+				The <i>positions</i> property of the instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length <b>9</b> containing the numerical positions. The layout of the <i>positions</i> array is: <b>[
+				<br>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;x0, y0, z0,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;x1, y1, z1,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;x2, y2, z2
+				<br>
+				<br>]</b>.
 			</p>
 
 			<p>
@@ -440,24 +268,32 @@
 			<div class="code">.values: Array</div>
 
 			<p>
-				The <i>values</i> property of the <i>Triquadratic</i> instance represents the array of values corresponding to the known data points. It is accessible using dot notation and returns an array of length 8 containing the numerical values. The format of the <i>values</i> array is: <br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>000</sub>, v<sub>100</sub>, v<sub>200</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>010</sub>, v<sub>110</sub>, v<sub>210</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>020</sub>, v<sub>120</sub>, v<sub>220</sub>,
+				The <i>values</i> property of the <i>Triquadratic</i> instance represents the array of values corresponding to the known data points. Returns an array of length <b>d &times; 27</b> containing the numerical values. The layout of the <i>values</i> array is: <b>[ 
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>001</sub>, v<sub>101</sub>, v<sub>201</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>011</sub>, v<sub>111</sub>, v<sub>211</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>021</sub>, v<sub>121</sub>, v<sub>221</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0000</sub>, ..., v<sub>(d-1)000</sub>, v<sub>0100</sub>, ..., v<sub>(d-1)100</sub>, v<sub>0200</sub>, ..., v<sub>(d-1)200</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0010</sub>, ..., v<sub>(d-1)010</sub>, v<sub>0110</sub>, ..., v<sub>(d-1)110</sub>, v<sub>0210</sub>, ..., v<sub>(d-1)210</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0020</sub>, ..., v<sub>(d-1)020</sub>, v<sub>0120</sub>, ..., v<sub>(d-1)120</sub>, v<sub>0220</sub>, ..., v<sub>(d-1)220</sub>,
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>002</sub>, v<sub>102</sub>, v<sub>202</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>012</sub>, v<sub>112</sub>, v<sub>212</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>022</sub>, v<sub>122</sub>, v<sub>222</sub>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0001</sub>, ..., v<sub>(d-1)001</sub>, v<sub>0101</sub>, ..., v<sub>(d-1)101</sub>, v<sub>0201</sub>, ..., v<sub>(d-1)201</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0011</sub>, ..., v<sub>(d-1)011</sub>, v<sub>0111</sub>, ..., v<sub>(d-1)111</sub>, v<sub>0211</sub>, ..., v<sub>(d-1)211</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0021</sub>, ..., v<sub>(d-1)021</sub>, v<sub>0121</sub>, ..., v<sub>(d-1)121</sub>, v<sub>0221</sub>, ..., v<sub>(d-1)221</sub>,
 				<br>
-				<br>].
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0002</sub>, ..., v<sub>(d-1)002</sub>, v<sub>0102</sub>, ..., v<sub>(d-1)102</sub>, v<sub>0202</sub>, ..., v<sub>(d-1)202</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0012</sub>, ..., v<sub>(d-1)012</sub>, v<sub>0112</sub>, ..., v<sub>(d-1)112</sub>, v<sub>0212</sub>, ..., v<sub>(d-1)212</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>0022</sub>, ..., v<sub>(d-1)022</sub>, v<sub>0122</sub>, ..., v<sub>(d-1)122</sub>, v<sub>0222</sub>, ..., v<sub>(d-1)222</sub>
+				<br>
+				<br>]</b>.
 			</p>
 
 			<p>
-				The <i>values</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal values of the <i>Trilinear</i> instance. This allows for dynamic modification of the interpolation range.
+				The <i>values</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal values of the Triquadratic instance. This allows for dynamic modification of the interpolation range.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.dimension: Number</div>
+			<p>
+				The <i>dimension</i> property of the <i>Triquadratic</i> instance represents the dimension of the <i>value-space</i>. It should treated as read-only.
 			</p>
 		</section>
 
@@ -465,226 +301,187 @@
 			<div class="code">.coefficients: Array</div>
 
 			<p>
-				The <i>coefficients</i> property of the <i>Triquadratic</i> instance represents the array of coefficients used internally for evaluating interpolated values. It is accessible using dot notation and returns an array of length 27 containing the numerical coefficients. The format of the <i>coefficients</i> array is: [
+				The <i>coefficients</i> property of the <i>Triquadratic</i> instance represents the array of coefficients used internally for evaluating interpolated values. Returns an array of length <b>8 &times; d</b> containing the numerical coefficients, where <b>d</b> is the dimension of the <i>value-space</i>. TThe layout of the coefficients array is: <b>[
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>000</sub>, c<sub>100</sub>, c<sub>200</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>010</sub>, c<sub>110</sub>, c<sub>210</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>020</sub>, c<sub>120</sub>, c<sub>220</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0000</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1000</sub>, &nbsp;&nbsp; c<sub>2000</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0100</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1100</sub>, &nbsp;&nbsp; c<sub>2100</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0200</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1200</sub>, &nbsp;&nbsp; c<sub>2200</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0010</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1010</sub>, &nbsp;&nbsp; c<sub>2010</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0110</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1110</sub>, &nbsp;&nbsp; c<sub>2110</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0210</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1210</sub>, &nbsp;&nbsp; c<sub>2210</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0020</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1020</sub>, &nbsp;&nbsp; c<sub>2020</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0120</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1120</sub>, &nbsp;&nbsp; c<sub>2120</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0220</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1220</sub>, &nbsp;&nbsp; c<sub>2220</sub>,
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>001</sub>, c<sub>101</sub>, c<sub>201</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>011</sub>, c<sub>111</sub>, c<sub>211</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>021</sub>, c<sub>121</sub>, c<sub>221</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0001</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1001</sub>, &nbsp;&nbsp; c<sub>2001</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0101</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1101</sub>, &nbsp;&nbsp; c<sub>2101</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0201</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1201</sub>, &nbsp;&nbsp; c<sub>2201</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0011</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1011</sub>, &nbsp;&nbsp; c<sub>2011</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0111</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1111</sub>, &nbsp;&nbsp; c<sub>2111</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0211</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1211</sub>, &nbsp;&nbsp; c<sub>2211</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0021</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1021</sub>, &nbsp;&nbsp; c<sub>2021</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0121</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1121</sub>, &nbsp;&nbsp; c<sub>2121</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0221</sub>,&nbsp;&nbsp;&nbsp;&nbsp; c<sub>1221</sub>, &nbsp;&nbsp; c<sub>2221</sub>,
 				<br>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>002</sub>, c<sub>102</sub>, c<sub>202</sub>, 
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>012</sub>, c<sub>112</sub>, c<sub>212</sub>,
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>022</sub>, c<sub>122</sub>, c<sub>222</sub>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
 				<br>
-				<br>], where the first index corresponds to the exponent of the x-variable, the second index corresponds to the exponent of the y-variable and the third index corresponds to the exponent of the z-variable
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>000(d-1)</sub>, c<sub>100(d-1)</sub>, c<sub>200(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>010(d-1)</sub>, c<sub>110(d-1)</sub>, c<sub>210(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>020(d-1)</sub>, c<sub>120(d-1)</sub>, c<sub>220(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>001(d-1)</sub>, c<sub>101(d-1)</sub>, c<sub>201(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>011(d-1)</sub>, c<sub>111(d-1)</sub>, c<sub>211(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>021(d-1)</sub>, c<sub>121(d-1)</sub>, c<sub>221(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>002(d-1)</sub>, c<sub>102(d-1)</sub>, c<sub>202(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>012(d-1)</sub>, c<sub>112(d-1)</sub>, c<sub>212(d-1)</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>022(d-1)</sub>, c<sub>122(d-1)</sub>, c<sub>222(d-1)</sub>
+				<br>
+				<br>]</b>, where <b>d</b> is the dimension of the <i>values-space</i>, the first, second and third indices correspond to the exponents of the <i>free-variables</i>.
 			</p>
 
 			<p>
-				The <i>coefficients</i> property is mutable. To recompute the internal coefficients, you need to call the <i>update()</i> method on the <i>Triquadratic</i> instance.
+				The <i>coefficients</i> property is mutable. To recompute -the internal coefficients, you need to call the <i>update()</i> method on the instance.
 			</p>
 		</section>
+
 	</section>
 
 	<section>
 		<h3>Instance Methods</h3>
 		
+
+
 		<section class="part">
-			<div class="code">.update(): Triquadaratic</div>
+			<div class="code">.update(): Triquadratic</div>
 			<p>The <i>update()</i> method recalculates the coefficients. This should be used after performing a translation, scaling or when adjusting either the positions or values of the instance.</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.translate( <b>tX, tY, tZ</b>: Number ): Triquadaratic</div>
+			<div class="code">.translate( <b>offset</b> ): Triquadratic</div>
 
 			<p>
-				The <i>translate()</i> method translates the positions of the <i>Triquadaratic</i> instance by <b>tX</b>, <b>tY</b> and <b>tZ</b>. It returns the instance itself.
+				The <i>translate()</i> method translates the positions of the instance by the values of the offset array. It returns the instance itself.
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>tX</b>:</td>
-					<td>The value by which to translate the X-coordinates.</td>
-				</tr>
-				<tr>
-					<td><b>tY</b>:</td>
-					<td>The value by which to translate the y-coordinates.</td>
-				</tr>
-				<tr>
-					<td><b>tZ</b>:</td>
-					<td>The value by which to translate the z-coordinates.</td>
+					<td><b>offset</b>: Array</td>
+					<td>An array of two values by which to offset the positions. The layout of the offset array is: <b>[ offset<sub>x</sub>, offset<sub>y</sub>, offset<sub>z</sub> ]</b>, where <b>offset<sub>x</sub></b>, <b>offset<sub>y</sub></b> and <b>offset<sub>z</sub></b> are the values by which to translate in the <b>x</b>, <b>y</b> and <b>z</b> directions respectively.</td>
 				</tr>
 			</table>
 			</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.scale( <b>sX, sY, sZ, ?aX, ?aY, ?aZ</b>: Number ): Triquadaratic</div>
+			<div class="code">.scale( <b>scalars, ?orgin</b> ): Triquadratic</div>
 
 			<p>
-				The <i>scale()</i> method scales the positions of the <i>Triquadartic</i> instance around an optional anchor point (<b>aX</b>, <b>aY</b>, <b>aZ</b>) by a scaling vector (<b>sX</b>, <b>sY</b>, <b>sZ</b>). If no anchor point is provided, the scaling is done with respect to the origin (0, 0, 0). It returns the instance itself, allowing for chaining operations.
+				The <i>scale()</i> method scales the positions of the instance around an optional orgin point. If no orgin point is provided, the scaling is done with respect to the origin <b>[ 0, 0, 0 ]</b>. It returns the instance itself, allowing for chaining operations.
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>sX</b>:</td>
-					<td>The scaling factor to apply to the x-coordinates.</td>
+					<td><b>scalars</b>: Array</td>
+					<td>The scaling values by which to scale the positions. The layout of the array is: <b>[ scalar<sub>x</sub>, scalar<sub>x</sub>, scalar<sub>x</sub> ]</b>.</td>
 				</tr>
 				<tr>
-					<td><b>sY</b>:</td>
-					<td>The scaling factor to apply to the y-coordinates.</td>
-				</tr>
-				<tr>
-					<td><b>sZ</b>:</td>
-					<td>The scaling factor to apply to the y-coordinates.</td>
-				</tr>
-				<tr>
-					<td><b>aX</b>:</td>
-					<td>An (optional) value around which to scale the x-coordinates. If omitted, the origin 0 is used.</td>
-				</tr>
-				<tr>
-					<td><b>aY</b>:</td>
-					<td>An (optional) value around which to scale the y-coordinates. If omitted, the origin 0 is used.</td>
-				</tr>
-				<tr>
-					<td><b>aZ</b>:</td>
-					<td>An (optional) value around which to scale the z-coordinates. If omitted, the origin 0 is used.</td>
+					<td><b>orgin</b>: Array</td>
+					<td>(Optional) The point around which to scale positions. The layout of the array is <b>[ orgin<sub>x</sub>, orgin<sub>x</sub>, orgin<sub>x</sub> ]</b>. Defaults to <b>[ 0, 0, 0 ]</b>.</td>
 				</tr>
 			</table>
 			</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.evaluate( <b>x, y, z</b>: Number ): Number</div>
+			<div class="code">.evaluate( <b>position</b> ): Number</div>
 			<p>
-		    	The <i>evaluate()</i> method evaluates the triquadaratic equation for a given input values <b>x</b>, <b>y</b> and <b>z</b>. It returns the corresponding evaluated value based on the triquadaratic relationship defined by the instance's positions and values.
+		    	The <i>evaluate()</i> method evaluates the triquadratic equation for a given position. It returns the corresponding evaluated value based on the triquadratic relationship defined by the instance's positions and values.
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>x</b>:</td>
-						<td>The x-coordinate for which to evaluate the triquadaratic equation.</td>
-					</tr>
-					<tr>
-						<td><b>y</b>:</td>
-						<td>The y-coordinate for which to evaluate the triquadaratic equation.</td>
-					</tr>
-					<tr>
-						<td><b>z</b>:</td>
-						<td>The z-coordinate for which to evaluate the triquadaratic equation.</td>
+						<td><b>position</b>: Array</td>
+						<td>
+							The coordinates for which to evaluate the triquadratic equation. The layout of the array is: <b>[ x, y, z ]</b>.
+						</td>
 					</tr>
 				</table>
 			</p>
 		</section>
 
 		<section class="part">
-			<div class="code">.step( <b>startX, startY, startZ, endX, endY, endZ, sizeX, sizeY, sizeZ</b>: Number ) : Array</div>
+			<div class="code">.step( <b>start, end, size</b> ): Array</div>
 			<p>
-				The <i>step()</i> method evaluates the triquadaratic equation at a specified number of equally spaced intervals between a given the starting values <b>startX</b>, <b>startY</b> and <b>startZ</b> and the ending values <b>endX</b>, <b>endY</b> and <b>endZ</b>. The number of intervals is determined by the step-sizes <b>sizeX</b>, <b>sizeY</b> and <b>sizeZ</b>, which specifies the distance between each evaluation point. It returns an array of interpolated values corresponding to the evaluation points.
+				The <i>step()</i> method evaluates the triquadratic equation at a specified number of equally spaced intervals between given starting values and ending values. The number of intervals is determined by the step-sizes <b>sizeX</b> and <b>sizeY</b>, which specifies the distance between each evaluation point. It returns an array of interpolated values corresponding to the evaluation points.
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>startX</b>:</td>
-						<td>The starting x-coordinate of the interpolation range.</td>
+						<td><b>start</b>: Array</td>
+						<td>
+							The starting coordinates of the interpolation range. The layout of the array is: <b>[ start<sub>x</sub>, start<sub>y</sub>, start<sub>z</sub> ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>startY</b>:</td>
-						<td>The starting y-coordinate of the interpolation range.</td>
+						<td><b>end</b>: Array</td>
+						<td>
+							The ending coordinates of the interpolation range. The layout of the array is <b>[ end<sub>x</sub>, end<sub>x</sub>, end<sub>x</sub> ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>startZ</b>:</td>
-						<td>The starting z-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending x-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending y-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endZ</b>:</td>
-						<td>The ending z-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>sizeX</b>:</td>
-						<td>The step-size in the x direction.</td>
-					</tr>
-					<tr>
-						<td><b>sizeY</b>:</td>
-						<td>The step-size in the y direction.</td>
-					</tr>
-					<tr>
-						<td><b>sizeZ</b>:</td>
-						<td>The step-size in the z direction.</td>
+						<td><b>size</b>: Array</td>
+						<td>The step-sizes to take between points. The layout of the array is: <b>[ size<sub>x</sub>, size<sub>y</sub>, size<sub>z</sub> ]</b>.</td>
 					</tr>
 				</table>
 			</p>
 		</section>
 		
 		<section class="part">   
-			<div class="code">.segment( <b>startX, startY, startZ, endX, endY, endZ, segmentsX, segmentsY, segmentsZ</b>: Number ): Array</div>
+			<div class="code">.segment( <b>start, end, segments</b> ): Array</div>
 			<p>
 				This method calculates interpolated values between specified start and end points, dividing the interval into a given number of segments. It takes six parameters:
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>startX</b>:</td>
-						<td>The starting x-coordinate of the interpolation range.</td>
+						<td><b>start</b>: Array</td>
+						<td>
+							The starting coordinates of the interpolation range. The layout of the array is: <b>[ start<sub>x</sub>, start<sub>y</sub>, start<sub>z</sub> ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>startY</b>:</td>
-						<td>The starting y-coordinate of the interpolation range.</td>
+						<td><b>end</b>: Array</td>
+						<td>
+							The ending coordinates of the interpolation range. The layout of the array is <b>[ end<sub>x</sub>, end<sub>x</sub>, end<sub>x</sub> ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>startZ</b>:</td>
-						<td>The starting z-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending x-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endY</b>:</td>
-						<td>The ending y-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>endZ</b>:</td>
-						<td>The ending z-coordinate of the interpolation range.</td>
-					</tr>
-					<tr>
-						<td><b>segmentsX</b>:</td>
-						<td>The number of segments into which the range should be divided along the x direction.</td>
-					</tr>
-					<tr>
-						<td><b>segmentsY</b>:</td>
-						<td>The number of segments into which the range should be divided along the y direction.</td>
-					</tr>
-					<tr>
-						<td><b>segmentsZ</b>:</td>
-						<td>The number of segments into which the range should be divided along the z direction.</td>
+						<td><b>segments</b>: Array</td>
+						<td>The amount of segments take points between the starting and ending points. The layout of the array is: <b>[ seg<sub>x</sub>, seg<sub>y</sub>, seg<sub>z</sub> ]</b>.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns an array of interpolated values, with each element corresponding to the value at a specific segment point. It utilizes trilinear interpolation to estimate the values within each segment.
+				The method returns an array of interpolated values, with each element corresponding to the value at a specific segment point. It utilizes triquadratic interpolation to estimate the values within each segment.
 			</p>
 		</section>
 		<section class="part">
-			<div class="code">.apply( <b>positions</b>: Array ): Array</div>
+			<div class="code">.apply( <b>positions</b> ): Array</div>
 			<p>
-				The <i>apply()</i> method evaluates the triquadratic equation for each value in a provided array of positions <b>positions</b>. It returns an array of corresponding values for each position. The array of positions should be formatted as [x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>, ...], where (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>), (x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>), (x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>), etc. are the points at which to evaluate the triquadratic equation.
+				The <i>apply()</i> method evaluates the triquadratic equation for each value in a provided array of positions <b>positions</b>. It returns an array of corresponding values for each position.
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>positions</b>:</td>
-					<td>An array of positions at which to evaluate the triquadratic equation. The array of positions should be formatted as [x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>, ...], where (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>), (x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>), (x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>), etc. are the points.</td>
+					<td><b>positions</b>: Array</td>
+					<td>An array of positions at which to evaluate the triquadratic equation. The layout of the positions array is: <b>[
+					<br>
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>,&nbsp; y<sub>0</sub>, z<sub>0</sub>,
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>,&nbsp; y<sub>1</sub>, z<sub>1</sub>,
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>,&nbsp; y<sub>2</sub>, z<sub>2</sub>,
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>n-1</sub>, y<sub>n-1</sub>, z<sub>n-1</sub>
+					<br>
+					<br>]</b>, where <b>n</b> is the number of points and <b>[ x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub> ]</b>, <b>[ x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>]</b>, <b>[ x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub> ]</b>, ..., <b>[ x<sub>n-1</sub>, y<sub>n-1</sub>, z<sub>n-1</sub> ]</b> are the points at which to evaluate the triquadratic equation(s).</td>
 				</tr>
 			</table>
 			</p>

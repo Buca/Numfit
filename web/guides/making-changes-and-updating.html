@@ -1,0 +1,35 @@
+<div id="content">
+	
+	<section>
+		<div class="page-title" class="row">
+			<h2>Making Changes & Updating</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/guides/making-changes-and-updating.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				This guide will show how to make changes to the positions and values on an evaluator and how to update the evaluator so that the changes are reflected on evaluation.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Using translate, scale and update functions</h3>
+		<section class="part">
+			<p>
+				Using the <code>.translate()</code>, <code>.map()</code> and <code>.update()</code> functions on an instance returns that instance, so they can be chain. Generally you want to make all your calls to <code>.translate()</code> and <code>.map()</code> before finally calling <code>.update()</code>.
+			</p>
+
+			<p>
+				Here's example code where we translate, scale and then update an instance of the <code>Linear</code> class:  
+			</p>
+			<pre><code class="language-javascript">
+const positions = [];
+const values = [];		
+const linear = new Linear( positions, values );
+
+linear.translate( -1 ).scale( 10 ).update();
+			</code></pre>
+		</section>
+	</section>
+
+</div>

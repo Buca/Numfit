@@ -26,13 +26,6 @@
 			{ "name": "Tricubic", "href": "tricubic.html" }
 		]
 	
-	}, {
-	
-		"name": "Polynomial",
-		"list": [
-			{ "name": "Polynomial", "href": "polynomial.html" }
-		]
-
 	}
 
 ]

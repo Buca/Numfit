@@ -174,7 +174,7 @@ export default class Evaluator {
 		const dimension = this.dimension;
 		const variables = this.constructor.variables;
 
-		let length = 0;
+		let length = 1;
 
 		for ( let i = 0; i < variables; i ++ ) {
 
@@ -182,7 +182,7 @@ export default class Evaluator {
 			const _end = typeof end === 'number' ? end : end[ i ];
 			const _size = typeof size === 'number' ? size : size[ i ];
 
-			length += Math.floor( Math.abs( _end - _start )/_size );
+			length *= Math.floor( Math.abs( _end - _start )/_size ) + 1;
 
 		}
 
@@ -194,15 +194,23 @@ export default class Evaluator {
 		if ( handler ) output = new this.values.constructor( dimension ).fill( 0 );
 		else output = new this.values.constructor( length ).fill( 0 );
 
-		for ( let i = 0; i <= length; i += dimension ) {
+		for ( let i = 0; i < length; i += dimension ) {
+
+			let product = 1;
 
 			for ( let j = 0; j < variables; j ++ ) {
-
-				const multiplier = Math.floor( i/variables );
+				
 				const _start = typeof start === 'number' ? start : start[ j ];
+				const _end = typeof end === 'number' ? end : end[ j ];
 				const _size = typeof start === 'number' ? size : size[ j ];
 
+				const amount = Math.floor((_end - _start)/_size) + 1;
+
+				const multiplier = Math.floor( i / (dimension*product) ) % amount;
+
 				input[ j ] = _start + multiplier*_size;
+
+				product *= (amount);
 
 			}
 
@@ -222,44 +230,20 @@ export default class Evaluator {
 
 	) {
 
-		const dimension = this.dimension;
 		const variables = this.constructor.variables;
+		const size = new this.positions.constructor( variables );
 
-		let length = 0;
+		for ( let i = 0; i < variables; i ++ ) {
 
-		if ( typeof amount === 'number' ) length += amount;
+			const _start = typeof start === 'number' ? start : start[ i ];
+			const _end = typeof end === 'number' ? end : end[ i ];
+			const _amount = typeof amount === 'number' ? amount : amount[ i ];
 
-		else for ( let i = 0; i < variables; i ++ ) length += amount[ i ];
-
-		length *= dimension;
-
-		const input = new this.positions.constructor( dimension );
-		let output;
-
-		if ( handler ) output = this.values.constructor( dimension ).fill( 0 );
-		else output = this.values.constructor( length ).fill( 0 );
-
-		for ( let i = 0; i < length; i += dimension ) {
-
-			for ( let d = 0; d < dimension; d ++ ) {
-
-				const multiplier = Math.floor( i/dimension );
-				const _start = typeof start === 'number' ? start : start[ d ];
-				const _end = typeof end === 'number' ? end : end[ d ];
-				const _amount = typeof amount === 'number' ? amount : amount[ d ];
-
-				const size = ( _end - _start ) / _amount;
-
-				input[ d ] = _start + multiplier*size;
-
-			}
-
-			if ( handler ) handler( variables > 1 ? input : input[ 0 ], this.evaluate( input, 0, output, 0 ) );
-			else this.evaluate( input, 0, output, i );
+			size[ i ] = (_end - _start)/(_amount-1);
 
 		}
 
-		return handler ? this : output;
+		return this.step( start, end, size );
 
 	};
 

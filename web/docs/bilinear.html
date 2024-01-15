@@ -2,7 +2,7 @@
 	<section>
 		<div class="page-title" class="row">
 			<h2>Bilinear</h2>
-			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/bilinear.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Bilinear.js">Source</a></div>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/bilinear.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Linear/Bilinear.js">Source</a></div>
 		</div>
 		<section class="part">
 			<p>
@@ -363,7 +363,7 @@
 		</section>
 		
 		<section class="part">   
-			<div class="code">.segment( <b>startX, startY, endX, endY, segmentsX, segmentsY</b>: Number ): Array</div>
+			<div class="code">.segment( <b>start, end, segments</b> ): Array</div>
 			<p>
 				This method calculates interpolated values between specified start and end points, dividing the interval into a given number of segments. It takes six parameters:
 			</p>
@@ -402,8 +402,8 @@
 					<td><b>positions</b>:</td>
 					<td>An array of positions at which to evaluate the bilinear equation. The layout of the positions array is: <b>[
 					<br>
-					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>,&nbsp; y<sub>2</sub>, 
-					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>,&nbsp; y<sub>2</sub>,
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>0</sub>,&nbsp; y<sub>0</sub>, 
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>1</sub>,&nbsp; y<sub>1</sub>,
 					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x<sub>2</sub>,&nbsp; y<sub>2</sub>,
 					<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
 					<br>&nbsp;&nbsp;&nbsp;&nbsp;x<sub>n-1</sub>, y<sub>n-1</sub>

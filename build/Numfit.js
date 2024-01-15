@@ -14,6 +14,10 @@
       this.coefficients = new type(dimension * length).fill(0);
       this.update();
     }
+    get variables() {
+    }
+    get degree() {
+    }
     update() {
       this.coefficients = this.constructor.coefficients(
         this.positions,
@@ -90,12 +94,12 @@
     step(start, end, size, handler) {
       const dimension = this.dimension;
       const variables = this.constructor.variables;
-      let length = 0;
+      let length = 1;
       for (let i = 0; i < variables; i++) {
         const _start = typeof start === "number" ? start : start[i];
         const _end = typeof end === "number" ? end : end[i];
         const _size = typeof size === "number" ? size : size[i];
-        length += Math.floor(Math.abs(_end - _start) / _size);
+        length *= Math.floor(Math.abs(_end - _start) / _size) + 1;
       }
       length *= dimension;
       const input = new this.positions.constructor(variables);
@@ -104,12 +108,16 @@
         output = new this.values.constructor(dimension).fill(0);
       else
         output = new this.values.constructor(length).fill(0);
-      for (let i = 0; i <= length; i += dimension) {
+      for (let i = 0; i < length; i += dimension) {
+        let product = 1;
         for (let j = 0; j < variables; j++) {
-          const multiplier = Math.floor(i / variables);
           const _start = typeof start === "number" ? start : start[j];
+          const _end = typeof end === "number" ? end : end[j];
           const _size = typeof start === "number" ? size : size[j];
+          const amount = Math.floor((_end - _start) / _size) + 1;
+          const multiplier = Math.floor(i / (dimension * product)) % amount;
           input[j] = _start + multiplier * _size;
+          product *= amount;
         }
         if (handler)
           handler(variables > 1 ? input : input[0], this.evaluate(input, 0, output, 0));
@@ -119,36 +127,15 @@
       return handler ? this : output;
     }
     segment(start, end, amount, handler) {
-      const dimension = this.dimension;
       const variables = this.constructor.variables;
-      let length = 0;
-      if (typeof amount === "number")
-        length += amount;
-      else
-        for (let i = 0; i < variables; i++)
-          length += amount[i];
-      length *= dimension;
-      const input = new this.positions.constructor(dimension);
-      let output;
-      if (handler)
-        output = this.values.constructor(dimension).fill(0);
-      else
-        output = this.values.constructor(length).fill(0);
-      for (let i = 0; i < length; i += dimension) {
-        for (let d = 0; d < dimension; d++) {
-          const multiplier = Math.floor(i / dimension);
-          const _start = typeof start === "number" ? start : start[d];
-          const _end = typeof end === "number" ? end : end[d];
-          const _amount = typeof amount === "number" ? amount : amount[d];
-          const size = (_end - _start) / _amount;
-          input[d] = _start + multiplier * size;
-        }
-        if (handler)
-          handler(variables > 1 ? input : input[0], this.evaluate(input, 0, output, 0));
-        else
-          this.evaluate(input, 0, output, i);
+      const size = new this.positions.constructor(variables);
+      for (let i = 0; i < variables; i++) {
+        const _start = typeof start === "number" ? start : start[i];
+        const _end = typeof end === "number" ? end : end[i];
+        const _amount = typeof amount === "number" ? amount : amount[i];
+        size[i] = (_end - _start) / (_amount - 1);
       }
-      return handler ? this : output;
+      return this.step(start, end, size);
     }
     map(positions, handler) {
       const variables = this.constructor.variables;
@@ -304,6 +291,71 @@
     constructor(positions, values, dimension = 1) {
       super(positions, values, dimension);
     }
+    /*
+    	step( start, end, size, handler ) {
+    
+    		const variables = this.constructor.variables;
+    		const dimension = this.dimension;
+    
+    		let length = 1;
+    
+    		length *= Math.floor( (end[0]-start[0])/size[0] );
+    		length *= Math.floor( (end[1]-start[1])/size[1] );
+    		length *= dimension;
+    
+    		const input = new this.positions.constructor( variables );
+    		const output = new this.values.constructor( length)
+    
+    		for ( let y = start[1], j = 0; y <= end[1]; y += size[1] ) {
+    			for ( let x = start[0]; x <= end[0]; x += size[0] ) {
+    
+    				input[0] = x;
+    				input[1] = y;
+    
+    				this.evaluate( input, 0, output, j );
+    
+    				j += dimension;
+    
+    			}
+    		}
+    
+    		return output;
+    
+    	};*/
+    /*
+    	segment( start, end, amount ) {
+    
+    		const variables = this.constructor.variables;
+    		const dimension = this.dimension;
+    
+    		let length = 1;
+    
+    		length *= amount[0];
+    		length *= amount[1];
+    		length *= dimension;
+    
+    		const sizeX = (end[0] - start[0])/(amount[0]-1);
+    		const sizeY = (end[1] - start[1])/(amount[1]-1);
+    
+    		const input = new this.positions.constructor( variables );
+    		const output = new this.values.constructor( length)
+    
+    		for ( let y = start[1], j = 0; y <= end[1]; y += sizeY ) {
+    			for ( let x = start[0]; x <= end[0]; x += sizeX ) {
+    
+    				input[0] = x;
+    				input[1] = y;
+    
+    				this.evaluate( input, 0, output, j );
+    
+    				j += dimension;
+    
+    			}
+    		}
+    
+    		return output;
+    
+    	};*/
     /*
     	evaluate( 
     
@@ -1106,33 +1158,53 @@
     constructor(positions, values, dimension = 1) {
       super(positions, values, dimension);
     }
-    evaluate(position, inputOffset = 0, output, outputOffset = 0) {
-      const dimension = this.dimension;
-      if (!output)
-        output = new this.values.constructor(dimension);
-      const x = position[0];
-      const y = position[1];
-      for (let i = 0, index = 0; i < dimension; i++) {
-        const c00 = this.coefficients[index++];
-        const c10 = this.coefficients[index++];
-        const c20 = this.coefficients[index++];
-        const c30 = this.coefficients[index++];
-        const c01 = this.coefficients[index++];
-        const c11 = this.coefficients[index++];
-        const c21 = this.coefficients[index++];
-        const c31 = this.coefficients[index++];
-        const c02 = this.coefficients[index++];
-        const c12 = this.coefficients[index++];
-        const c22 = this.coefficients[index++];
-        const c32 = this.coefficients[index++];
-        const c03 = this.coefficients[index++];
-        const c13 = this.coefficients[index++];
-        const c23 = this.coefficients[index++];
-        const c33 = this.coefficients[index++];
-        output[i] = c00 + c10 * x + c20 * x ** 2 + c30 * x ** 3 + (c01 + c11 * x + c21 * x ** 2 + c31 * x ** 3) * y + (c02 + c12 * x + c22 * x ** 2 + c32 * x ** 3) * y ** 2 + (c03 + c13 * x + c23 * x ** 2 + c33 * x ** 3) * y ** 3;
-      }
-      return output;
-    }
+    /*evaluate(
+    
+    		position, inputOffset = 0,
+    		output, outputOffset = 0
+    
+    	) {
+    
+    		const dimension = this.dimension;
+    
+    		if ( !output ) output = new this.values.constructor( dimension );
+    
+    		const x = position[ 0 ];
+    		const y = position[ 1 ];
+    
+    		for ( let i = 0, index = 0; i < dimension; i ++ ) {
+    
+    			const c00 = this.coefficients[ index ++ ];
+    			const c10 = this.coefficients[ index ++ ];
+    			const c20 = this.coefficients[ index ++ ];
+    			const c30 = this.coefficients[ index ++ ];
+    
+    			const c01 = this.coefficients[ index ++ ];
+    			const c11 = this.coefficients[ index ++ ];
+    			const c21 = this.coefficients[ index ++ ];
+    			const c31 = this.coefficients[ index ++ ];
+    			
+    			const c02 = this.coefficients[ index ++ ];
+    			const c12 = this.coefficients[ index ++ ];
+    			const c22 = this.coefficients[ index ++ ];
+    			const c32 = this.coefficients[ index ++ ];
+    			
+    			const c03 = this.coefficients[ index ++ ];
+    			const c13 = this.coefficients[ index ++ ];
+    			const c23 = this.coefficients[ index ++ ];
+    			const c33 = this.coefficients[ index ++ ];
+    			//   +      -         +         -
+    			output[ i ] =
+    				(c00 + c10*x + c20*x**2 + c30*x**3)			// +
+    			+	(c01 + c11*x + c21*x**2 + c31*x**3)*y 		// -
+    			+	(c02 + c12*x + c22*x**2 + c32*x**3)*y**2 	// +
+    			+	(c03 + c13*x + c23*x**2 + c33*x**3)*y**3;	// -
+    
+    		}
+    
+    		return output;
+    
+    	}*/
   };
   globalThis.Bicubic = Bicubic;
 

@@ -1,0 +1,52 @@
+<div id="content">
+	
+	<section>
+		<div class="page-title" class="row">
+			<h2>Basic Evaluation</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/guides/basic-evaluation.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				This guide will describe how to use both static and instance evaluation.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Static evaluation</h3>
+		<section class="part">
+			<p>
+				Static evaluation requires very little setup other than defining the positions, values and optionally the dimension of the <i>value-space</i>. Here's example code showing how to use static evaluation to linearly interpolate halfway between two RGBA values using the <b>Linear</b> class:
+			</p>
+			<pre><code class="language-javascript">
+const positions = [ 0, 1 ];
+const values = [ 0,0,0,0, 255,255,255,1 ];
+const dimension = 4;
+
+Linear.evaluate( positions, values, dimension, 0.5 );
+			</code></pre>
+			<p>
+				Since static evaluation calculates the values directly, it is best suited for when you only need one or a few values to be evaluated. Instance evaluation is better suited for when you need more than one evaluation, because it uses coefficients to evaluate.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Static evaluation</h3>
+		<section class="part">
+			<p>
+				Instance evaluation requires a bit more setup: defining the positions, values, optionally the dimension of the <i>value-space</i> and additionally constructing the instance. Here's example code showing how to use instance evaluation to linearly interpolate between two RGBA values using the <b>Linear</b> instance:
+			</p>
+			<pre><code class="language-javascript">
+const positions = [ 0, 1 ];
+const values = [ 0,0,0,0, 255,255,255,1 ];
+const dimension = 4;
+
+const linear = new Linear( position, values, dimension );
+
+linear.evaluate( 0.5 );
+			</code></pre>
+		</section>
+	</section>
+
+</div>

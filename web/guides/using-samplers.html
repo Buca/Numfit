@@ -1,0 +1,103 @@
+<div id="content">
+	
+	<section>
+		<div class="page-title" class="row">
+			<h2>Using Samplers</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/guides/basic-evaluation.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				This guide will describe how to use different types of samplers. There are currently three different samplers: <code>.step</code>, <code>.segment</code> and <code>.map</code>
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Using the Step sampling function</code></h3>
+		<section class="part">
+			<p>
+				At it's simplest the function <code>.step( start, end, step )</code> takes three arguments: the starting value of the evaluation range <code>start</code>, the ending value <code>end</code> and the step-size <code>size</code>. 
+			</p>
+			<p>
+				Here's example code showing how to use the <code>.step()</code> function to interpolate between two RGBA values within the range defined by <b>start</b> and <b>end</b> according to a step-size defined by <b>size</b>:
+			</p>
+			<pre><code class="language-javascript">
+const positions = [ 0, 1 ];
+const values = [ 0,0,0,0, 255,255,255,1 ];
+const dimension = 4;
+
+const linear = new Linear( positions, values, dimension );
+
+linear.step( -1, 2, 0.25 );
+			</code></pre>
+			<p>
+				If we instead use an evalauator class with a number of <i>free-variables</i> higher than one, like <code>Bilinear</code>, <code>Trilinear</code>, then we use arrays of values for the sampler's arguments. Here's example code of the <code>.step()</code> function using the <code>Trilinear</code> class instead:
+			</p>
+			<pre><code class="language-javascript">
+const positions = [ 
+	0, 1,
+	0, 1,
+	0, 1
+];
+const values = [
+	1, 2,
+	3, 4,
+
+	5, 6,
+	7, 8
+];
+const trilinear = new Trilinear( positions, values );
+
+const start = [ 0, 1, 2 ];
+const end = [ 2, 3, 4 ];
+const size = [ 0.2, 0.2, 0.2 ];
+
+const vs = trilinear.step( start, end, size );
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
+		<h3>Using the Segment sampling function</code></h3>
+		<section class="part">
+			<p>
+				The segment function <code>.segment( start, end, step )</code>, like the <code>.step()</code> function, takes three arguments: the starting value of the evaluation range <code>start</code>, the ending value <code>end</code> and the number of segments in the range <code>segments</code>. 
+			</p>
+			<p>
+				Here's example code showing how to use the <code>.map()</code> function to interpolate between two RGBA values within the range defined by <b>start</b> and <b>end</b> according to a along number of equally spaced segments defined by <b>segments</b> argument:
+			</p>
+			<pre><code class="language-javascript">
+const positions = [ 0, 1 ];
+const values = [ 0,0,0,0, 255,255,255,1 ];
+const dimension = 4;
+
+const linear = new Linear( positions, values, dimension );
+
+const vs = linear.segment( -1, 2, 12 );
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
+		<h3>Using the Map sampling function</code></h3>
+		<section class="part">
+			<p>
+				The map function <code>.map( positions )</code> takes one argument: the positions array.
+			</p>
+			<p>
+				Here's example code showing how to use the <code>.map()</code> function to evaluate positions:
+			</p>
+			<pre><code class="language-javascript">
+const positions = [ 0, 1 ];
+const values = [ 0,0,0,0, 255,255,255,1 ];
+const dimension = 4;
+
+const linear = new Linear( positions, values, dimension );
+
+const ps = [ -1, 3, 1, 5 ];
+const vs = linear.map( ps );
+			</code></pre>
+		</section>
+	</section>
+
+</div>

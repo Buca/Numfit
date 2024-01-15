@@ -3,11 +3,9 @@
 	
 		"name": "Usage Guides",
 		"list": [
-			{ "name": "Static evaluation", "href": "static-.html" },
-			{ "name": "Instance evaluation", "href": "instance-evaluation.html" },
-			{ "name": "Using .step", "href": "using-step.html" },
-			{ "name": "Using .segment", "href": "using-segment.html" },
-			{ "name": "Using .map", "href": "using-map.html" },
+			{ "name": "Installation", "href": "installation.html" },
+			{ "name": "Basic Evaluation", "href": "basic-evaluation.html" },
+			{ "name": "Using Samplers", "href": "using-samplers.html" },
 			{ "name": "Making changes and updating", "href": "making-changes-and-updating.html" }
 		]
 	
@@ -15,8 +13,7 @@
 		
 		"name": "Development Guides",
 		"list": [
-			{ "name": "Creating browser build", "href": "browser-build.html" },
-			{ "name": "Running tests", "href": "running-tests.html" }
+			{ "name": "Building and Testing", "href": "building-and-testing.html" }
 		]
 
 	}

@@ -2,11 +2,11 @@
 	<section>
 		<div class="page-title" class="row">
 			<h2>Quadratic</h2>
-			<div><a href="#">Edit</a> | <a href="#">Source</a></div>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/quadratic.html">Edit</a> | <a href="https://github.com/Buca/Numfit/tree/main/src/Quadratic/Quadratic.js">Source</a></div>
 		</div>
 		<section class="part">
 			<p>
-				The Quadratic class provides tools for performing quadratic interpolation and extrapolation. Interpolation employs quadratic equations to construct new data points within the range of known values, essentially bridging the gaps between discrete points. In contrast, extrapolation extends the quadratic relationship beyond the known data, enabling predictions outside the given range.
+				The Quadratic class provides tools for performing quadratic interpolation and extrapolation.
 			</p>
 		</section>
 	</section>
@@ -15,168 +15,195 @@
 		<h3>Constructor</h3>
 
 		<section class="part">
-			<div class="code">new Quadratic( <b>positions, values, ?coefficients</b>: Array ): Quadratic</div>
+			<div class="code">new Quadratic( <b>positions, values, ?dimension</b> ): Quadratic</div>
 
 			<p>The <b><i>Quadratic()</i></b> constructor creates a new instance of the <b>Quadratic</b> class. It takes three parameters:</p>
 
 			<p>
 				<table>
 					<tr>
-						<td><b>positions</b>:</td>
+						<td><b>positions</b>: Array</td>
 						<td>
-							A numerical array of length 3 that specifies the positions of the values to be interpolated.
+							A numerical array of length <b>3</b> that specifies the positions of the values to be interpolated. The layout of the position array is: <b>[ x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub> ].</b>
 						</td>
 					</tr>
 					<tr>
-						<td><b>values</b>:</td>
+						<td><b>values</b>: Array</td>
 						<td>
-							A numerical array of length 3 that contains the values to be interpolated.
+							A numerical array of length <b>3 &times; d</b>, where <b>d</b> is the <i>dimension</i>. The array contains the values located at specified positions of the <i>positions</i> array. The layout of the values array is: <b>[
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>00</sub>, v<sub>10</sub>, &mldr;, v<sub>(d-1)0</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>01</sub>, v<sub>11</sub>, &mldr;, v<sub>(d-1)1</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>02</sub>, v<sub>12</sub>, &mldr;, v<sub>(d-1)2</sub>
+							<br>
+							<br>]</b>, where <b>d</b> is the dimension of the <i>value-space</i>.
 						</td>
+
 					</tr>
 					<tr>
-						<td><b>coefficients</b>:</td>
+						<td><b>dimension</b>: Number</td>
 						<td>
-							(Optional) An optional numerical array of coefficients used internally for evaluating interpolated values.
+							(Optional) A numerical value that determines the dimension of the value-space. Defaults to <b>1</b>.
 						</td>
 					</tr>
 				</table>
 			</p>
 
-			<p>The constructor initializes the <b>Quadratic</b> instance with the provided positions and values. If the <b>coefficients</b> parameter is not provided, it will be calculated internally.
+			<p>The constructor initializes the <b>Quadratic</b> instance with the provided positions, values and dimension. 
 			</p>
 		</section>
-	</section>
-
-	<section>
-		<h3>Static Properties</h3>
-		
-		<section class="part">       
-			<div class="code">Quadratic.variables: Number</div>
-			<p>The number of free variables. Since <b>Quadratic</b> is a monomial - it is 1.</p>
-		</section>
-
-		<section class="part">
-			<div class="code">Quadratic.degree: Number</div>
-			<p>The maximum degree of the polynomial. In the case of <b>Quadratic</b> it is 2.</p>
-		</section>
-
 	</section>
 
 	<section>
 	<h3>Static Methods</h3>
 		<section class="part">
-			<div class="code">Quadratic.coefficients( <b>x0, x1, x2, v0, v1, v2</b>: Number, <b>output</b>: Array ): Array</div>
+			<div class="code">Quadratic.coefficients( <b>positions, values, ?dimension, ?output, ?outputOffset</b> ): Array</div>
 
 			<p>
-				The <b><i>Quadratic.coefficients()</i></b> static method determines the coefficients of the quadratic equation that passes through the three points (<b>x0</b>, <b>v0</b>), (<b>x1</b>, <b>v1</b>) and (<b>x2</b>, <b>v2</b>). It takes seven arguments:
+				The <b><i>Quadratic.coefficients()</i></b> static method calculates the coefficients of the quadratic equation(s) that pass through the three points <b>[ x<sub>0</sub>, v<sub>0i</sub> ]</b>, <b>[ x<sub>1</sub>, v<sub>1i</sub> ]</b> and <b>[ x<sub>2</sub>, v<sub>2i</sub> ]</b> for each <b>0 &le; i &le; d-1</b>, where <b>d</b> is the dimension of the <i>value-space</i>. It takes five arguments:
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>x0</b>:</td>
-						<td>The x-coordinate of the first point.</td>
+						<td><b>positions</b>: Array</td>
+						<td>A numerical array of length <b>3</b> that specifies the positions of the values to be interpolated. The layout of the array is <b>[ x<sub>0</sub>, x<sub>1</sub>, x2<sub>2</sub> ]</b>.</td>
 					</tr>
 					<tr>
-						<td><b>x1</b>:</td>
-						<td>The x-coordinate of the second point.</td>
-					</tr>
-					<tr>
-						<td><b>x2</b>:</td>
-						<td>The x-coordinate of the third point.</td>
-					</tr>
-					<tr>
-						<td><b>v0</b>:</td>
-						<td>The y-coordinate of the first point.</td>
-					</tr>
-					<tr>
-						<td><b>v1</b>:</td>
-						<td>The y-coordinate of the second point.</td>
-					</tr>
-					<tr>
-						<td><b>v2</b>:</td>
-						<td>The y-coordinate of the third point.</td>
-					</tr>
-					<tr>
-						<td><b>output</b>:</td>
-						<td>
-							(Optional) An optional array to store the calculated coefficients. If not provided, a new array will be created.
+						<td><b>values</b>: Array</td>
+
+						<td>A numerical array of length <b>d &times; 3</b> containing the values to be interpolated. The layout of the values array is: <b>[
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>00</sub>, v<sub>10</sub>, ..., v<sub>(d-1)0</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>01</sub>, v<sub>11</sub>, ..., v<sub>(d-1)1</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>02</sub>, v<sub>12</sub>, ..., v<sub>(d-1)2</sub>
+							<br>
+							<br>]</b>, where <b>d</b> is the dimension of the <i>value-space</i>.
 						</td>
+					</tr>
+					<tr>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A positive integer value that defines the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
+					</tr>
+					<tr>
+						<td><b>output</b>: Array</td>
+						<td>
+							(Optional) A numerical array of length <b>d &times; 3</b> containing the calculated coefficients. If not provided, a new array will be created. The layout of the output array is: <b>[
+								<br>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>00</sub>,&nbsp;&nbsp;&nbsp; c<sub>10</sub>,&nbsp;&nbsp;&nbsp; c<sub>20</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>01</sub>,&nbsp;&nbsp;&nbsp; c<sub>11</sub>,&nbsp;&nbsp;&nbsp; c<sub>21</sub>,
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0(d-1)</sub>, c<sub>1(d-1)</sub>, c<sub>1(d-1)</sub>
+								<br>
+								<br>]</b>, where <b>d</b> is the <i>dimension of the values space</i> and the first index corresponds to the exponent of the <i>free variables</i>. 
+						</td>
+					</tr>
+					<tr>
+						<td><b>outputOffset</b>: Number</td>
+						<td>(Optional) A positive integer which describes how much to offset the index layout in the output.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns an array containing the two coefficients of the quadratic equation: [c<sub>0</sub>, c<sub>1</sub>, c<sub>2</sub>], where the equation is expressed as v = c<sub>0</sub> + c<sub>1</sub>x + c<sub>2</sub>x<sup>2</sup>.
+				The method returns the output array containing the coefficients.
 			</p>
 		</section>
 		
 		<section class="part">
-			<div class="code">Quadratic.evaluate( <b>x0, x1, x2, v0, v1, v2</b>: Number ): Number</div>
+			<div class="code">Quadratic.evaluate( <b>positions, values, position, ?dimension, ?output, ?outputOffset</b> ): Number | Array </div>
 
 			<p>
-				The <b><i>Quadratic.evaluate()</i></b> static method evaluates the quadratic equation that passes through the two points (<b>x<sub>0</sub></b>, <b>v<sub>0</sub></b>) and (<b>x<sub>1</sub></b>, <b>v<sub>1</sub></b>) for a given input value <b>x</b>. It takes four arguments:
+				The <b><i>Quadratic.evaluate()</i></b> static method evaluates the quadratic equation(s) which pass through the points <b>[ x<sub>0</sub>, v<sub>i0</sub> ]</b>, <b>[ x<sub>1</sub>, v<sub>i1</sub> ]</b> and <b>[ x<sub>2</sub>, v<sub>i2</sub> ]</b> for each <b>0 &le; i &le; d-1</b>, where <b>d</b> is the dimension of the <i>value-space</i>. It takes six arguments:
 			</p>
 			<p>
 				<table>
 					<tr>
-						<td><b>x0</b>:</td>
-						<td>The x-coordinate of the first point.</td>
+						<td><b>positions</b>: Array</td>
+						<td>A numerical array of length <b>2</b> that specifies the positions of the values to be interpolated. The layout of the array is <b>[ x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub> ]</b>.</td>
 					</tr>
 					<tr>
-						<td><b>x1</b>:</td>
-						<td>The x-coordinate of the second point.</td>
+						<td><b>values</b>: Array</td>
+
+						<td>A numerical array of length <b>d &times; 2</b> containing the values to be interpolated. The layout of the is: <b>[
+							<br>
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>00</sub>, v<sub>10</sub>, ..., v<sub>(d-1)0</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>01</sub>, v<sub>11</sub>, ..., v<sub>(d-1)1</sub>,
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>02</sub>, v<sub>12</sub>, ..., v<sub>(d-1)2</sub>
+							<br>
+							<br>]</b>, where <b>d</b> is the dimension of the <i>value-space</i>. The value at position <b>x<sub>j</sub> is v<sub>ij</sub></b>, for some integers <b>i</b> and <b>j</b> such that <b>0 &le; i &le; d-1</b> and  <b>0 &le; j &le; 1</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>x2</b>:</td>
-						<td>The x-coordinate of the third point.</td>
+						<td><b>position</b>: Number | Array</td>
+
+						<td>Either a number or an array of length <b>1</b> containing the coordinate value to be interpolated. If an array is used the layout of the position array would be: <b>[ x ]</b>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>v0</b>:</td>
-						<td>The y-coordinate of the first point.</td>
+						<td><b>dimension</b>: Number</td>
+						<td>(Optional) A positive integer value that describes the dimension of the <i>value-space</i>. Defaults to <b>1</b>.</td>
 					</tr>
 					<tr>
-						<td><b>v1</b>:</td>
-						<td>The y-coordinate of the second point.</td>
+						<td><b>output</b>: Array</td>
+						<td>
+							(Optional) A numerical array of size <b>d</b> to store the evaluated values, where <b>d</b> is the dimension of the <i>value-space</i>. If not provided, a new array will be created. The layout of the output array is: <b>[ k<sub>0</sub>, k<sub>0</sub>, &mldr; k<sub>d-1</sub> ]</b>, where <b>d</b> is the <i>dimension of the value-space</i>.
+						</td>
 					</tr>
 					<tr>
-						<td><b>v2</b>:</td>
-						<td>The y-coordinate of the second point.</td>
-					</tr>
-					<tr>
-						<td><b>x</b>:</td>
-						<td>The position to evaluate the quadratic equation.</td>
+						<td><b>outputOffset</b>: Number</td>
+						<td>(Optional) A positive integer which describes how much to offset the index layout in the output.</td>
 					</tr>
 				</table>
 			</p>
 			<p>
-				The method returns the calculated y-value corresponding to the input value <b>x</b> based on the quadratic equation defined by the provided points.
+				The method returns the calculated value corresponding to the input value <b>x</b> based on the quadratic equation(s) defined by the provided positions and values.
 			</p>
 		</section>
 	</section>
 
 	<section>
 		<h3>Instance Properties</h3>
-			
+		
+		<section class="part">
+			<div class="code">.variables: Number</div>
+			<p>
+				The number of free variables. This property is read-only. Returns <b>1</b>.
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.degree: Number</div>
+			<p>
+				The maximum degree of the equation. This property is read-only. Returns <b>2</b>.
+			</p>
+		</section>
+
 		<section class="part">
 			<div class="code">.positions: Array</div>
-
 			<p>
-				The <i>positions</i> property of the <i>Quadratic</i> instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length 3 containing the numerical positions.
-			</p>
-
-			<p>
-				The <i>positions</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal positions of the <i>Quadratic</i> instance. This allows for dynamic modification of the interpolation range.
+				The <i>positions</i> property of the <i>Quadratic</i> instance represents the array of positions corresponding to the known data points. It is accessible using dot notation and returns an array of length <b>3</b> containing the numerical positions. The layout of the values array is: <b>[ x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub> ]</b>.
 			</p>
 		</section>
 
 		<section class="part">
 			<div class="code">.values: Array</div>
-
 			<p>
-				The <i>values</i> property of the <i>Quadratic</i> instance represents the array of values corresponding to the known data points. It is accessible using dot notation and returns an array of length 3 containing the numerical values.
+				The <i>values</i> property of the <i>Quadratic</i> instance represents the array of values corresponding to the known data points. Returns an array of length <b>d &times; 2</b> containing the numerical values, where <b>d</b> is the dimension of the <i>value-space</i>.
 			</p>
+			<p> 
+				The layout of the values array is: <b>[
+				<br>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>00</sub>, v<sub>10</sub>, ..., v<sub>(d-1)0</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>01</sub>, v<sub>11</sub>, ..., v<sub>(d-1)1</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;v<sub>02</sub>, v<sub>12</sub>, ..., v<sub>(d-1)2</sub>
+				<br>
+				<br>]</b>, where <b>d</b> is the dimension of the <i>value-space</i>.
+			</p>
+		</section>
 
+		<section class="part">
+			<div class="code">.dimension: Number</div>
 			<p>
-				The <i>values</i> property is mutable, meaning that changes made to the returned array will also be reflected in the internal values of the <i>Quadratic</i> instance. This allows for dynamic modification of the interpolation range.
+				The <i>dimension</i> property of the <i>Quadratic</i> instance represents the dimension of the value-space. It should treated as read-only.
 			</p>
 		</section>
 
@@ -184,12 +211,18 @@
 			<div class="code">.coefficients: Array</div>
 
 			<p>
-				The <i>coefficients</i> property of the <i>Quadratic</i> instance represents the array of coefficients used internally for evaluating interpolated values. It is accessible using dot notation and returns an array of length 3 containing the numerical coefficients.
+				The <i>coefficients</i> property of the <i>Quadratic</i> instance represents the array of coefficients used internally for evaluating interpolated values. It is accessible using dot notation and returns an array of length <b>d &times; 3</b> containing the numerical coefficients, where <b>d</b> is the dimension of the <i>value-space</i>. It should be treated as read-only.
 			</p>
 
 			<p>
-				To recompute the internal coefficients, you need to call the <i>update()</i> method on the <i>Quadratic</i> instance.
-			</p>
+				The layout of the coefficients array is: <b>[
+				<br>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>00</sub>,&nbsp;&nbsp;&nbsp; c<sub>10</sub>,&nbsp;&nbsp;&nbsp; c<sub>20</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c<sub>01</sub>,&nbsp;&nbsp;&nbsp; c<sub>11</sub>,&nbsp;&nbsp;&nbsp; c<sub>21</sub>,
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&vellip;
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;c<sub>0(d-1)</sub>, c<sub>1(d-1)</sub>, c<sub>1(d-1)</sub>
+				<br>
+				<br>]</b>, where <b>d</b> is the dimension of the <i>value-space</i>. 
 		</section>
 
 	</section>
@@ -202,7 +235,7 @@
 		</section>
 
 		<section class="part">
-			<div class="code">.translate( <b>t</b>: Number ): Quadratic</div>
+			<div class="code">.translate( <b>t</b> ): Quadratic</div>
 
 			<p>
 				The <i>translate()</i> method translates the positions of the <i>Quadratic</i> instance by a specified value <b>t</b>. This means that it adds <b>t</b> to each position. It returns the instance itself.
@@ -210,7 +243,7 @@
 			<p>
 			<table>
 				<tr>
-					<td><b>t</b>:</td>
+					<td><b>t</b>: Number | Array</td>
 					<td>The value by which to translate the positions.</td>
 				</tr>
 			</table>
@@ -218,7 +251,7 @@
 		</section>
 
 		<section class="part">
-			<div class="code">.scale( <b>s, ?anchor</b>: Number ): Quadratic</div>
+			<div class="code">.scale( <b>s, ?anchor</b> ): Quadratic</div>
 
 			<p>
 				The <i>scale()</i> method scales the positions of the <i>Quadratic</i> instance around an optional anchor point <b>anchor</b> by a specified factor <b>s</b>. If no anchor point is provided, the scaling is done with respect to the origin 0. It returns the instance itself, allowing for chaining operations.
@@ -226,11 +259,11 @@
 			<p>
 			<table>
 				<tr>
-					<td><b>s</b>:</td>
+					<td><b>s</b>: Number | Array</td>
 					<td>The scaling factor to apply to the positions.</td>
 				</tr>
 				<tr>
-					<td><b>anchor</b>:</td>
+					<td><b>anchor</b>: Number | Array</td>
 					<td>An (optional) anchor point around which to scale the positions. If omitted, the origin 0 is used.</td>
 				</tr>
 			</table>
@@ -238,81 +271,107 @@
 		</section>
 
 		<section class="part">
-			<div class="code">.evaluate( <b>x</b>: Number ): Number</div>
+			<div class="code">.evaluate( <b>position, inputOffset, output, outputOffset</b> ): Number | Array</div>
 			<p>
-		    	The <i>evaluate()</i> method evaluates the quadratic equation for a given input value <b>x</b>. It returns the corresponding value based on the quadratic relationship defined by the instance's positions and values.
-			</p>
-			<p>
-				<table>
-					<tr>
-						<td><b>x</b>:</td>
-			    		<td>The x-value for which to evaluate the quadratic equation.</td>
-					</tr>
-				</table>
-			</p>
-		</section>
-
-		<section class="part">
-			<div class="code">.step( <b>start, end, size</b>: Number ) : Array</div>
-			<p>
-				The <i>step()</i> method evaluates the quadratic equation at a specified number of equally spaced intervals between a given start value <b>start</b> and end value <b>end</b>. The number of intervals is determined by the step size <b>size</b>, which specifies the distance between each evaluation point. It returns an array of interpolated values corresponding to the evaluation points.
+		    	The <i>evaluate()</i> method evaluates the quadratic equation(s) for a given position. It returns an array with the corresponding value(s).
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>start</b>:</td>
-					<td>The starting value of the interpolation range.</td>
+					<td><b>position</b>: Number | Array</td>
+			   		<td>The position to be evaluated. Either a numerical value or position may be used. The layout of the array would be: <b>[ x ]</b>, where x is </td>
 				</tr>
 				<tr>
-					<td><b>end</b>:</td>
-					<td>The ending value of the interpolation range.</td>
+					<td><b>inputOffset</b>: Number</td>
+			   		<td>(Optional) The index offset for the position array. This will be used in case an array is supplied in the position argument. Defaults to <b>0</b>.</td>
 				</tr>
 				<tr>
-					<td><b>size</b>:</td>
-					<td>The step size, which determines the distance between evaluated points and the number of evaluation points between the start and end values.</td>
+					<td><b>output</b>: Array</td>
+			   		<td>(Optional) The output array for the evaluated values. An array will be created if none is provided. The layout of the output array is: <b>[ k<sub>0</sub>, k<sub>1</sub>, ..., k<sub>d-1</sub> ]</b>, where <b>d</b> is the dimension of the <i>value-space</i>.</td>
+				</tr>
+				<tr>
+					<td><b>outputOffset</b>: Number</td>
+			   		<td>(Optional) The index offset for the output array. Defaults to <b>0</b>.</td>
+				</tr>
+			</table>
+			</p>
+		</section>
+
+		<section class="part">
+			<div class="code">.step( <b>start, end, size, ?handler</b> ): Array | Quadratic</div>
+			<p>
+				The <i>step()</i> method evaluates the quadratic equation(s) at a specified number of equally spaced intervals between a given start value <b>start</b> and end value <b>end</b>. The number of intervals is determined by the step size <b>size</b>, which specifies the distance between each evaluation point. It returns an array of interpolated values corresponding to the evaluation points.
+			</p>
+			<p>
+			<table>
+				<tr>
+					<td><b>start</b>: Number | Array</td>
+					<td>The starting value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ s ]</b>, where <b>s</b> is the starting value.</td>
+				</tr>
+				<tr>
+					<td><b>end</b>: Number | Array</td>
+					<td>The ending value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array is: <b>[ e ]</b>, where <b>e</b> is the ending value.</td>
+				</tr>
+				<tr>
+					<td><b>size</b>: Number | Array</td>
+					<td>The step size of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ stepSize ]</b>, where <b>stepSize</b> is the step size.</td>
+				</tr>
+				<tr>
+					<td><b>handler</b>: Function</td>
+					<td>(Optional) A function to handle each point. Where the handler function is given <b>x</b> and <b>v</b> as arguments.  If the handler function is provided then <i>map()</i> returns this instance.</td>
 				</tr>
 			</table>
 			</p>
 		</section>
 		
 		<section class="part">   
-			<div class="code">.segment( <b>start, end, segments</b>: Number ): Array</div>
+			<div class="code">.segment( <b>start, end, segments, ?handler</b> ): Array | Quadratic</div>
 			<p>
-				This method calculates interpolated values between specified start and end points, dividing the interval into a given number of segments. It takes three parameters:
+				This method calculates interpolated values between specified start and end points, dividing the interval into a given number of segments. It takes four parameters:
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>start</b>:</td>
-					<td>The starting value of the interpolation range.</td>
+					<td><b>start</b>: Number | Array</td>
+					<td>The starting value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ s ]</b>, where <b>s</b> is the starting value.</td>
 				</tr>
 				<tr>
-					<td><b>end</b>:</td>
-					<td>The ending value of the interpolation range.</td>
+					<td><b>end</b>: Number | Array</td>
+					<td>The ending value of the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array is: <b>[ e ]</b>, where <b>e</b> is the ending value.</td>
 				</tr>
 				<tr>
-					<td><b>segments</b>:</td>
-					<td>The number of segments into which the range should be divided.</td>
+					<td><b>segments</b>: Number | Array</td>
+					<td>The number of segments in the interpolation range. Either a numerical value or an array containing the numerical value. The layout of the array would be: <b>[ segs ]</b>, where <b>segs</b> is the number of segments.</td>
+				</tr>
+				<tr>
+					<td><b>handler</b>: Function</td>
+					<td>(Optional) A function to handle each point. Where the handler function is given <b>x</b> and <b>v</b> as arguments. If the handler function is provided then <i>segment()</i> returns this instance.</td>
 				</tr>
 			</table>
 			</p>
 			<p>
-				The method returns an array of interpolated values, with each element corresponding to the value at a specific segment point. It utilizes quadratic interpolation to estimate the values within each segment.
+				The method returns an array of interpolated values, with each element corresponding to the value at a specific segment point.
 			</p>
 		</section>
+
 		<section class="part">
-			<div class="code">.apply( <b>positions</b>: Array ): Array</div>
+			<div class="code">.map( <b>positions, ?handler</b> ): Array | Quadratic</div>
 			<p>
-			The <i>apply()</i> method evaluates the quadratic equation for each value in a provided array of positions <b>positions</b>. It returns an array of corresponding values for each position. The array of positions should be formatted as [x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, ...], where x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, etc. are the positions at which to evaluate the quadratic equation.
+			The <i>map()</i> method evaluates the quadratic equation(s) for each value in a provided array of positions <b>positions</b>. It returns an array of corresponding values for each position. The array of positions should be formatted as <b>[ x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, ... ]</sub></b>, where <b>x<sub>0</sub></b>, <b>x<sub>1</sub></b>, <b>x<sub>2</sub></b>, etc. are the positions at which to evaluate the quadratic equation(s).
 			</p>
 			<p>
 			<table>
 				<tr>
-					<td><b>positions</b>:</td>
-					<td>An array of positions at which to evaluate the quadratic equation. The array should be formatted as [x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, ...], where x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, etc. are the positions.</td>
+					<td><b>positions</b>: Array</td>
+					<td>An array of positions at which to evaluate the quadratic equation(s). The positions layout is: <b>[ x<sub>0</sub>,x<sub>1</sub>, x<sub>2</sub>, ... ]</b>, where <b>x<sub>0</sub></b>, <b>x<sub>1</sub></b>, <b>x<sub>2</sub></b>, etc. are the positions.</td>
+				</tr>
+				<tr>
+					<td><b>handler</b>: Function</td>
+					<td>(Optional) A function to handle each point. Where the handler function is given <b>x</b> and <b>v</b> as arguments. If the handler function is provided then <i>map()</i> returns this instance.</td>
 				</tr>
 			</table>
 			</p>
 		</section>
+	
 	</section>
 </div>
