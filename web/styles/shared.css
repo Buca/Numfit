@@ -78,6 +78,7 @@ header nav {
 
 	display: flex;
 	justify-content: space-around;
+	margin: 0 12px;
 
 }
 
@@ -88,6 +89,7 @@ header nav a {
 	padding: 4px 20px;
 	color: #dce6ea;
 	transition: background .2s, box-shadow .2s;
+	margin: 0 12px;
 
 }
 
