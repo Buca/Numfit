@@ -229,7 +229,7 @@ export default class Evaluator {
 			const _end = typeof end === 'number' ? end : end[ i ];
 			const _size = typeof size === 'number' ? size : size[ i ];
 
-			length *= Math.ceil( Math.abs( _end - _start )/_size ) + 1;
+			length *= (Math.abs( _end - _start ) / _size)+1;
 
 		}
 
@@ -239,9 +239,9 @@ export default class Evaluator {
 		let output;
 
 		if ( handler ) output = new this.values.constructor( dimension ).fill( 0 );
-		else output = new this.values.constructor( length ).fill( 0 );
+		else output = new this.values.constructor( Math.ceil(length) ).fill( 0 );
 
-		for ( let i = 0; i < length; i += dimension ) {
+		for ( let i = 0; i <= length; i += dimension ) {
 
 			let product = 1;
 
@@ -250,7 +250,7 @@ export default class Evaluator {
 				const _start = typeof start === 'number' ? start : start[ j ];
 				const _end = typeof end === 'number' ? end : end[ j ];
 				const _size = typeof start === 'number' ? size : size[ j ];
-				const amount = Math.abs(_end - _start)/_size + 1;
+				const amount = Math.floor(Math.abs(_end - _start)/_size) + 1;
 				const multiplier = Math.floor( i / (dimension*product) ) % (amount);
 
 				input[ j ] = _start + multiplier*_size;

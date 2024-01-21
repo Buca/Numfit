@@ -233,7 +233,7 @@ test("Evaluator's step function with the handler defined.", () => {
 
 	linear.step( -2, 2, .5, ( position, value ) => {
 
-		expect( value ).toBeCloseTo( v[ i ++ ] );
+		expect( value ).toBeCloseTo( linear.evaluate( position ) );
 
 	} );
 
