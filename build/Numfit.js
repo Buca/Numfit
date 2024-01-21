@@ -91,6 +91,54 @@
       else
         return output;
     }
+    /*
+    	segment( start, end, amount, handler ) {
+    
+    		// Assume start, end and amount is a vector.
+    
+    		const dimension = this.dimension;
+    		const variables = this.constructor.variables;
+    
+    		let length = 1;
+    
+    		for ( let i = 0; i < variables; i ++ ) length *= amount[ i ];
+    		
+    		length *= dimension;
+    
+    		const input = new start.constructor( variables );
+    		let output;
+    
+    		if ( handler ) output = new this.values.constructor( dimension ).fill( 0 );
+    		else output = new this.values.constructor( length ).fill( 0 );
+    
+    		for ( let i = 0; i < length; i += dimension ) {
+    
+    			let product = 1;
+    
+    			for ( let j = 0; j < variables; j ++ ) {
+    				
+    				const _start = typeof start === 'number' ? start : start[ j ];
+    				const _end = typeof end === 'number' ? end : end[ j ];
+    				const _amount = (typeof amount === 'number' ? amount : amount[ j ]);
+    				
+    				const size = (_end - _start)/_amount;
+    				const multiplier = Math.floor( i / (dimension*product) ) % _amount;
+    
+    				input[ j ] = _start + multiplier*size;
+    
+    				product *= _amount;
+    
+    			}
+    
+    			if ( handler ) handler( variables > 1 ? input : input[ 0 ], this.evaluate( input, 0, output, 0 ) );
+    			else this.evaluate( input, 0, output, i );
+    
+    		}
+    
+    		return handler ? this : output;
+    
+    	}
+    */
     step(start, end, size, handler) {
       const dimension = this.dimension;
       const variables = this.constructor.variables;
@@ -99,7 +147,7 @@
         const _start = typeof start === "number" ? start : start[i];
         const _end = typeof end === "number" ? end : end[i];
         const _size = typeof size === "number" ? size : size[i];
-        length *= Math.floor(Math.abs(_end - _start) / _size) + 1;
+        length *= Math.ceil(Math.abs(_end - _start) / _size) + 1;
       }
       length *= dimension;
       const input = new this.positions.constructor(variables);
@@ -114,7 +162,7 @@
           const _start = typeof start === "number" ? start : start[j];
           const _end = typeof end === "number" ? end : end[j];
           const _size = typeof start === "number" ? size : size[j];
-          const amount = Math.floor((_end - _start) / _size) + 1;
+          const amount = Math.abs(_end - _start) / _size + 1;
           const multiplier = Math.floor(i / (dimension * product)) % amount;
           input[j] = _start + multiplier * _size;
           product *= amount;
