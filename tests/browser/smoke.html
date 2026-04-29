@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Numfit Browser Worker Smoke Test</title>
+	</head>
+	<body>
+		<pre id="result">running</pre>
+		<script type="module">
+			import {
+				LinearRegression,
+				PolynomialRegression,
+				RANSACRegression,
+				Tricubic,
+				crossValidateRegression
+			} from '../../build/Numfit.module.js';
+
+			try {
+
+				const samples = 20000;
+				const positions = new Float64Array( samples * 3 );
+
+				for ( let i = 0; i < samples; i ++ ) {
+
+					for ( let j = 0; j < 3; j ++ ) {
+
+						positions[ i * 3 + j ] = ((i * (j + 3)) % 997) / 997 * 3;
+
+					}
+
+				}
+
+				const values = new Float64Array( 64 );
+
+				for ( let i = 0; i < values.length; i ++ ) values[ i ] = i;
+
+				const evaluator = new Tricubic(
+					new Float64Array([ 0,0,0, 1,1,1, 2,2,2, 3,3,3 ]),
+					values
+				);
+				const sync = evaluator.map( positions );
+				const asyncValues = await evaluator.mapAsync( positions, {
+					workers: 4,
+					threshold: 0,
+					idleTimeout: Number.POSITIVE_INFINITY
+				} );
+				let maxDiff = 0;
+
+				for ( let i = 0; i < sync.length; i ++ ) {
+
+					maxDiff = Math.max( maxDiff, Math.abs( sync[ i ] - asyncValues[ i ] ) );
+
+				}
+
+				const regression = new PolynomialRegression({
+					positions: new Float64Array([ 0, 1, 2, 3 ]),
+					values: new Float64Array([ 1, 3, 5, 7 ]),
+					degree: 1,
+					normalize: 'standard'
+				});
+				const ransac = new RANSACRegression({
+					model: LinearRegression,
+					positions: new Float64Array([ 0, 1, 2, 3, 4 ]),
+					values: new Float64Array([ 1, 3, 100, 7, 9 ]),
+					threshold: .5,
+					iterations: 50,
+					seed: 5
+				});
+				const selected = crossValidateRegression({
+					model: PolynomialRegression,
+					positions: new Float64Array([ -2, -1, 0, 1, 2, 3 ]),
+					values: new Float64Array([ 4, 1, 0, 1, 4, 9 ]),
+					degree: [ 1, 2 ],
+					folds: 3,
+					seed: 7,
+					normalize: true
+				});
+				const regressionOk =
+					Math.abs( regression.evaluate( 4 ) - 9 ) < 1e-9 &&
+					regression.rmse() < 1e-9 &&
+					ransac.outliers.length === 1 &&
+					selected.bestOptions.degree === 2;
+				const result = {
+					ok: maxDiff === 0 && regressionOk,
+					workerSupported: typeof Worker !== 'undefined',
+					asyncType: asyncValues.constructor.name,
+					length: asyncValues.length,
+					maxDiff,
+					regressionOk,
+					ransacOutliers: ransac.outliers.length,
+					crossValidationDegree: selected.bestOptions.degree,
+					first: asyncValues[ 0 ],
+					last: asyncValues[ asyncValues.length - 1 ]
+				};
+
+				window.__numfitBrowserSmoke = result;
+				document.getElementById( 'result' ).textContent = JSON.stringify( result, null, 2 );
+
+			} catch ( error ) {
+
+				const result = {
+					ok: false,
+					error: error.message || String( error )
+				};
+
+				window.__numfitBrowserSmoke = result;
+				document.getElementById( 'result' ).textContent = JSON.stringify( result, null, 2 );
+
+			}
+		</script>
+	</body>
+</html>

@@ -1,4 +1,9 @@
-export * from './Linear';
-export * from './Quadratic';
-export * from './Cubic';
-
+export * from './Linear/index.js';
+export * from './Quadratic/index.js';
+export * from './Cubic/index.js';
+export * from './Simplex/index.js';
+export * from './Mesh/index.js';
+export * from './Polynomial/index.js';
+export * from './Scattered/index.js';
+export * from './Hermite/index.js';
+export * from './Regression/index.js';

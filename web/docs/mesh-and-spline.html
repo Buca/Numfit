@@ -1,0 +1,51 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Meshes and Splines</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/mesh-and-spline.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				<code>InterpolationMesh</code> combines many interpolators into one piecewise interpolator. <code>Mesh</code> and <code>Spline</code> are aliases for the same class, with <code>Spline</code> commonly used for one-dimensional interval curves.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Construction helpers</h3>
+		<section class="part">
+			<ul>
+				<li><code>InterpolationMesh.fromIntervals(options)</code></li>
+				<li><code>InterpolationMesh.fromTriangles(positions, values, indices, options)</code></li>
+				<li><code>InterpolationMesh.fromTetrahedra(positions, values, indices, options)</code></li>
+				<li><code>InterpolationMesh.fromSimplexes(positions, values, indices, options)</code></li>
+			</ul>
+		</section>
+	</section>
+
+	<section>
+		<h3>Examples</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { CubicHermite, Linear, Spline } from 'numfit';
+
+const linearSpline = Spline.fromIntervals({
+	type: Linear,
+	positions: [ 0, 1, 2, 3 ],
+	values: [ 0, 1, 0, 2 ]
+});
+
+const hermiteSpline = Spline.fromIntervals({
+	type: CubicHermite,
+	positions: [ 0, 1, 2, 3 ],
+	values: [ 0, 1, 0, 2 ],
+	derivatives: 'akima',
+	index: 'grid'
+});
+			</code></pre>
+			<p>
+				Use <code>{ blending: 'weighted' }</code> when overlapping cells should be smoothly blended instead of using the first matching cell.
+			</p>
+		</section>
+	</section>
+</div>

@@ -6,6 +6,8 @@
 			{ "name": "Installation", "href": "installation.html" },
 			{ "name": "Basic Evaluation", "href": "basic-evaluation.html" },
 			{ "name": "Using Samplers", "href": "using-samplers.html" },
+			{ "name": "Regression Workflows", "href": "regression-workflows.html" },
+			{ "name": "Browser Workers and ESM", "href": "browser-workers-and-esm.html" },
 			{ "name": "Making changes and updating", "href": "making-changes-and-updating.html" }
 		]
 	

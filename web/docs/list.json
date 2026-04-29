@@ -26,6 +26,25 @@
 			{ "name": "Tricubic", "href": "tricubic.html" }
 		]
 	
+	}, {
+
+		"name": "Generalized Interpolation",
+		"list": [
+			{ "name": "Polynomial and Multi Variants", "href": "polynomial-and-multi.html" },
+			{ "name": "Simplex Interpolation", "href": "simplex.html" },
+			{ "name": "Meshes and Splines", "href": "mesh-and-spline.html" },
+			{ "name": "Hermite Interpolation", "href": "hermite.html" }
+		]
+
+	}, {
+
+		"name": "Scattered Data and Regression",
+		"list": [
+			{ "name": "Scattered Data", "href": "scattered-data.html" },
+			{ "name": "Regression", "href": "regression.html" },
+			{ "name": "TypeScript, ESM, and Workers", "href": "typescript-esm-workers.html" }
+		]
+
 	}
 
 ]

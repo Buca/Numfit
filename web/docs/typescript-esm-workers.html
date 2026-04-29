@@ -1,0 +1,40 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>TypeScript, ESM, and Workers</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/typescript-esm-workers.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				Numfit ships TypeScript declarations, modern package exports, browser ESM builds, and worker-backed mapping for large batches.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Modern imports</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import {
+	Linear,
+	PolynomialRegression,
+	Spline
+} from 'numfit';
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
+		<h3>Browser module build</h3>
+		<section class="part">
+			<pre><code class="language-html">
+&lt;script type="module"&gt;
+	import { Linear } from './build/Numfit.module.js';
+&lt;/script&gt;
+			</code></pre>
+			<p>
+				Keep <code>Numfit.worker.js</code> and <code>Numfit.mesh.worker.js</code> next to the module build, or pass custom worker URLs to <code>mapAsync</code>.
+			</p>
+		</section>
+	</section>
+</div>

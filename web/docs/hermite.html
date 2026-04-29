@@ -1,0 +1,35 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Hermite Interpolation</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/hermite.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				Hermite interpolators use endpoint values and derivatives. <code>CubicHermite</code> uses first derivatives, while <code>QuinticHermite</code> also uses second derivatives.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Example</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { CubicHermite, QuinticHermite } from 'numfit';
+
+const cubic = new CubicHermite({
+	positions: [ 0, 1 ],
+	values: [ 0, 1 ],
+	derivatives: [ 1, 0 ]
+});
+
+const quintic = new QuinticHermite({
+	positions: [ 0, 1 ],
+	values: [ 0, 1 ],
+	derivatives: [ 1, 0 ],
+	secondDerivatives: [ 0, 0 ]
+});
+			</code></pre>
+		</section>
+	</section>
+</div>

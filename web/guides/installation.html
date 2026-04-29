@@ -13,6 +13,21 @@
 	</section>
 
 	<section>
+		<h3>Node and bundler installation</h3>
+		<section class="part">
+			<p>
+				Install Numfit from npm for Node.js, Vite, Rollup, webpack, and other modern bundlers:
+			</p>
+			<pre><code class="language-bash">
+npm install numfit
+			</code></pre>
+			<pre><code class="language-javascript">
+import { Linear, PolynomialRegression, Spline } from 'numfit';
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
 		<h3>Browser installation using CDN (Recommended)</h3>
 		<section class="part">
 			<p>
@@ -20,6 +35,20 @@
 			</p>
 			<pre><code class="language-html">
 &lt;script src="https://cdn.jsdelivr.net/gh/buca/numfit/build/Numfit.min.js"&gt;&lt;/script&gt;
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
+		<h3>Browser ESM build</h3>
+		<section class="part">
+			<p>
+				Modern browser projects can import the module build directly:
+			</p>
+			<pre><code class="language-html">
+&lt;script type="module"&gt;
+	import { Linear } from './Numfit.module.js';
+&lt;/script&gt;
 			</code></pre>
 		</section>
 	</section>

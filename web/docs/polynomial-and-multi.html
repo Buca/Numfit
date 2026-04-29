@@ -1,0 +1,49 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Polynomial and Multi Variants</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/polynomial-and-multi.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				The polynomial classes generalize the fixed linear, quadratic, and cubic interpolators. Use them when you need arbitrary degree, arbitrary dimensionality, or N-dimensional hyperbox interpolation.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Classes</h3>
+		<section class="part">
+			<table>
+				<tr><td><b>Polynomial</b></td><td>One-dimensional polynomial interpolation with arbitrary degree.</td></tr>
+				<tr><td><b>Multilinear</b></td><td>N-dimensional linear tensor-product interpolation.</td></tr>
+				<tr><td><b>Multiquadratic</b></td><td>N-dimensional quadratic tensor-product interpolation.</td></tr>
+				<tr><td><b>Multicubic</b></td><td>N-dimensional cubic tensor-product interpolation.</td></tr>
+				<tr><td><b>Multipolynomial</b></td><td>N-dimensional tensor-product interpolation with arbitrary degree.</td></tr>
+			</table>
+		</section>
+	</section>
+
+	<section>
+		<h3>Example</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { Multipolynomial } from 'numfit';
+
+const surface = new Multipolynomial(
+	new Float64Array([ 0,0, 1,1, 2,2 ]),
+	new Float64Array([
+		0, 1, 4,
+		1, 2, 5,
+		4, 5, 8
+	]),
+	1,
+	2,
+	2
+);
+
+surface.evaluate([ .5, .5 ]);
+			</code></pre>
+		</section>
+	</section>
+</div>

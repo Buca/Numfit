@@ -1,0 +1,53 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Scattered Data</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/scattered-data.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				Scattered-data interpolators work from arbitrary sample locations rather than structured grids or explicit mesh cells.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Inverse Distance Weighting</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { InverseDistanceWeighting } from 'numfit';
+
+const idw = new InverseDistanceWeighting({
+	positions,
+	values,
+	variables: 2,
+	power: 2,
+	radius: .05,
+	neighbors: 16,
+	index: 'grid',
+	empty: 'nearest'
+});
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
+		<h3>Radial Basis Functions</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { RadialBasisFunction } from 'numfit';
+
+const rbf = new RadialBasisFunction({
+	positions,
+	values,
+	variables: 2,
+	kernel: 'thin-plate',
+	smoothing: 1e-6
+});
+			</code></pre>
+			<p>
+				Supported kernels include <code>gaussian</code>, <code>multiquadric</code>, <code>inverse-multiquadric</code>, <code>linear</code>, <code>cubic</code>, and <code>thin-plate</code>.
+			</p>
+		</section>
+	</section>
+</div>
