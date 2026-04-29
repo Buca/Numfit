@@ -13,6 +13,8 @@ export class Cubic extends Evaluator {
 
 	) {
 
+		this.validateInput( positions, values, dimension );
+
 		if ( !output ) output = new values.constructor( dimension );
 
 		const x = typeof position === 'number' ? position : position[ 0 ];
@@ -65,6 +67,8 @@ export class Cubic extends Evaluator {
 		output, outputOffset = 0
 	
 	) {
+
+		this.validateInput( positions, values, dimension );
 
 		if ( !output ) output = new values.constructor( 4*dimension );
 

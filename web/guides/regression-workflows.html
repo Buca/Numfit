@@ -1,0 +1,76 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Regression Workflows</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/guides/regression-workflows.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				This guide shows a practical regression workflow: fit a model, inspect diagnostics, handle outliers, and select model options with cross-validation.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Fit and inspect</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { PolynomialRegression } from 'numfit';
+
+const fit = new PolynomialRegression({
+	positions,
+	values,
+	degree: 2,
+	normalize: 'standard'
+});
+
+console.log( fit.rmse() );
+console.log( fit.r2() );
+console.log( fit.summary() );
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
+		<h3>Outlier-resistant fitting</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+const robust = new PolynomialRegression({
+	positions,
+	values,
+	degree: 2,
+	robust: 'huber',
+	delta: 1,
+	normalize: 'standard'
+});
+
+const influence = robust.influence();
+			</code></pre>
+			<p>
+				For harder outliers, use <code>RANSACRegression</code> to fit from an inlier consensus set.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Model selection</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { PolynomialRegression, crossValidateRegression } from 'numfit';
+
+const selected = crossValidateRegression({
+	model: PolynomialRegression,
+	positions,
+	values,
+	degree: [ 1, 2, 3, 4 ],
+	regularization: [ 0, 1e-6, 1e-3 ],
+	normalize: [ false, 'standard' ],
+	folds: 5,
+	metric: 'mse'
+});
+
+selected.bestModel.evaluate( 4 );
+			</code></pre>
+		</section>
+	</section>
+</div>

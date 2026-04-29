@@ -1,0 +1,42 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Simplex Interpolation</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/simplex.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				Simplex interpolation evaluates unstructured linear cells such as triangles, tetrahedra, and generic N-dimensional simplexes. Use it when your domain is not a rectangular grid.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Classes</h3>
+		<section class="part">
+			<table>
+				<tr><td><b>SimplexLinear</b></td><td>Generic N-dimensional simplex interpolation.</td></tr>
+				<tr><td><b>TriangleLinear</b></td><td>Two-dimensional triangle interpolation.</td></tr>
+				<tr><td><b>TetrahedralLinear</b></td><td>Three-dimensional tetrahedron interpolation.</td></tr>
+			</table>
+		</section>
+	</section>
+
+	<section>
+		<h3>Example</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import { TriangleLinear } from 'numfit';
+
+const triangle = new TriangleLinear(
+	new Float64Array([ 0,0, 1,0, 0,1 ]),
+	new Float64Array([ 10, 20, 30 ])
+);
+
+triangle.contains([ .25, .25 ]);
+triangle.getWeights([ .25, .25 ]);
+triangle.evaluate([ .25, .25 ]);
+			</code></pre>
+		</section>
+	</section>
+</div>

@@ -21,6 +21,8 @@ export class Bicubic extends Evaluator {
 
 	) {
 
+		this.validateInput( positions, values, dimension );
+
 		if ( !output ) output = new values.constructor( dimension*16 );
 
 		const x0 = positions[ 0 ];
@@ -176,6 +178,8 @@ export class Bicubic extends Evaluator {
 		output, outputOffset = 0
 
 	) { 
+
+		this.validateInput( positions, values, dimension );
 
 		if ( !output ) output = new values.constructor( dimension ); 
 

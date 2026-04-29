@@ -1,0 +1,42 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Browser Workers and ESM</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/guides/browser-workers-and-esm.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				Modern Numfit projects can import the ESM build and use <code>mapAsync</code> in browsers. Large typed-array batches are split across module workers when workers are available.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>ESM import</h3>
+		<section class="part">
+			<pre><code class="language-html">
+&lt;script type="module"&gt;
+	import { Tricubic } from './Numfit.module.js';
+
+	const values = await tricubic.mapAsync( positions, {
+		workers: 4,
+		workerUrl: new URL( './Numfit.worker.js', import.meta.url )
+	});
+&lt;/script&gt;
+			</code></pre>
+		</section>
+	</section>
+
+	<section>
+		<h3>Testing browser support</h3>
+		<section class="part">
+			<pre><code class="language-bash">
+npm run test:browser:install
+npm run test:browser
+			</code></pre>
+			<p>
+				The browser smoke test verifies worker-backed mapping, typed-array outputs, and browser ESM regression exports.
+			</p>
+		</section>
+	</section>
+</div>

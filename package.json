@@ -2,15 +2,75 @@
   "name": "numfit",
   "version": "1.1.0",
   "description": "Javascript library for numerical interpolation and extrapolation.",
+  "type": "module",
   "main": "src/index.js",
+  "module": "src/index.js",
+  "browser": "build/Numfit.module.js",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./browser": "./build/Numfit.module.js",
+    "./build/Numfit.module.js": "./build/Numfit.module.js",
+    "./build/Numfit.worker.js": "./build/Numfit.worker.js",
+    "./build/Numfit.mesh.worker.js": "./build/Numfit.mesh.worker.js",
+    "./build/Numfit.js": "./build/Numfit.js",
+    "./build/Numfit.min.js": "./build/Numfit.min.js"
+  },
   "author": "Buca Hajdini",
   "license": "ISC",
+  "homepage": "https://github.com/buca/numfit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buca/numfit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/buca/numfit/issues"
+  },
+  "keywords": [
+    "interpolation",
+    "extrapolation",
+    "regression",
+    "numerical",
+    "spline",
+    "mesh",
+    "rbf",
+    "idw"
+  ],
+  "files": [
+    "benchmarks/",
+    "build/",
+    "scripts/",
+    "src/",
+    "types/",
+    "docs/",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "numfit-logo.png"
+  ],
   "scripts": {
-    "test": "vitest",
-    "build": "esbuild src/index.js --bundle --minify --platform=browser --outfile=build/Numfit.min.js & esbuild src/index.js --bundle --platform=browser --outfile=build/Numfit.js"
+    "test": "node ./node_modules/vitest/vitest.mjs run --config vitest.config.cjs",
+    "test:consumer": "node tests/consumer/root-import-smoke.js",
+    "test:browser:install": "node ./node_modules/playwright/cli.js install chromium",
+    "test:browser": "npm run build && node tests/browser/run-browser-smoke.js",
+    "test:types": "node ./node_modules/typescript/bin/tsc --noEmit --project tests/types/tsconfig.json",
+    "test:watch": "node ./node_modules/vitest/vitest.mjs --config vitest.config.cjs",
+    "docs:api": "node scripts/generate-api-reference.js",
+    "release:check": "npm run docs:api && npm run test:types && npm test && npm run test:consumer && npm run test:browser && npm pack --dry-run",
+    "build": "node ./node_modules/esbuild/bin/esbuild src/index.js --bundle --minify --platform=browser --log-override:empty-import-meta=silent --outfile=build/Numfit.min.js && node ./node_modules/esbuild/bin/esbuild src/index.js --bundle --platform=browser --log-override:empty-import-meta=silent --outfile=build/Numfit.js && node ./node_modules/esbuild/bin/esbuild src/index.js --bundle --platform=browser --format=esm --outfile=build/Numfit.module.js && node ./node_modules/esbuild/bin/esbuild src/ParallelWorker.js --bundle --platform=browser --format=esm --outfile=build/Numfit.worker.js && node ./node_modules/esbuild/bin/esbuild src/MeshWorker.js --bundle --platform=browser --format=esm --outfile=build/Numfit.mesh.worker.js",
+    "benchmark": "node benchmarks/benchmark.js",
+    "benchmark:mesh": "node benchmarks/mesh.js",
+    "benchmark:idw": "node benchmarks/idw.js",
+    "benchmark:regression": "node benchmarks/regression.js"
   },
   "devDependencies": {
     "esbuild": "^0.19.11",
+    "playwright": "^1.52.0",
+    "typescript": "^5.9.3",
     "vitest": "^1.1.1"
   }
 }

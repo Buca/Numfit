@@ -1,7 +1,31 @@
+import {
+	validateConstructorInput,
+	validateSamplePosition,
+	validateSamplePositions,
+	validateSegmentInput,
+	validateStepInput
+} from './Validation.js';
+import { mapInWorkers } from './Parallel.js';
+import {
+	adaptiveSample,
+	gridSample,
+	latinHypercubeSample,
+	poissonDiskSample,
+	randomSample,
+	sliceSample,
+	streamSample
+} from './Samplers.js';
+
 export default class Evaluator {
 
 	static degree;
 	static variables;
+
+	static validateInput( positions, values, dimension = 1 ) {
+
+		validateConstructorInput( this, positions, values, dimension );
+
+	};
 
 	constructor( 
 	
@@ -9,9 +33,12 @@ export default class Evaluator {
 	
 	) {
 
+		validateConstructorInput( this.constructor, positions, values, dimension );
+
 		this.positions = positions;
 		this.values = values;
 		this.dimension = dimension;
+		this._parallelVersion = 0;
 		
 		const degree = this.constructor.degree;
 		const variables = this.constructor.variables;
@@ -38,12 +65,15 @@ export default class Evaluator {
 
 	update() {
 
+		validateConstructorInput( this.constructor, this.positions, this.values, this.dimension );
+
 		this.coefficients = this.constructor.coefficients(
 			this.positions,
 			this.values,
 			this.dimension,
 			this.coefficients
 		);
+		this._parallelVersion ++;
 
 		return this;
 
@@ -123,6 +153,8 @@ export default class Evaluator {
 		const d = degree + 1;
 
 		const outputNotProvided = !output;
+
+		validateSamplePosition( position, variables );
 
 		if ( !output ) output = new this.values.constructor( dimension );
 
@@ -221,7 +253,12 @@ export default class Evaluator {
 		const dimension = this.dimension;
 		const variables = this.constructor.variables;
 
-		let length = 1;
+		validateStepInput( start, end, size, variables );
+
+		let sampleCount = 1;
+		const amounts = new this.positions.constructor( variables );
+		const sizes = new this.positions.constructor( variables );
+		const starts = new this.positions.constructor( variables );
 
 		for ( let i = 0; i < variables; i ++ ) {
 
@@ -229,38 +266,34 @@ export default class Evaluator {
 			const _end = typeof end === 'number' ? end : end[ i ];
 			const _size = typeof size === 'number' ? size : size[ i ];
 
-			length *= (Math.abs( _end - _start ) / _size)+1;
+			starts[ i ] = _start;
+			sizes[ i ] = _size;
+			amounts[ i ] = Math.floor( Math.abs( _end - _start ) / _size ) + 1;
+			sampleCount *= amounts[ i ];
 
 		}
-
-		length *= dimension;
 
 		const input = new this.positions.constructor( variables );
 		let output;
 
 		if ( handler ) output = new this.values.constructor( dimension ).fill( 0 );
-		else output = new this.values.constructor( Math.ceil(length) ).fill( 0 );
+		else output = new this.values.constructor( sampleCount * dimension ).fill( 0 );
 
-		for ( let i = 0; i <= length; i += dimension ) {
+		for ( let i = 0; i < sampleCount; i ++ ) {
 
 			let product = 1;
 
 			for ( let j = 0; j < variables; j ++ ) {
-				
-				const _start = typeof start === 'number' ? start : start[ j ];
-				const _end = typeof end === 'number' ? end : end[ j ];
-				const _size = typeof start === 'number' ? size : size[ j ];
-				const amount = Math.floor(Math.abs(_end - _start)/_size) + 1;
-				const multiplier = Math.floor( i / (dimension*product) ) % (amount);
 
-				input[ j ] = _start + multiplier*_size;
+				const multiplier = Math.floor( i / product ) % amounts[ j ];
 
-				product *= (amount);
+				input[ j ] = starts[ j ] + multiplier*sizes[ j ];
+				product *= amounts[ j ];
 
 			}
 
 			if ( handler ) handler( variables > 1 ? input : input[ 0 ], this.evaluate( input, 0, output, 0 ) );
-			else this.evaluate( input, 0, output, i );
+			else this.evaluate( input, 0, output, i * dimension );
 
 		}
 
@@ -278,6 +311,8 @@ export default class Evaluator {
 		const variables = this.constructor.variables;
 		const size = new this.positions.constructor( variables );
 
+		validateSegmentInput( start, end, amount, variables );
+
 		for ( let i = 0; i < variables; i ++ ) {
 
 			const _start = typeof start === 'number' ? start : start[ i ];
@@ -288,7 +323,49 @@ export default class Evaluator {
 
 		}
 
-		return this.step( start, end, size );
+		return this.step( start, end, size, handler );
+
+	};
+
+	grid( options, handler ) {
+
+		return gridSample( this, options, handler );
+
+	};
+
+	slice( options, handler ) {
+
+		return sliceSample( this, options, handler );
+
+	};
+
+	random( count, options, handler ) {
+
+		return randomSample( this, count, options, handler );
+
+	};
+
+	latinHypercube( count, options, handler ) {
+
+		return latinHypercubeSample( this, count, options, handler );
+
+	};
+
+	poissonDisk( options, handler ) {
+
+		return poissonDiskSample( this, options, handler );
+
+	};
+
+	adaptive( start, end, options ) {
+
+		return adaptiveSample( this, start, end, options );
+
+	};
+
+	stream( options ) {
+
+		return streamSample( this, options );
 
 	};
 
@@ -301,7 +378,10 @@ export default class Evaluator {
 
 		const variables = this.constructor.variables;
 		const dimension = this.dimension;
-		const length = dimension * positions.length;
+
+		validateSamplePositions( positions, variables );
+
+		const sampleCount = positions.length / variables;
 
 		const input = new this.positions.constructor( variables );
 		let output;
@@ -310,9 +390,9 @@ export default class Evaluator {
 
 			output = new this.values.constructor( dimension );
 
-		} else output = new this.values.constructor( length ).fill( 0 );
+		} else output = new this.values.constructor( sampleCount * dimension ).fill( 0 );
 
-		for ( let i = 0, index = 0; i < positions.length; i += variables ) {
+		for ( let i = 0, index = 0; i < positions.length; i += variables, index ++ ) {
 
 			for ( let j = 0; j < variables; j ++ ) {
 
@@ -323,11 +403,23 @@ export default class Evaluator {
 
 				handler( variables > 1 ? input : input[ 0 ], this.evaluate( input, 0, output, 0 ) );
 			
-			} else this.evaluate( input, 0, output, i );
+			} else this.evaluate( input, 0, output, index * dimension );
 
 		}
 
 		return handler ? this : output;
+
+	};
+
+	mapAsync(
+
+		positions,
+		options
+
+	) {
+
+		return mapInWorkers( this, positions, options );
+
 
 	};
 

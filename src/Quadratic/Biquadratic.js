@@ -13,6 +13,8 @@ export class Biquadratic extends Evaluator {
 	
 	) {
 
+		this.validateInput( positions, values, dimension );
+
 		if ( !output ) output = new values.constructor( dimension );
 
 		const x = position[ 0 ];
@@ -83,6 +85,8 @@ export class Biquadratic extends Evaluator {
 		output, outputOffset = 0
 
 	) {
+
+		this.validateInput( positions, values, dimension );
 
 		if ( !output ) output = new values.constructor( dimension * 9 );
 

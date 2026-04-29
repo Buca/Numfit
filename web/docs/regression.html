@@ -1,0 +1,61 @@
+<div id="content">
+	<section>
+		<div class="page-title" class="row">
+			<h2>Regression</h2>
+			<div><a href="https://github.com/Buca/Numfit/tree/main/web/docs/regression.html">Edit</a></div>
+		</div>
+		<section class="part">
+			<p>
+				Regression models fit approximate functions to sampled data. Numfit supports polynomial, linear, ridge, weighted, Huber, and RANSAC regression.
+			</p>
+		</section>
+	</section>
+
+	<section>
+		<h3>Classes and helpers</h3>
+		<section class="part">
+			<table>
+				<tr><td><b>PolynomialRegression</b></td><td>Total-degree polynomial least squares.</td></tr>
+				<tr><td><b>LinearRegression</b></td><td>Convenience model with <code>degree: 1</code>.</td></tr>
+				<tr><td><b>RidgeRegression</b></td><td>Polynomial regression with <code>regularization</code>.</td></tr>
+				<tr><td><b>RANSACRegression</b></td><td>Robust wrapper that finds an inlier consensus set.</td></tr>
+				<tr><td><b>crossValidateRegression</b></td><td>K-fold grid search for model selection.</td></tr>
+			</table>
+		</section>
+	</section>
+
+	<section>
+		<h3>Example</h3>
+		<section class="part">
+			<pre><code class="language-javascript">
+import {
+	PolynomialRegression,
+	crossValidateRegression
+} from 'numfit';
+
+const fit = new PolynomialRegression({
+	positions,
+	values,
+	degree: 2,
+	weights,
+	robust: 'huber',
+	normalize: 'standard'
+});
+
+fit.rmse();
+fit.summary();
+fit.influence();
+
+const selected = crossValidateRegression({
+	model: PolynomialRegression,
+	positions,
+	values,
+	degree: [ 1, 2, 3 ],
+	regularization: [ 0, 1e-3 ],
+	normalize: [ false, 'standard' ],
+	folds: 5
+});
+			</code></pre>
+		</section>
+	</section>
+</div>

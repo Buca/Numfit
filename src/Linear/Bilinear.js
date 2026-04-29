@@ -12,6 +12,8 @@ export class Bilinear extends Evaluator {
 	
 	) {
 
+		this.validateInput( positions, values, dimension );
+
 		if ( !output ) output = values.constructor( dimension*4 );
 
 		const x0 = positions[ 0 ];
@@ -50,6 +52,8 @@ export class Bilinear extends Evaluator {
 		output, outputOffset = 0
 
 	) {
+
+		this.validateInput( positions, values, dimension );
 
 		if ( !output ) output = new values.constructor( dimension );
 
